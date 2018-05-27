@@ -11,27 +11,32 @@
 </head>
 <body>
 	<div id="hdr">
-		<div id="hdr-left">
-			<div id="title">{{.Title}}</div>
-			<div id="copyright">{{.Copyright}}</div>
+		<div id="hdr-left">{{.Title}}</div>
+		<div id="hdr-middle">
+			<i class="fas fa-chevron-circle-right button" title="Next [n]"></i>
+			<span id="turn">{{if .Board.Round}}Round {{.Board.Round}}{{else}}Awaiting Initiative{{end}}</span>
+			<i class="fas fa-undo button" title="Roll initiative"></i>
 		</div>
 		<div id="hdr-right">
-			<i class="fas fa-chevron-circle-right button" title="Next [n]"></i>
 			<i class="fas fa-plus-circle button" title="New combatant"></i>
-			<i class="fas fa-undo button" title="Roll initiative"></i>
 			<i class="fas fa-broom button" title="Delete all enemy combatants"></i>
 			<i class="fas fa-cog button" title="Options"></i>
 		</div>
 	</div>
-	<div id="board">
-		<div class="hname"><br>Who</div>
-		<div class="hinit"><br>Init</div>
-		<div class="hhp-hdr">Hit Points</div>
-		<div class="hhp-desc">Status</div>
-		<div class="hhp">Current</div>
-		<div class="hhp-max">Max</div>
-		<div class="hnotes"><br>Notes</div>
+	<div id="content">
+		<div id="board">
+			<div class="hname"><br>Who</div>
+			<div class="hinit"><br>Init</div>
+			<div class="hhp-hdr">Hit Points</div>
+			<div class="hhp-desc">Status</div>
+			<div class="hhp">Current</div>
+			<div class="hhp-max">Max</div>
+			<div class="hnotes"><br>Notes</div>
 {{template "/encounter.html" .Board}}
+		</div>
+	</div>
+	<div id="ftr">
+		<div id="copyright">{{.Copyright}}</div>
 	</div>
 </body>
 </html>
