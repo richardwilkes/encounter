@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/richardwilkes/encounter/board"
-	"github.com/richardwilkes/encounter/combatant"
 	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
@@ -42,17 +41,19 @@ func New(address string) *Server {
 	}
 	s.Server.WebServer.Handler = s
 
+	s.board.Round = 2
+
 	c := s.board.NewCombatant("Billy Joe Bob")
 	c.Enemy = false
 	c.Initiative = 13
 	c.HP.Full = 32
 	c.HP.Damage = 9
-	c.Notes = append(c.Notes, combatant.Note{
+	c.Notes = append(c.Notes, board.Note{
 		Description: "Blinded",
 		Timed:       true,
 		Who:         c.ID,
 		Round:       6,
-	}, combatant.Note{
+	}, board.Note{
 		Description: "Nauseated",
 		Timed:       true,
 		Who:         c.ID,
@@ -64,7 +65,7 @@ func New(address string) *Server {
 	c.Initiative = 11
 	c.HP.Full = 32
 	c.HP.Damage = 16
-	c.Notes = append(c.Notes, combatant.Note{
+	c.Notes = append(c.Notes, board.Note{
 		Description: "Haste",
 		Timed:       true,
 		Who:         c.ID,
@@ -81,16 +82,16 @@ func New(address string) *Server {
 
 	c = s.board.DuplicateCombatant(c)
 	c.HP.Damage = 18
-	c.Notes = append(c.Notes, combatant.Note{Description: "Missing left leg"})
+	c.Notes = append(c.Notes, board.Note{Description: "Missing left leg"})
 
 	c = s.board.DuplicateCombatant(c)
-	c.Notes = make([]combatant.Note, 0)
+	c.Notes = make([]board.Note, 0)
 	c.HP.Damage--
 
 	c = s.board.DuplicateCombatant(c)
 	c.HP.Damage = c.HP.Full
 
-	s.board.Current = s.board.Combatants[0]
+	s.board.Current = s.board.Combatants[0].ID
 
 	return s
 }

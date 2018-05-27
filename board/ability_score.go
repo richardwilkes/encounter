@@ -1,4 +1,4 @@
-package combatant
+package board
 
 // AbilityScore holds the ability score's value plus any damage.
 type AbilityScore struct {

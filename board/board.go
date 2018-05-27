@@ -4,38 +4,46 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/richardwilkes/encounter/combatant"
 	"github.com/richardwilkes/toolbox/collection"
 )
 
 type Board struct {
-	Round      int
-	Current    *combatant.Combatant
-	Combatants []*combatant.Combatant `json:"combatants,omitempty"`
+	Round      int          `json:"round,omitempty"`
+	Current    string       `json:"current,omitempty"`
+	Combatants []*Combatant `json:"combatants,omitempty"`
 }
 
-func (b *Board) NewCombatant(nameHint string) *combatant.Combatant {
-	c := combatant.New(b.suggestName(nameHint))
+func (b *Board) NewCombatant(nameHint string) *Combatant {
+	c := NewCombatant(b.suggestName(nameHint))
 	b.Combatants = append(b.Combatants, c)
 	return c
 }
 
-func (b *Board) DuplicateCombatant(who *combatant.Combatant) *combatant.Combatant {
+func (b *Board) DuplicateCombatant(who *Combatant) *Combatant {
 	c := who.Clone()
 	c.Name = b.suggestName(c.Name)
 	b.Combatants = append(b.Combatants, c)
 	return c
 }
 
-func (b *Board) IsCurrent(c *combatant.Combatant) bool {
-	return b.Current == c
+func (b *Board) IsCurrent(c *Combatant) bool {
+	return b.Current == c.ID
 }
 
-func (b *Board) CurrentMarker(c *combatant.Combatant) string {
-	if b.Current == c {
+func (b *Board) CurrentTag(c *Combatant) string {
+	if b.IsCurrent(c) {
 		return " current"
 	}
 	return ""
+}
+
+func (b *Board) Lookup(id string) *Combatant {
+	for _, c := range b.Combatants {
+		if c.ID == id {
+			return c
+		}
+	}
+	return nil
 }
 
 func (b *Board) suggestName(nameHint string) string {

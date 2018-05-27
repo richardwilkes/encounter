@@ -1,10 +1,10 @@
-package combatant
+package board
 
 import "github.com/satori/go.uuid"
 
 // Combantant holds information for a single entity in combat.
 type Combatant struct {
-	ID             uuid.UUID    `json:"id"`
+	ID             string       `json:"id"`
 	Name           string       `json:"name"`
 	Enemy          bool         `json:"enemy"`
 	Strength       AbilityScore `json:"str"`
@@ -20,9 +20,9 @@ type Combatant struct {
 }
 
 // New creates a new combatant.
-func New(name string) *Combatant {
+func NewCombatant(name string) *Combatant {
 	return &Combatant{
-		ID:           uuid.Must(uuid.NewV4()),
+		ID:           uuid.Must(uuid.NewV4()).String(),
 		Name:         name,
 		Enemy:        true,
 		Strength:     AbilityScore{Value: 10},
@@ -38,7 +38,7 @@ func New(name string) *Combatant {
 // Clone creates a copy of the combatant, but with a new ID.
 func (c *Combatant) Clone() *Combatant {
 	clone := *c
-	clone.ID = uuid.Must(uuid.NewV4())
+	clone.ID = uuid.Must(uuid.NewV4()).String()
 	clone.Notes = make([]Note, len(c.Notes))
 	copy(clone.Notes, c.Notes)
 	return &clone

@@ -1,6 +1,9 @@
 {{$board := .}}{{range .Combatants}}
-<div bid="{{.ID}}" class="name{{$board.CurrentMarker .}}">
-	<div><i class="fas fa-user {{.Type}}" title="{{.TypeDescription}}"></i> {{if .Out}}<span class="out">{{end}}{{.Name}}{{if .Out}}</span>{{end}}</div>
+<div bid="{{.ID}}" class="name{{$board.CurrentTag .}}">
+	<div>
+		<i class="fas fa-user {{.Type}}" title="{{.TypeDescription}}"></i>
+		{{if .Out}}<span class="out">{{end}}{{.Name}}{{if .Out}}</span>{{end}}
+	</div>
 	<div class="controls">
 		{{if not ($board.IsCurrent .) -}}
 		<i class="fas fa-bullseye button" title="Focus this combatant"></i>
@@ -10,19 +13,19 @@
 		<i class="fas fa-trash button" title="Delete combatant"></i>
 	</div>
 </div>
-<div bid="{{.ID}}" class="init{{$board.CurrentMarker .}}">{{.Initiative}}</div>
-<div bid="{{.ID}}" class="hp-desc{{$board.CurrentMarker .}}{{.StatusTag}}">{{.Status}}</div>
-<div bid="{{.ID}}" class="hp{{$board.CurrentMarker .}}">
+<div bid="{{.ID}}" class="init{{$board.CurrentTag .}}">{{.Initiative}}</div>
+<div bid="{{.ID}}" class="hp-desc{{$board.CurrentTag .}}{{.StatusTag}}">{{.Status}}</div>
+<div bid="{{.ID}}" class="hp{{$board.CurrentTag .}}">
 	<div class="hp-cur">{{.HP.String}}</div>
 	<div class="controls"><i class="fas fa-heart button" title="Adjust hit points [a]"></i></div>
 </div>
-<div bid="{{.ID}}" class="hp-max{{$board.CurrentMarker .}}">{{.HP.Full}}</div>
-<div bid="{{.ID}}" class="notes{{$board.CurrentMarker .}}">
+<div bid="{{.ID}}" class="hp-max{{$board.CurrentTag .}}">{{.HP.Full}}</div>
+<div bid="{{.ID}}" class="notes{{$board.CurrentTag .}}">
 	<i class="fas fa-plus-circle button" title="Add note"></i>
 	{{- range .Notes}}
 	<span class="tag">
 		{{if .Timed -}}
-		<i class="fas fa-stopwatch button" title="Adjust note expiration"></i>
+		<i class="fas fa-stopwatch button" title="{{.Detail $board}}; click to adjust"></i>
 		{{- end}}
 		<span class="tag-desc">{{.Description}}</span>
 		<i class="fas fa-times-circle button" title="Delete note"></i>

@@ -1,4 +1,4 @@
-package combatant
+package board
 
 import "fmt"
 
