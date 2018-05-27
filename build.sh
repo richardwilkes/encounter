@@ -1,0 +1,6 @@
+#!/bin/bash
+
+find . -iname "*_gen.go" -exec rm \{\} \;
+find . -iname ".DS_Store" -exec rm \{\} \;
+go generate -tags gen ./...
+go install -v ./...

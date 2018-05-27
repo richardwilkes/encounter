@@ -1,0 +1,298 @@
+:root {
+	--hdr-fg: #f0f0f0;
+	--hdr-bg: #333333;
+	--board-hdr-fg: #f0f0f0;
+	--board-hdr-bg: #333366;
+	--body-fg: #333333;
+	--body-bg: #f0f0f0;
+	--border: gray;
+	--clickable: red;
+	--ally-fg: darkgreen;
+	--enemy-fg: darkred;
+	--out-fg: #b0b0b0;
+	--shadow: rgba(0, 0, 0, 0.3);
+	--tag-fg: #333333;
+	--tag-bg: #eecc66;
+	--tag-border: #ddbb55;
+	--button-fg: #333333;
+	--safe: green;
+	--danger: red;
+	--current: yellow;
+	--base-font-size: 14px;
+	--line-height: 1.2em;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	font-size: var(--base-font-size);
+	line-height: var(--line-height);
+	text-rendering: optimizeLegibility;
+	word-wrap: break-word;
+	color: var(--body-fg);
+	background-color: var(--body-bg);
+	margin: 0;
+	padding: 0;
+	display: grid;
+}
+
+#hdr {
+	background-color: var(--hdr-bg);
+	color: var(--hdr-fg);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#hdr-left {
+	display: flex;
+	flex-direction: column;
+	padding: .5em;
+}
+
+#title {
+	font-size: 2em;
+	line-height: var(--line-height);
+}
+
+#copyright {
+	font-size: .8em;
+	line-height: var(--line-height);
+}
+
+#hdr-right {
+	display: flex;
+	justify-content: flex-end;
+	font-size: 1.5em;
+	padding: .5em;
+}
+
+#hdr-right .button {
+	color: var(--hdr-fg);
+	margin-left: .5em;
+}
+
+#board {
+	margin: 1em;
+	box-shadow: 3px 3px 3px var(--shadow);
+	border: 1px solid var(--border);
+	display: grid;
+	grid-template:
+		"hname hinit hhp-hdr hhp-hdr hhp-hdr hnotes"
+		"hname hinit hhp-desc hhp hhp-max hnotes"
+		"name init hp-desc hp hp-max notes"
+		/ auto auto auto auto auto 1fr;
+	justify-items: stretch;
+	align-items: stretch;
+}
+
+.hname {
+	grid-area: hname;
+}
+
+.hinit {
+	grid-area: hinit;
+}
+
+.hhp-hdr {
+	grid-area: hhp-hdr;
+}
+
+.hhp-desc {
+	grid-area: hhp-desc;
+}
+
+.hhp {
+	grid-area: hhp;
+}
+
+.hhp-max {
+	grid-area: hhp-max;
+}
+
+.hnotes {
+	grid-area: hnotes;
+}
+
+.hname,
+.hinit,
+.hhp-hdr,
+.hhp-desc,
+.hhp,
+.hhp-max,
+.hnotes {
+	background-color: var(--board-hdr-bg);
+	color: var(--board-hdr-fg);
+	font-size: .8em;
+	text-align: center;
+}
+
+.hname,
+.hinit,
+.hhp-hdr,
+.hhp-desc,
+.hhp,
+.hhp-max,
+.hnotes,
+.name,
+.init,
+.hp-desc,
+.hp,
+.hp-max,
+.notes {
+	border-bottom: 1px solid var(--border);
+	padding-left: .3em;
+	padding-right: .3em;
+	padding-top: .2ex;
+	padding-bottom: .2ex;
+}
+
+.hname,
+.hinit,
+.hnotes {
+	padding-top: calc(.6ex + 1px);
+}
+
+.hinit,
+.hhp-hdr,
+.hhp-desc,
+.hhp,
+.hhp-max,
+.hnotes,
+.init,
+.hp-desc,
+.hp,
+.hp-max,
+.notes {
+	border-left: 1px solid var(--border);
+}
+
+.name,
+.init,
+.hp-desc,
+.hp,
+.hp-max,
+.notes {
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+}
+
+.name:nth-last-child(6),
+.init:nth-last-child(5),
+.hp-desc:nth-last-child(4),
+.hp:nth-last-child(3),
+.hp-max:nth-last-child(2),
+.notes:nth-last-child(1) {
+	border-bottom: none;
+}
+
+.name:nth-child(12n+8),
+.init:nth-child(12n+9),
+.hp-desc:nth-child(12n+10),
+.hp:nth-child(12n+11),
+.hp-max:nth-child(12n+12),
+.notes:nth-child(12n+13) {
+	background-color: #eeeeff;
+}
+
+.name:nth-child(12n+14),
+.init:nth-child(12n+15),
+.hp-desc:nth-child(12n+16),
+.hp:nth-child(12n+17),
+.hp-max:nth-child(12n+18),
+.notes:nth-child(12n+19) {
+	background-color: #eeffee;
+}
+
+.name {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.controls {
+	margin-left: 1em;
+	flex-basis: 0;
+}
+
+.hp-desc {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	color: var(--safe);
+}
+
+.init,
+.hp,
+.hp-max {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.hp-cur {
+	flex-grow: 1;
+	text-align: right;
+}
+
+.hp .controls {
+	margin-left: .5em;
+}
+
+.notes {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+	white-space: normal;
+}
+
+.tag {
+	position: relative;
+	display: inline-block;
+	padding-top: .5ex;
+	padding-bottom: .5ex;
+	padding-left: .7em;
+	padding-right: .7em;
+	margin-top: .1ex;
+	margin-bottom: .1ex;
+	margin-left: .35em;
+	color: var(--tag-fg);
+	background-color: var(--tag-bg);
+	border-radius: 1em;
+	white-space: nowrap;
+	border: 1px solid var(--tag-border);
+}
+
+.button {
+	color: var(--button-fg);
+	padding-left: .1em;
+	padding-right: .1em;
+	cursor: pointer;
+}
+
+#hdr-right .button:hover,
+.button:hover {
+	color: var(--clickable);
+}
+
+.ally {
+	color: var(--ally-fg);
+}
+
+.enemy {
+	color: var(--enemy-fg);
+}
+
+.out {
+	color: var(--out-fg);
+	text-decoration: line-through;
+}
+
+#board .current {
+	background-color: var(--current);
+}
+
+.danger {
+	color: var(--danger);
+}
