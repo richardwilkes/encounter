@@ -81,8 +81,10 @@ func New(address string) *Server {
 
 	c = s.board.DuplicateCombatant(c)
 	c.HP.Damage = 18
+	c.Notes = append(c.Notes, combatant.Note{Description: "Missing left leg"})
 
 	c = s.board.DuplicateCombatant(c)
+	c.Notes = make([]combatant.Note, 0)
 	c.HP.Damage--
 
 	c = s.board.DuplicateCombatant(c)
