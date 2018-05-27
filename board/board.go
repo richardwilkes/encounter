@@ -9,6 +9,7 @@ import (
 )
 
 type Board struct {
+	Round      int
 	Current    *combatant.Combatant
 	Combatants []*combatant.Combatant `json:"combatants,omitempty"`
 }
