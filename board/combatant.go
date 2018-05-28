@@ -4,16 +4,15 @@ import "fmt"
 
 // Combantant holds information for a single entity in combat.
 type Combatant struct {
-	ID                   int    `json:"id"`
-	Name                 string `json:"name"`
-	Enemy                bool   `json:"enemy"`
-	Initiative           int    `json:"init"`
-	InitiativeBase       int    `json:"init_base"`
-	InitiativeTieBreaker int    `json:"init_tie_breaker"`
-	HPFull               int    `json:"hp_full"`
-	HPTemporary          int    `json:"hp_tmp"`
-	HPDamage             int    `json:"hp_damage"`
-	Notes                []Note `json:"notes,omitempty"`
+	ID             int    `json:"id"`
+	Name           string `json:"name"`
+	Enemy          bool   `json:"enemy"`
+	Initiative     int    `json:"init"`
+	InitiativeBase int    `json:"init_base"`
+	HPFull         int    `json:"hp_full"`
+	HPTemporary    int    `json:"hp_tmp"`
+	HPDamage       int    `json:"hp_damage"`
+	Notes          []Note `json:"notes,omitempty"`
 }
 
 // New creates a new combatant.
