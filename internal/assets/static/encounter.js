@@ -90,6 +90,48 @@ function newCombatant() {
     }));
 }
 
+function editCombatant(id) {
+    post("/cmds/editCombatant", function(xhttp) {
+        if (xhttp.status == 200) {
+            simpleModal({
+                content: xhttp.responseText,
+                wantAutoFocus: false,
+                buttons: [
+                    {
+                        title: "Change",
+                        autofocus: true,
+                        onclick: function() {
+                            var inputs = document.getElementById("fields").getElementsByTagName("input");
+                            var length = inputs.length;
+                            var payload = {
+                                "id": id,
+                                "panel": false
+                            }
+                            var i;
+                            for (i = 0; i < length; i++) {
+                                if (inputs[i].type == "checkbox") {
+                                    payload[inputs[i].name] = inputs[i].checked;
+                                } else {
+                                    payload[inputs[i].name] = inputs[i].value;
+                                }
+                            }
+                            post("/cmds/editCombatant", function(xhttp) {
+                                if (xhttp.status == 200) {
+                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                }
+                                closeSimpleModal();
+                            }, JSON.stringify(payload));
+                        },
+                    }
+                ]
+            });
+        }
+    }, JSON.stringify({
+        "id" : id,
+        "panel" : true
+    }));
+}
+
 function deleteAllEnemies() {
     simpleModal({
         content: "Delete all enemy combatants?",
@@ -144,48 +186,6 @@ function adjustHP(id) {
         }
     }, JSON.stringify({
         "id": id,
-        "panel" : true
-    }));
-}
-
-function editCombatant(id) {
-    post("/cmds/editCombatant", function(xhttp) {
-        if (xhttp.status == 200) {
-            simpleModal({
-                content: xhttp.responseText,
-                wantAutoFocus: false,
-                buttons: [
-                    {
-                        title: "Change",
-                        autofocus: true,
-                        onclick: function() {
-                            var inputs = document.getElementById("fields").getElementsByTagName("input");
-                            var length = inputs.length;
-                            var payload = {
-                                "id": id,
-                                "panel": false
-                            }
-                            var i;
-                            for (i = 0; i < length; i++) {
-                                if (inputs[i].type == "checkbox") {
-                                    payload[inputs[i].name] = inputs[i].checked;
-                                } else {
-                                    payload[inputs[i].name] = inputs[i].value;
-                                }
-                            }
-                            post("/cmds/editCombatant", function(xhttp) {
-                                if (xhttp.status == 200) {
-                                    document.getElementById("content").innerHTML = xhttp.responseText;
-                                }
-                                closeSimpleModal();
-                            }, JSON.stringify(payload));
-                        },
-                    }
-                ]
-            });
-        }
-    }, JSON.stringify({
-        "id" : id,
         "panel" : true
     }));
 }
