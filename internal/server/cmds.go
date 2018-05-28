@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/internal/assets"
@@ -18,6 +19,12 @@ import (
 	"github.com/richardwilkes/toolbox/xio/fs/embedded/htmltmpl"
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
 )
+
+type noteInfo struct {
+	Combatant *board.Combatant
+	Note      board.Note
+	WhoList   []*board.Combatant
+}
 
 func (s *Server) handleCmds(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
@@ -58,11 +65,118 @@ func (s *Server) handleCmds(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *Server) addNote(w http.ResponseWriter, req *http.Request) {
-	// RAW: Implement
+	j := json.MustParseStream(req.Body)
+	id := int(j.Int64Relaxed("id"))
+	panel := j.BoolRelaxed("panel")
+	xio.CloseIgnoringErrors(req.Body)
+	if c := s.board.Lookup(id); c == nil {
+		http.Error(w, "no such combatant", http.StatusBadRequest)
+	} else {
+		tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+		if err != nil {
+			jot.Error(errs.Wrap(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		var buffer bytes.Buffer
+		if panel {
+			if err := tmpl.ExecuteTemplate(&buffer, "/edit_note.html", &noteInfo{
+				Combatant: c,
+				Note: board.Note{
+					Who:   c.ID,
+					Round: s.board.Round + 1,
+				},
+				WhoList: s.board.Combatants,
+			}); err != nil {
+				jot.Error(errs.Wrap(err))
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		} else {
+			c.Notes = append(c.Notes, board.Note{})
+			s.updateNote(c, len(c.Notes)-1, j)
+			if err := tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+				jot.Error(errs.Wrap(err))
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		}
+		if _, err := buffer.WriteTo(w); err != nil {
+			jot.Warn(errs.Wrap(err))
+		}
+	}
+}
+
+func (s *Server) updateNote(c *board.Combatant, index int, j *json.Data) {
+	n := c.Notes[index]
+	if j.Exists("description") {
+		n.Description = j.Str("description")
+	}
+	if j.Exists("timed") {
+		n.Timed = j.BoolRelaxed("timed")
+	}
+	if j.Exists("until") {
+		n.UntilEnd = strings.EqualFold(j.Str("until"), "end")
+	}
+	if j.Exists("who") {
+		n.Who = int(j.Int64Relaxed("who"))
+	}
+	if j.Exists("round") {
+		n.Round = int(j.Int64Relaxed("round"))
+	}
+	if n.Timed {
+		if s.board.Lookup(n.Who) == nil {
+			n.Who = c.ID
+		}
+		if n.Round < s.board.Round {
+			n.Round = s.board.Round
+		}
+	}
+	c.Notes[index] = n
 }
 
 func (s *Server) editNote(w http.ResponseWriter, req *http.Request) {
-	// RAW: Implement
+	j := json.MustParseStream(req.Body)
+	id := int(j.Int64Relaxed("id"))
+	index := int(j.Int64Relaxed("index"))
+	panel := j.BoolRelaxed("panel")
+	xio.CloseIgnoringErrors(req.Body)
+	if c := s.board.Lookup(id); c == nil {
+		http.Error(w, "no such combatant", http.StatusBadRequest)
+	} else {
+		if index < 0 || index >= len(c.Notes) {
+			http.Error(w, "no such note", http.StatusBadRequest)
+		} else {
+			tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+			if err != nil {
+				jot.Error(errs.Wrap(err))
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			var buffer bytes.Buffer
+			if panel {
+				if err := tmpl.ExecuteTemplate(&buffer, "/edit_note.html", &noteInfo{
+					Combatant: c,
+					Note:      c.Notes[index],
+					WhoList:   s.board.Combatants,
+				}); err != nil {
+					jot.Error(errs.Wrap(err))
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+			} else {
+				s.updateNote(c, index, j)
+				if err := tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+					jot.Error(errs.Wrap(err))
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+			}
+			if _, err := buffer.WriteTo(w); err != nil {
+				jot.Warn(errs.Wrap(err))
+			}
+		}
+	}
 }
 
 func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {

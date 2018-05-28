@@ -27,11 +27,13 @@
 	</div>
 	<div class="hp-max{{$board.CurrentTag .}}">{{.HPFull}}</div>
 	<div class="notes{{$board.CurrentTag .}}">
-		<i class="fas fa-plus-circle button" title="Add note" onclick="addNote({{.ID}}"></i>
+		<i class="fas fa-plus-circle button" title="Add note" onclick="addNote({{.ID}})"></i>
 		{{- $combatant := .}}{{range $index, $note := .Notes}}
 		<span class="tag">
 			{{if $note.Timed -}}
 			<i class="fas fa-stopwatch button" title="{{$note.Detail $board}}; click to adjust" onclick="editNote({{$combatant.ID}}, {{$index}})"></i>
+			{{- else -}}
+			<i class="fas fa-pencil-alt button" title="Edit note" onclick="editNote({{$combatant.ID}}, {{$index}})"></i>
 			{{- end}}
 			<span class="tag-desc">{{$note.Description}}</span>
 			<i class="fas fa-times-circle button" title="Delete note" onclick="deleteNote({{$combatant.ID}}, {{$index}})"></i>

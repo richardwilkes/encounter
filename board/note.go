@@ -31,11 +31,7 @@ func (n *Note) Detail(b *Board) string {
 	if c == nil {
 		buffer.WriteString("<unknown>'s")
 	} else {
-		buffer.WriteString(c.Name)
-		buffer.WriteString("'")
-		if !strings.HasSuffix(c.Name, "s") {
-			buffer.WriteString("s")
-		}
+		buffer.WriteString(c.PossessiveName())
 	}
 	buffer.WriteString(" turn on round ")
 	buffer.WriteString(strconv.Itoa(n.Round))

@@ -2,6 +2,7 @@ package board
 
 import (
 	"fmt"
+	"strings"
 )
 
 // Combantant holds information for a single entity in combat.
@@ -26,6 +27,13 @@ func NewCombatant(name string) *Combatant {
 		Enemy:  true,
 		HPFull: 6,
 	}
+}
+
+func (c *Combatant) PossessiveName() string {
+	if strings.HasSuffix(strings.ToLower(c.Name), "s") {
+		return c.Name + "'"
+	}
+	return c.Name + "'s"
 }
 
 // Clone creates a copy of the combatant, but with a new ID.

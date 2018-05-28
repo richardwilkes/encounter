@@ -348,6 +348,22 @@ i {
 	width: 100%;
 }
 
+#fields .timed {
+	align-self: flex-start;
+	justify-self: flex-end;
+	margin-top: .5em;
+	margin-right: .5em;
+}
+
+#fields .composite {
+	display: flex;
+	flex-direction: column;
+}
+
+#fields .composite div {
+	margin-top: .25em;
+}
+
 .danger {
 	color: var(--danger);
 }

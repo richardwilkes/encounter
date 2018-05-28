@@ -1,0 +1,28 @@
+<div id="fields" onkeydown="handleDefaultButton(event)">
+	<div class="label">Note:</div>
+	<input class="field" type="text" name="description" maxlength="80" autocomplete="off" value="{{.Note.Description}}" onkeydown="handleDefaultButton(event)" autofocus>
+	<input class="timed" type="checkbox" name="timed"{{if .Note.Timed}} checked{{end}}>
+	<div class="composite">
+		<div>
+			Expires at the
+			<select name="until">
+				<option value="end"{{if .Note.UntilEnd}} selected{{end}}>end</option>
+				<option value="start"{{if not .Note.UntilEnd}} selected{{end}}>start</option>
+			</select>
+		</div>
+		<div>
+			of
+			<select name="who">
+				{{- $n := .Note}}{{range .WhoList}}
+				<option value="{{.ID}}"{{if eq .ID $n.Who}} selected{{end}}>{{.PossessiveName}}</option>
+				{{- end}}
+			</select>
+			turn
+		</div>
+		<div>
+			on round
+			<input class="field" type="text" name="round" maxlength="4" autocomplete="off" value="{{.Note.Round}}" onkeydown="handleDefaultButton(event)">
+		</div>
+	</div>
+	</div>
+</div>

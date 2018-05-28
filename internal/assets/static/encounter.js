@@ -217,27 +217,83 @@ function deleteCombatant(name, id) {
     });
 }
 
-function addNote(id, index) {
-    // RAW: Needs dialog to get initial state to pass to backend.
+function addNote(id) {
     post("/cmds/addNote", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("content").innerHTML = xhttp.responseText;
+            simpleModal({
+                content: xhttp.responseText,
+                wantAutoFocus: false,
+                buttons: [
+                    {
+                        title: "Add",
+                        autofocus: true,
+                        onclick: function() {
+                            post("/cmds/addNote", function(xhttp) {
+                                if (xhttp.status == 200) {
+                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                }
+                                closeSimpleModal();
+                            }, JSON.stringify(getNotePayload(id)));
+                        },
+                    }
+                ]
+            });
         }
     }, JSON.stringify({
-        "id" : id,
-        "index" : index
+        "id": id,
+        "panel" : true
     }));
 }
 
+function getNotePayload(id) {
+    var inputs = document.getElementById("fields").getElementsByTagName("input");
+    var length = inputs.length;
+    var payload = {
+        "id": id,
+        "panel": false
+    }
+    var i;
+    for (i = 0; i < length; i++) {
+        if (inputs[i].type == "checkbox") {
+            payload[inputs[i].name] = inputs[i].checked;
+        } else {
+            payload[inputs[i].name] = inputs[i].value;
+        }
+    }
+    inputs = document.getElementById("fields").getElementsByTagName("select");
+    length = inputs.length;
+    for (i = 0; i < length; i++) {
+        payload[inputs[i].name] = inputs[i].value;
+    }
+    return payload;
+}
+
 function editNote(id, index) {
-    // RAW: Needs dialog to edit state to pass to backend.
     post("/cmds/editNote", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("content").innerHTML = xhttp.responseText;
+            simpleModal({
+                content: xhttp.responseText,
+                wantAutoFocus: false,
+                buttons: [
+                    {
+                        title: "Change",
+                        autofocus: true,
+                        onclick: function() {
+                            post("/cmds/editNote", function(xhttp) {
+                                if (xhttp.status == 200) {
+                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                }
+                                closeSimpleModal();
+                            }, JSON.stringify(getNotePayload(id)));
+                        },
+                    }
+                ]
+            });
         }
     }, JSON.stringify({
         "id" : id,
-        "index" : index
+        "index": index,
+        "panel" : true
     }));
 }
 
