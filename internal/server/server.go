@@ -40,57 +40,6 @@ func New(address string) *Server {
 		staticFS: http.FileServer(assets.StaticFS),
 	}
 	s.Server.WebServer.Handler = s
-
-	c := s.board.NewCombatant("Billy Joe Bob")
-	c.Enemy = false
-	c.Initiative = 13
-	c.HPFull = 32
-	c.HPDamage = 9
-	c.Notes = append(c.Notes, board.Note{
-		Description: "Blinded",
-		Timed:       true,
-		Who:         c.ID,
-		Round:       6,
-	}, board.Note{
-		Description: "Nauseated",
-		Timed:       true,
-		Who:         c.ID,
-		Round:       3,
-	})
-
-	c = s.board.NewCombatant("Guard")
-	c.Enemy = false
-	c.Initiative = 11
-	c.HPFull = 32
-	c.HPDamage = 16
-	c.Notes = append(c.Notes, board.Note{
-		Description: "Haste",
-		Timed:       true,
-		Who:         c.ID,
-		Round:       5,
-	})
-
-	c = s.board.NewCombatant("Orc")
-	c.Initiative = 2
-	c.HPFull = 8
-
-	c2 := s.board.DuplicateCombatant(c)
-	c2.HPTemporary = 2
-	c2.HPDamage = 4
-
-	c = s.board.DuplicateCombatant(c)
-	c.HPDamage = 18
-	c.Notes = append(c.Notes, board.Note{Description: "Missing left leg"})
-
-	c = s.board.DuplicateCombatant(c)
-	c.Notes = make([]board.Note, 0)
-	c.HPDamage--
-
-	c = s.board.DuplicateCombatant(c)
-	c.HPDamage = c.HPFull
-
-	s.board.Current = s.board.Combatants[0].ID
-
 	return s
 }
 
