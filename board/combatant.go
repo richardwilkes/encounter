@@ -1,6 +1,8 @@
 package board
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Combantant holds information for a single entity in combat.
 type Combatant struct {

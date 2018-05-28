@@ -66,7 +66,44 @@ func (s *Server) editNote(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {
-	// RAW: Implement
+	j := json.MustParseStream(req.Body)
+	id := int(j.Int64Relaxed("id"))
+	panel := j.BoolRelaxed("panel")
+	xio.CloseIgnoringErrors(req.Body)
+	if c := s.board.Lookup(id); c == nil {
+		http.Error(w, "no such combatant", http.StatusBadRequest)
+	} else {
+		tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+		if err != nil {
+			jot.Error(errs.Wrap(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		var buffer bytes.Buffer
+		if panel {
+			if err := tmpl.ExecuteTemplate(&buffer, "/adjust_hp.html", c); err != nil {
+				jot.Error(errs.Wrap(err))
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		} else {
+			if adjust := int(j.Int64Relaxed("adjust")); adjust != 0 {
+				if adjust < 0 {
+					c.Harm(-adjust)
+				} else {
+					c.Heal(adjust)
+				}
+			}
+			if err := tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+				jot.Error(errs.Wrap(err))
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		}
+		if _, err := buffer.WriteTo(w); err != nil {
+			jot.Warn(errs.Wrap(err))
+		}
+	}
 }
 
 func (s *Server) editCombatant(w http.ResponseWriter, req *http.Request) {

@@ -316,6 +316,12 @@ i {
 	background-color: var(--current);
 }
 
+.title {
+	text-align: center;
+	font-size: 1.5em;
+	padding-bottom: .5em;
+}
+
 #fields {
 	display: grid;
 	grid-template: "label field";

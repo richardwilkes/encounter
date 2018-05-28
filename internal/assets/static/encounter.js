@@ -79,13 +79,40 @@ function deleteAllEnemies() {
 }
 
 function adjustHP(id) {
-    // RAW: Needs dialog to edit state to pass to backend.
     post("/cmds/adjustHP", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("content").innerHTML = xhttp.responseText;
+            simpleModal({
+                content: xhttp.responseText,
+                wantAutoFocus: false,
+                buttons: [
+                    {
+                        title: "Apply",
+                        autofocus: true,
+                        onclick: function() {
+                            var inputs = document.getElementById("fields").getElementsByTagName("input");
+                            var length = inputs.length;
+                            var payload = {
+                                "id": id,
+                                "panel": false
+                            }
+                            var i;
+                            for (i = 0; i < length; i++) {
+                                payload[inputs[i].name] = inputs[i].value;
+                            }
+                            post("/cmds/adjustHP", function(xhttp) {
+                                if (xhttp.status == 200) {
+                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                }
+                                closeSimpleModal();
+                            }, JSON.stringify(payload));
+                        },
+                    }
+                ]
+            });
         }
     }, JSON.stringify({
-        "id" : id
+        "id": id,
+        "panel" : true
     }));
 }
 
@@ -271,7 +298,7 @@ function handleGlobalKeyDown(event) {
     switch (event.code) {
         case "KeyN":
             if (!isModalOpen()) {
-                event.preventDefault();
+                event.stopPropagation();
                 nextTurn();
             }
             break;
@@ -285,7 +312,7 @@ function handleDefaultButton(event) {
             if (isModalOpen()) {
                 var defButton = document.getElementById("simple-modal-dialog").default_button;
                 if (defButton !== undefined) {
-                    event.preventDefault();
+                    event.stopPropagation();
                     defButton.click();
                 }
             }
@@ -294,7 +321,7 @@ function handleDefaultButton(event) {
             if (isModalOpen()) {
                 var cancelButton = document.getElementById("simple-modal-dialog").cancel_button;
                 if (cancelButton !== undefined) {
-                    event.preventDefault();
+                    event.stopPropagation();
                     cancelButton.click();
                 }
             }

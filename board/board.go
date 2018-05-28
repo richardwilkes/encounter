@@ -70,5 +70,5 @@ func (b *Board) suggestName(nameHint string) string {
 }
 
 func (b *Board) RollInitiativeDice() int {
-	return dice.Roll(nil, "1d20")
+	return dice.Roll(nil, "d20")
 }
