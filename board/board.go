@@ -15,14 +15,14 @@ type Board struct {
 }
 
 func (b *Board) NewCombatant(nameHint string) *Combatant {
-	c := NewCombatant(b.suggestName(nameHint))
+	c := NewCombatant(b.SuggestName(nameHint))
 	b.Combatants = append(b.Combatants, c)
 	return c
 }
 
 func (b *Board) DuplicateCombatant(who *Combatant) *Combatant {
 	c := who.Clone()
-	c.Name = b.suggestName(c.Name)
+	c.Name = b.SuggestName(c.Name)
 	b.Combatants = append(b.Combatants, c)
 	return c
 }
@@ -47,7 +47,7 @@ func (b *Board) Lookup(id int) *Combatant {
 	return nil
 }
 
-func (b *Board) suggestName(nameHint string) string {
+func (b *Board) SuggestName(nameHint string) string {
 	names := collection.NewStringSet()
 	for _, c := range b.Combatants {
 		names.Add(strings.ToLower(c.Name))
