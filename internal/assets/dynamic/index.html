@@ -5,38 +5,36 @@
 	<title>{{.Title}}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	<link rel="stylesheet" href="/theme.css">
 	<link rel="stylesheet" href="/encounter.css">
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="/modal.css">
 	<script src="/encounter.js"></script>
 </head>
-<body>
+<body onkeydown="handleGlobalKeyDown(event)">
 	<div id="hdr">
 		<div id="hdr-left">{{.Title}}</div>
 		<div id="hdr-middle">
-			<i class="fas fa-chevron-circle-right button" title="Next [n]"></i>
+			<i class="fas fa-chevron-circle-right button" title="Next [n]" onclick="nextTurn()"></i>
 			<span id="turn">{{if .Board.Round}}Round {{.Board.Round}}{{else}}Awaiting Initiative{{end}}</span>
 			<i class="fas fa-undo button" title="Roll initiative"></i>
 		</div>
 		<div id="hdr-right">
-			<i class="fas fa-plus-circle button" title="New combatant"></i>
-			<i class="fas fa-broom button" title="Delete all enemy combatants"></i>
+			<i class="fas fa-plus-circle button" title="New combatant" onclick="newCombatant()"></i>
+			<i class="fas fa-broom button" title="Delete all enemy combatants" onclick="deleteAllEnemies()"></i>
 			<i class="fas fa-cog button" title="Options"></i>
 		</div>
 	</div>
 	<div id="content">
-		<div id="board">
-			<div class="hname"><br>Who</div>
-			<div class="hinit"><br>Init</div>
-			<div class="hhp-hdr">Hit Points</div>
-			<div class="hhp-desc">Status</div>
-			<div class="hhp">Current</div>
-			<div class="hhp-max">Max</div>
-			<div class="hnotes"><br>Notes</div>
-{{template "/encounter.html" .Board}}
-		</div>
+{{template "/board.html" .Board}}
 	</div>
 	<div id="ftr">
 		<div id="copyright">{{.Copyright}}</div>
 	</div>
+	<div id="simple-modal-dialog" class="modal closed">
+		<div class="modal-title"></div>
+		<div class="modal-content"></div>
+		<div class="modal-buttons"></div>
+	</div>
+	<div id="modal-overlay" class="closed"></div>
 </body>
 </html>

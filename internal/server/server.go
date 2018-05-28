@@ -103,6 +103,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		s.handleMain(w, req)
 	case "index.html":
 		http.Redirect(w, req, "/", http.StatusTemporaryRedirect)
+	case "cmds":
+		s.handleCmds(w, req)
 	default:
 		s.staticFS.ServeHTTP(w, req)
 	}

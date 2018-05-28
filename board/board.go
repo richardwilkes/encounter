@@ -27,7 +27,7 @@ func (b *Board) DuplicateCombatant(who *Combatant) *Combatant {
 }
 
 func (b *Board) IsCurrent(c *Combatant) bool {
-	return b.Current == c.ID
+	return b.Round > 0 && b.Current == c.ID
 }
 
 func (b *Board) CurrentTag(c *Combatant) string {

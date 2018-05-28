@@ -1,0 +1,24 @@
+:root {
+	--hdr-fg: #f0f0f0;
+	--hdr-bg: #333333;
+	--board-hdr-fg: #f0f0f0;
+	--board-hdr-bg: #333366;
+	--body-fg: #333333;
+	--body-bg: #f0f0f0;
+	--border: gray;
+	--clickable: red;
+	--ally-fg: darkgreen;
+	--enemy-fg: darkred;
+	--out-fg: #b0b0b0;
+	--shadow: rgba(0, 0, 0, 0.3);
+	--tag-fg: #333333;
+	--tag-bg: #eecc66;
+	--tag-border: #ddbb55;
+	--button-fg: #333333;
+	--safe: green;
+	--danger: red;
+	--current: yellow;
+	--model-overlay-bg: rgba(0, 0, 0, 0.2);
+	--base-font-size: 14px;
+	--line-height: 1.2em;
+}
