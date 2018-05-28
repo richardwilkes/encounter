@@ -41,8 +41,6 @@ func New(address string) *Server {
 	}
 	s.Server.WebServer.Handler = s
 
-	s.board.Round = 2
-
 	c := s.board.NewCombatant("Billy Joe Bob")
 	c.Enemy = false
 	c.Initiative = 13
