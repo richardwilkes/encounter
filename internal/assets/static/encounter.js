@@ -53,9 +53,41 @@ function globalOptions() {
 function newCombatant() {
     post("/cmds/newCombatant", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("content").innerHTML = xhttp.responseText;
+            simpleModal({
+                content: xhttp.responseText,
+                wantAutoFocus: false,
+                buttons: [
+                    {
+                        title: "Add",
+                        autofocus: true,
+                        onclick: function() {
+                            var inputs = document.getElementById("fields").getElementsByTagName("input");
+                            var length = inputs.length;
+                            var payload = {
+                                "panel": false
+                            }
+                            var i;
+                            for (i = 0; i < length; i++) {
+                                if (inputs[i].type == "checkbox") {
+                                    payload[inputs[i].name] = inputs[i].checked;
+                                } else {
+                                    payload[inputs[i].name] = inputs[i].value;
+                                }
+                            }
+                            post("/cmds/newCombatant", function(xhttp) {
+                                if (xhttp.status == 200) {
+                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                }
+                                closeSimpleModal();
+                            }, JSON.stringify(payload));
+                        },
+                    }
+                ]
+            });
         }
-    });
+    }, JSON.stringify({
+        "panel" : true
+    }));
 }
 
 function deleteAllEnemies() {
