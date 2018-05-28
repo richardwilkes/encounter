@@ -496,6 +496,19 @@ func (s *Server) deleteNote(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (s *Server) clearExpiredNotes(who int, untilEnd bool) {
+	for _, c := range s.board.Combatants {
+		notes := make([]board.Note, 0, len(c.Notes))
+		for _, n := range c.Notes {
+			if n.Timed && n.Round == s.board.Round && who == n.Who && untilEnd == n.UntilEnd {
+				continue
+			}
+			notes = append(notes, n)
+		}
+		c.Notes = notes
+	}
+}
+
 func (s *Server) nextTurn(w http.ResponseWriter, req *http.Request) {
 	if s.board.Round > 0 {
 		found := -1
@@ -510,6 +523,7 @@ func (s *Server) nextTurn(w http.ResponseWriter, req *http.Request) {
 				s.board.Current = s.board.Combatants[0].ID
 			}
 		} else {
+			s.clearExpiredNotes(s.board.Current, true)
 			if found < len(s.board.Combatants)-1 {
 				s.board.Current = s.board.Combatants[found+1].ID
 			} else {
@@ -517,6 +531,7 @@ func (s *Server) nextTurn(w http.ResponseWriter, req *http.Request) {
 				s.board.Round++
 				w.Header().Set("new_round", "true")
 			}
+			s.clearExpiredNotes(s.board.Current, false)
 		}
 	}
 	w.Header().Set("round", strconv.Itoa(s.board.Round))
