@@ -1,3 +1,25 @@
+function rollInitiative() {
+    // RAW: Needs dialog to edit state to pass to backend.
+    post("/cmds/rollInitiative", function(xhttp) {
+        if (xhttp.status == 200) {
+            document.getElementById("content").innerHTML = xhttp.responseText;
+        }
+    }, JSON.stringify({
+        "id" : "xyz"
+    }));
+}
+
+function globalOptions() {
+    // RAW: Needs dialog to edit state to pass to backend.
+    post("/cmds/globalOptions", function(xhttp) {
+        if (xhttp.status == 200) {
+            document.getElementById("content").innerHTML = xhttp.responseText;
+        }
+    }, JSON.stringify({
+        "id" : "xyz"
+    }));
+}
+
 function newCombatant() {
     post("/cmds/newCombatant", function(xhttp) {
         if (xhttp.status == 200) {
@@ -25,6 +47,28 @@ function deleteAllEnemies() {
     });
 }
 
+function adjustHP(id) {
+    // RAW: Needs dialog to edit state to pass to backend.
+    post("/cmds/adjustHP", function(xhttp) {
+        if (xhttp.status == 200) {
+            document.getElementById("content").innerHTML = xhttp.responseText;
+        }
+    }, JSON.stringify({
+        "id" : id
+    }));
+}
+
+function editCombatant(id) {
+    // RAW: Needs dialog to edit state to pass to backend.
+    post("/cmds/editCombatant", function(xhttp) {
+        if (xhttp.status == 200) {
+            document.getElementById("content").innerHTML = xhttp.responseText;
+        }
+    }, JSON.stringify({
+        "id" : id
+    }));
+}
+
 function duplicateCombatant(id) {
     sendSimpleCommand("duplicateCombatant", id);
 }
@@ -50,6 +94,30 @@ function deleteCombatant(name, id) {
             }
         ]
     });
+}
+
+function addNote(id, index) {
+    // RAW: Needs dialog to get initial state to pass to backend.
+    post("/cmds/addNote", function(xhttp) {
+        if (xhttp.status == 200) {
+            document.getElementById("content").innerHTML = xhttp.responseText;
+        }
+    }, JSON.stringify({
+        "id" : id,
+        "index" : index
+    }));
+}
+
+function editNote(id, index) {
+    // RAW: Needs dialog to edit state to pass to backend.
+    post("/cmds/editNote", function(xhttp) {
+        if (xhttp.status == 200) {
+            document.getElementById("content").innerHTML = xhttp.responseText;
+        }
+    }, JSON.stringify({
+        "id" : id,
+        "index" : index
+    }));
 }
 
 function deleteNote(id, index) {

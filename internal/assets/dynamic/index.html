@@ -16,12 +16,12 @@
 		<div id="hdr-middle">
 			<i class="fas fa-chevron-circle-right button" title="Next [n]" onclick="nextTurn()"></i>
 			<span id="turn">{{if .Board.Round}}Round {{.Board.Round}}{{else}}Awaiting Initiative{{end}}</span>
-			<i class="fas fa-undo button" title="Roll initiative"></i>
+			<i class="fas fa-undo button" title="Roll initiative" onclick="rollInitiative()"></i>
 		</div>
 		<div id="hdr-right">
 			<i class="fas fa-plus-circle button" title="New combatant" onclick="newCombatant()"></i>
 			<i class="fas fa-broom button" title="Delete all enemy combatants" onclick="deleteAllEnemies()"></i>
-			<i class="fas fa-cog button" title="Options"></i>
+			<i class="fas fa-cog button" title="Options" onclick="globalOptions()"></i>
 		</div>
 	</div>
 	<div id="content">

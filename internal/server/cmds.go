@@ -37,9 +37,45 @@ func (s *Server) handleCmds(w http.ResponseWriter, req *http.Request) {
 		s.deleteNote(w, req)
 	case "nextTurn":
 		s.nextTurn(w, req)
+	case "addNote":
+		s.addNote(w, req)
+	case "editNote":
+		s.editNote(w, req)
+	case "adjustHP":
+		s.adjustHP(w, req)
+	case "editCombatant":
+		s.editCombatant(w, req)
+	case "rollInitiative":
+		s.rollInitiative(w, req)
+	case "globalOptions":
+		s.globalOptions(w, req)
 	default:
 		http.Error(w, "unknown command: "+cmd, http.StatusBadRequest)
 	}
+}
+
+func (s *Server) addNote(w http.ResponseWriter, req *http.Request) {
+	// RAW: Implement
+}
+
+func (s *Server) editNote(w http.ResponseWriter, req *http.Request) {
+	// RAW: Implement
+}
+
+func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {
+	// RAW: Implement
+}
+
+func (s *Server) editCombatant(w http.ResponseWriter, req *http.Request) {
+	// RAW: Implement
+}
+
+func (s *Server) rollInitiative(w http.ResponseWriter, req *http.Request) {
+	// RAW: Implement
+}
+
+func (s *Server) globalOptions(w http.ResponseWriter, req *http.Request) {
+	// RAW: Implement
 }
 
 func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {

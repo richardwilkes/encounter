@@ -1,11 +1,11 @@
 <div id="board">
-		<div class="hname"><br>Who</div>
-		<div class="hinit"><br>Init</div>
-		<div class="hhp-hdr">Hit Points</div>
-		<div class="hhp-desc">Status</div>
-		<div class="hhp">Current</div>
-		<div class="hhp-max">Max</div>
-		<div class="hnotes"><br>Notes</div>
+	<div class="hname"><br>Who</div>
+	<div class="hinit"><br>Init</div>
+	<div class="hhp-hdr">Hit Points</div>
+	<div class="hhp-desc">Status</div>
+	<div class="hhp">Current</div>
+	<div class="hhp-max">Max</div>
+	<div class="hnotes"><br>Notes</div>
 {{- $board := .}}{{range .Combatants}}
 	<div bid="{{.ID}}" class="name{{$board.CurrentTag .}}">
 		<div>
@@ -14,7 +14,7 @@
 		</div>
 		<div class="controls">
 			<i class="fas fa-bullseye button{{if or (eq $board.Round 0) ($board.IsCurrent .)}} invisible{{end}}" title="Focus this combatant" onclick="makeCurrentCombatant({{.ID}})"></i>
-			<i class="fas fa-pencil-alt button" title="Edit combatant"></i>
+			<i class="fas fa-pencil-alt button" title="Edit combatant" onclick="editCombatant({{.ID}})"></i>
 			<i class="fas fa-copy button" title="Duplicate combatant" onclick="duplicateCombatant({{.ID}})"></i>
 			<i class="fas fa-trash button" title="Delete combatant" onclick="deleteCombatant({{.Name}}, {{.ID}})"></i>
 		</div>
@@ -23,15 +23,15 @@
 	<div bid="{{.ID}}" class="hp-desc{{$board.CurrentTag .}}{{.StatusTag}}">{{.Status}}</div>
 	<div bid="{{.ID}}" class="hp{{$board.CurrentTag .}}">
 		<div class="hp-cur">{{.HP.String}}</div>
-		<div class="controls"><i class="fas fa-heart button" title="Adjust hit points [a]"></i></div>
+		<div class="controls"><i class="fas fa-heart button" title="Adjust hit points" onclick="adjustHP({{.ID}})"></i></div>
 	</div>
 	<div bid="{{.ID}}" class="hp-max{{$board.CurrentTag .}}">{{.HP.Full}}</div>
 	<div bid="{{.ID}}" class="notes{{$board.CurrentTag .}}">
-		<i class="fas fa-plus-circle button" title="Add note"></i>
+		<i class="fas fa-plus-circle button" title="Add note" onclick="addNote({{.ID}}"></i>
 		{{- $combatant := .}}{{range $index, $note := .Notes}}
 		<span class="tag">
 			{{if $note.Timed -}}
-			<i class="fas fa-stopwatch button" title="{{$note.Detail $board}}; click to adjust"></i>
+			<i class="fas fa-stopwatch button" title="{{$note.Detail $board}}; click to adjust" onclick="editNote({{$combatant.ID}}, {{$index}})"></i>
 			{{- end}}
 			<span class="tag-desc">{{$note.Description}}</span>
 			<i class="fas fa-times-circle button" title="Delete note" onclick="deleteNote({{$combatant.ID}}, {{$index}})"></i>
