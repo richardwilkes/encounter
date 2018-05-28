@@ -338,7 +338,7 @@ func (s *Server) rollInitiative(w http.ResponseWriter, req *http.Request) {
 			rolls[i] = roll{
 				ID:         s.board.Combatants[i].ID,
 				Name:       s.board.Combatants[i].Name,
-				Initiative: s.board.Combatants[i].InitiativeBase + s.board.RollInitiativeDice(),
+				Initiative: s.board.Combatants[i].InitiativeBase + s.board.InitiativeDice.Roll(),
 				Enemy:      s.board.Combatants[i].Enemy,
 			}
 		}
@@ -407,7 +407,30 @@ func (s *Server) rollInitiative(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *Server) globalOptions(w http.ResponseWriter, req *http.Request) {
-	// RAW: Implement
+	j := json.MustParseStream(req.Body)
+	panel := j.BoolRelaxed("panel")
+	xio.CloseIgnoringErrors(req.Body)
+	if panel {
+		tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+		if err != nil {
+			jot.Error(errs.Wrap(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		var buffer bytes.Buffer
+		if err := tmpl.ExecuteTemplate(&buffer, "/options.html", &s.board); err != nil {
+			jot.Error(errs.Wrap(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		if _, err := buffer.WriteTo(w); err != nil {
+			jot.Warn(errs.Wrap(err))
+		}
+	} else {
+		if j.Exists("init_dice") {
+			s.board.InitiativeDice = dice.New(nil, j.Str("init_dice"))
+		}
+	}
 }
 
 func (s *Server) deleteAllEnemies(w http.ResponseWriter, req *http.Request) {

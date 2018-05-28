@@ -9,9 +9,10 @@ import (
 )
 
 type Board struct {
-	Round      int
-	Current    int
-	Combatants []*Combatant
+	Round          int
+	Current        int
+	Combatants     []*Combatant
+	InitiativeDice *dice.Dice
 }
 
 func (b *Board) NewCombatant(nameHint string) *Combatant {
@@ -67,8 +68,4 @@ func (b *Board) SuggestName(nameHint string) string {
 		}
 		counter++
 	}
-}
-
-func (b *Board) RollInitiativeDice() int {
-	return dice.Roll(nil, "d20")
 }

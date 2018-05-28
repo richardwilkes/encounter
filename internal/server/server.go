@@ -7,6 +7,7 @@ import (
 
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/internal/assets"
+	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
 )
@@ -38,6 +39,7 @@ func New(address string) *Server {
 			},
 		},
 		staticFS: http.FileServer(assets.StaticFS),
+		board:    board.Board{InitiativeDice: dice.New(nil, "1d20")},
 	}
 	s.Server.WebServer.Handler = s
 	return s

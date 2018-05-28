@@ -40,13 +40,35 @@ function rollInitiative() {
 }
 
 function globalOptions() {
-    // RAW: Needs dialog to edit state to pass to backend.
     post("/cmds/globalOptions", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("content").innerHTML = xhttp.responseText;
+            simpleModal({
+                content: xhttp.responseText,
+                wantAutoFocus: false,
+                buttons: [
+                    {
+                        title: "Apply",
+                        autofocus: true,
+                        onclick: function() {
+                            var inputs = document.getElementById("fields").getElementsByTagName("input");
+                            var length = inputs.length;
+                            var payload = {
+                                "panel": false
+                            }
+                            var i;
+                            for (i = 0; i < length; i++) {
+                                payload[inputs[i].name] = inputs[i].value;
+                            }
+                            post("/cmds/globalOptions", function(xhttp) {
+                                closeSimpleModal();
+                            }, JSON.stringify(payload));
+                        },
+                    }
+                ]
+            });
         }
     }, JSON.stringify({
-        "id" : 0
+        "panel" : true
     }));
 }
 
