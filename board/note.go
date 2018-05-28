@@ -11,7 +11,7 @@ type Note struct {
 	Description string `json:"description"`
 	Timed       bool   `json:"timed"`
 	UntilEnd    bool   `json:"until_end"`
-	Who         string `json:"who"`
+	Who         int    `json:"who"`
 	Round       int    `json:"round"`
 }
 

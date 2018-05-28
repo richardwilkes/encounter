@@ -44,8 +44,8 @@ func New(address string) *Server {
 	c := s.board.NewCombatant("Billy Joe Bob")
 	c.Enemy = false
 	c.Initiative = 13
-	c.HP.Full = 32
-	c.HP.Damage = 9
+	c.HPFull = 32
+	c.HPDamage = 9
 	c.Notes = append(c.Notes, board.Note{
 		Description: "Blinded",
 		Timed:       true,
@@ -61,8 +61,8 @@ func New(address string) *Server {
 	c = s.board.NewCombatant("Guard")
 	c.Enemy = false
 	c.Initiative = 11
-	c.HP.Full = 32
-	c.HP.Damage = 16
+	c.HPFull = 32
+	c.HPDamage = 16
 	c.Notes = append(c.Notes, board.Note{
 		Description: "Haste",
 		Timed:       true,
@@ -72,22 +72,22 @@ func New(address string) *Server {
 
 	c = s.board.NewCombatant("Orc")
 	c.Initiative = 2
-	c.HP.Full = 8
+	c.HPFull = 8
 
 	c2 := s.board.DuplicateCombatant(c)
-	c2.HP.Temporary = 2
-	c2.HP.Damage = 4
+	c2.HPTemporary = 2
+	c2.HPDamage = 4
 
 	c = s.board.DuplicateCombatant(c)
-	c.HP.Damage = 18
+	c.HPDamage = 18
 	c.Notes = append(c.Notes, board.Note{Description: "Missing left leg"})
 
 	c = s.board.DuplicateCombatant(c)
 	c.Notes = make([]board.Note, 0)
-	c.HP.Damage--
+	c.HPDamage--
 
 	c = s.board.DuplicateCombatant(c)
-	c.HP.Damage = c.HP.Full
+	c.HPDamage = c.HPFull
 
 	s.board.Current = s.board.Combatants[0].ID
 

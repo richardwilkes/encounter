@@ -7,7 +7,7 @@
 	<div class="hhp-max">Max</div>
 	<div class="hnotes"><br>Notes</div>
 {{- $board := .}}{{range .Combatants}}
-	<div bid="{{.ID}}" class="name{{$board.CurrentTag .}}">
+	<div class="name{{$board.CurrentTag .}}">
 		<div>
 			<i class="fas fa-user {{.Type}}" title="{{.TypeDescription}}"></i>
 			{{if .Out}}<span class="out">{{end}}{{.Name}}{{if .Out}}</span>{{end}}
@@ -19,14 +19,14 @@
 			<i class="fas fa-trash button" title="Delete combatant" onclick="deleteCombatant({{.Name}}, {{.ID}})"></i>
 		</div>
 	</div>
-	<div bid="{{.ID}}" class="init{{$board.CurrentTag .}}">{{.Initiative}}</div>
-	<div bid="{{.ID}}" class="hp-desc{{$board.CurrentTag .}}{{.StatusTag}}">{{.Status}}</div>
-	<div bid="{{.ID}}" class="hp{{$board.CurrentTag .}}">
-		<div class="hp-cur">{{.HP.String}}</div>
+	<div class="init{{$board.CurrentTag .}}">{{.Initiative}}</div>
+	<div class="hp-desc{{$board.CurrentTag .}}{{.StatusTag}}">{{.Status}}</div>
+	<div class="hp{{$board.CurrentTag .}}">
+		<div class="hp-cur">{{.FormattedHP}}</div>
 		<div class="controls"><i class="fas fa-heart button" title="Adjust hit points" onclick="adjustHP({{.ID}})"></i></div>
 	</div>
-	<div bid="{{.ID}}" class="hp-max{{$board.CurrentTag .}}">{{.HP.Full}}</div>
-	<div bid="{{.ID}}" class="notes{{$board.CurrentTag .}}">
+	<div class="hp-max{{$board.CurrentTag .}}">{{.HPFull}}</div>
+	<div class="notes{{$board.CurrentTag .}}">
 		<i class="fas fa-plus-circle button" title="Add note" onclick="addNote({{.ID}}"></i>
 		{{- $combatant := .}}{{range $index, $note := .Notes}}
 		<span class="tag">

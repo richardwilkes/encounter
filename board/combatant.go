@@ -1,44 +1,35 @@
 package board
 
-import "github.com/satori/go.uuid"
+import "fmt"
 
 // Combantant holds information for a single entity in combat.
 type Combatant struct {
-	ID             string       `json:"id"`
-	Name           string       `json:"name"`
-	Enemy          bool         `json:"enemy"`
-	Strength       AbilityScore `json:"str"`
-	Dexterity      AbilityScore `json:"dex"`
-	Constitution   AbilityScore `json:"con"`
-	Intelligence   AbilityScore `json:"int"`
-	Wisdom         AbilityScore `json:"wis"`
-	Charisma       AbilityScore `json:"cha"`
-	Initiative     int          `json:"init"`
-	InitativeBonus int          `json:"init_bonus"`
-	HP             HitPoints    `json:"hp"`
-	Notes          []Note       `json:"notes,omitempty"`
+	ID                   int    `json:"id"`
+	Name                 string `json:"name"`
+	Enemy                bool   `json:"enemy"`
+	Initiative           int    `json:"init"`
+	InitiativeBase       int    `json:"init_base"`
+	InitiativeTieBreaker int    `json:"init_tie_breaker"`
+	HPFull               int    `json:"hp_full"`
+	HPTemporary          int    `json:"hp_tmp"`
+	HPDamage             int    `json:"hp_damage"`
+	Notes                []Note `json:"notes,omitempty"`
 }
 
 // New creates a new combatant.
 func NewCombatant(name string) *Combatant {
 	return &Combatant{
-		ID:           uuid.Must(uuid.NewV4()).String(),
-		Name:         name,
-		Enemy:        true,
-		Strength:     AbilityScore{Value: 10},
-		Dexterity:    AbilityScore{Value: 10},
-		Constitution: AbilityScore{Value: 10},
-		Intelligence: AbilityScore{Value: 10},
-		Wisdom:       AbilityScore{Value: 10},
-		Charisma:     AbilityScore{Value: 10},
-		HP:           HitPoints{Full: 6},
+		ID:     NextID(),
+		Name:   name,
+		Enemy:  true,
+		HPFull: 6,
 	}
 }
 
 // Clone creates a copy of the combatant, but with a new ID.
 func (c *Combatant) Clone() *Combatant {
 	clone := *c
-	clone.ID = uuid.Must(uuid.NewV4()).String()
+	clone.ID = NextID()
 	clone.Notes = make([]Note, len(c.Notes))
 	copy(clone.Notes, c.Notes)
 	return &clone
@@ -59,16 +50,16 @@ func (c *Combatant) TypeDescription() string {
 }
 
 func (c *Combatant) Out() bool {
-	return c.HP.Current() < 0
+	return c.CurrentHP() < 0
 }
 
 // Status returns a description of the combatant's current health.
 func (c *Combatant) Status() string {
-	if c.HP.Damage == 0 {
+	if c.HPDamage == 0 {
 		return "Healthy"
 	}
-	current := c.HP.Current()
-	if current > c.HP.Full/2 {
+	current := c.CurrentHP()
+	if current > c.HPFull/2 {
 		return "Hurt"
 	}
 	if current > 0 {
@@ -77,15 +68,52 @@ func (c *Combatant) Status() string {
 	if current == 0 {
 		return "Staggered"
 	}
-	if current > -c.Constitution.Current() {
-		return "Unconscious"
-	}
-	return "Dead"
+	return "Dying"
 }
 
 func (c *Combatant) StatusTag() string {
-	if c.HP.Current() <= c.HP.Full/2 {
+	if c.CurrentHP() <= c.HPFull/2 {
 		return " danger"
 	}
 	return ""
+}
+
+// CurrentHP returns the current hit point total.
+func (c *Combatant) CurrentHP() int {
+	return c.HPFull + c.HPTemporary - c.HPDamage
+}
+
+// Heal a combatant.
+func (c *Combatant) Heal(amount int) {
+	if amount < 0 {
+		return
+	}
+	if amount >= c.HPDamage {
+		c.HPDamage = 0
+		return
+	}
+	c.HPDamage -= amount
+}
+
+// Harm a combatant.
+func (c *Combatant) Harm(amount int) {
+	if amount < 0 {
+		return
+	}
+	if c.HPTemporary >= amount {
+		c.HPTemporary -= amount
+		return
+	}
+	if c.HPTemporary > 0 {
+		amount -= c.HPTemporary
+		c.HPTemporary = 0
+	}
+	c.HPDamage += amount
+}
+
+func (c *Combatant) FormattedHP() string {
+	if c.HPTemporary == 0 {
+		return fmt.Sprintf("%d", c.HPFull-c.HPDamage)
+	}
+	return fmt.Sprintf("%d+%d", c.HPFull-c.HPDamage, c.HPTemporary)
 }

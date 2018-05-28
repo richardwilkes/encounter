@@ -95,7 +95,7 @@ func (s *Server) deleteAllEnemies(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *Server) makeCurrentCombatant(w http.ResponseWriter, req *http.Request) {
-	id := json.MustParseStream(req.Body).Str("id")
+	id := int(json.MustParseStream(req.Body).Int64("id"))
 	xio.CloseIgnoringErrors(req.Body)
 	if c := s.board.Lookup(id); c == nil {
 		http.Error(w, "no such combatant", http.StatusBadRequest)
@@ -106,7 +106,7 @@ func (s *Server) makeCurrentCombatant(w http.ResponseWriter, req *http.Request) 
 }
 
 func (s *Server) duplicateCombatant(w http.ResponseWriter, req *http.Request) {
-	id := json.MustParseStream(req.Body).Str("id")
+	id := int(json.MustParseStream(req.Body).Int64("id"))
 	xio.CloseIgnoringErrors(req.Body)
 	if c := s.board.Lookup(id); c == nil {
 		http.Error(w, "no such combatant", http.StatusBadRequest)
@@ -117,7 +117,7 @@ func (s *Server) duplicateCombatant(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *Server) deleteCombatant(w http.ResponseWriter, req *http.Request) {
-	id := json.MustParseStream(req.Body).Str("id")
+	id := int(json.MustParseStream(req.Body).Int64("id"))
 	xio.CloseIgnoringErrors(req.Body)
 	found := false
 	for i, c := range s.board.Combatants {
@@ -139,7 +139,7 @@ func (s *Server) deleteCombatant(w http.ResponseWriter, req *http.Request) {
 func (s *Server) deleteNote(w http.ResponseWriter, req *http.Request) {
 	j := json.MustParseStream(req.Body)
 	xio.CloseIgnoringErrors(req.Body)
-	id := j.Str("id")
+	id := int(j.Int64("id"))
 	index := int(j.Int64("index"))
 	if c := s.board.Lookup(id); c == nil {
 		http.Error(w, "no such combatant", http.StatusBadRequest)

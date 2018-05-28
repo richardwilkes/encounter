@@ -9,7 +9,7 @@ import (
 
 type Board struct {
 	Round      int          `json:"round,omitempty"`
-	Current    string       `json:"current,omitempty"`
+	Current    int          `json:"current,omitempty"`
 	Combatants []*Combatant `json:"combatants,omitempty"`
 }
 
@@ -37,7 +37,7 @@ func (b *Board) CurrentTag(c *Combatant) string {
 	return ""
 }
 
-func (b *Board) Lookup(id string) *Combatant {
+func (b *Board) Lookup(id int) *Combatant {
 	for _, c := range b.Combatants {
 		if c.ID == id {
 			return c

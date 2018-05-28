@@ -5,7 +5,7 @@ function rollInitiative() {
             document.getElementById("content").innerHTML = xhttp.responseText;
         }
     }, JSON.stringify({
-        "id" : "xyz"
+        "id" : 0
     }));
 }
 
@@ -16,7 +16,7 @@ function globalOptions() {
             document.getElementById("content").innerHTML = xhttp.responseText;
         }
     }, JSON.stringify({
-        "id" : "xyz"
+        "id" : 0
     }));
 }
 
