@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/collection"
 )
 
 type Board struct {
-	Round      int          `json:"round,omitempty"`
-	Current    int          `json:"current,omitempty"`
-	Combatants []*Combatant `json:"combatants,omitempty"`
+	Round      int
+	Current    int
+	Combatants []*Combatant
 }
 
 func (b *Board) NewCombatant(nameHint string) *Combatant {
@@ -66,4 +67,8 @@ func (b *Board) suggestName(nameHint string) string {
 		}
 		counter++
 	}
+}
+
+func (b *Board) RollInitiativeDice() int {
+	return dice.Roll(nil, "1d20")
 }

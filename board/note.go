@@ -8,11 +8,11 @@ import (
 // Note holds a note about a combatant, which may be set to expire at a given
 // point in time.
 type Note struct {
-	Description string `json:"description"`
-	Timed       bool   `json:"timed"`
-	UntilEnd    bool   `json:"until_end"`
-	Who         int    `json:"who"`
-	Round       int    `json:"round"`
+	Description string
+	Timed       bool
+	UntilEnd    bool
+	Who         int
+	Round       int
 }
 
 func (n *Note) Detail(b *Board) string {

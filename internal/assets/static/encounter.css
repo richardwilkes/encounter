@@ -316,6 +316,32 @@ i {
 	background-color: var(--current);
 }
 
+#fields {
+	display: grid;
+	grid-template: "label field";
+	align-items: center;
+}
+
+#fields .label {
+	text-align: right;
+	padding-right: .5em;
+}
+
+#fields input {
+	font-size: var(--base-font-size);
+	line-height: var(--line-height);
+}
+
+#fields .checkbox {
+	text-align: center;
+	grid-column-start: span 2;
+}
+
+#fields hr {
+	grid-column-start: span 2;
+	width: 100%;
+}
+
 .danger {
 	color: var(--danger);
 }

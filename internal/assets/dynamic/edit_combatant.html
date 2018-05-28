@@ -1,0 +1,14 @@
+<div id="fields" onkeydown="handleDefaultButton(event)">
+	<div class="label">Name:</div>
+	<input class="field" type="text" name="name" maxlength="40" autocomplete="off" value="{{.Name}}" onkeydown="handleDefaultButton(event)" autofocus>
+	<div class="label">Initiative Base:</div>
+	<input class="field" type="text" name="init_base" maxlength="4" autocomplete="off" value="{{printf "%+d" .InitiativeBase}}" onkeydown="handleDefaultButton(event)">
+	<div class="label">Hit Points (Full):</div>
+	<input class="field" type="text" name="hp_full" maxlength="6" autocomplete="off" value="{{.HPFull}}" onkeydown="handleDefaultButton(event)">
+	<div class="label">Hit Points (Temporary):</div>
+	<input class="field" type="text" name="hp_tmp" maxlength="6" autocomplete="off" value="{{.HPTemporary}}" onkeydown="handleDefaultButton(event)">
+	<div class="label">Hit Points (Damage):</div>
+	<input class="field" type="text" name="hp_damage" maxlength="6" autocomplete="off" value="{{.HPDamage}}" onkeydown="handleDefaultButton(event)">
+	<hr>
+	<div class="checkbox"><input class="checkbox" type="checkbox" name="enemy"{{if .Enemy}} checked{{end}}> Enemy</div>
+</div>

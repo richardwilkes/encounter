@@ -1,0 +1,6 @@
+<div id="fields" onkeydown="handleDefaultButton(event)">
+	{{- range $index, $r := .}}
+	<div class="label">{{$r.Name}}:</div>
+	<input class="field" type="text" name="{{$r.ID}}" maxlength="4" autocomplete="off" value="{{$r.Initiative}}" onkeydown="handleDefaultButton(event)"{{if eq $index 0}} autofocus{{end}}>
+	{{- end}}
+</div>

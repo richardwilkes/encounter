@@ -19,7 +19,7 @@
 			<i class="fas fa-trash button" title="Delete combatant" onclick="deleteCombatant({{.Name}}, {{.ID}})"></i>
 		</div>
 	</div>
-	<div class="init{{$board.CurrentTag .}}">{{.Initiative}}</div>
+	<div class="init{{$board.CurrentTag .}}">{{if $board.Round}}{{.Initiative}}{{else}}{{printf "%+d" .InitiativeBase}}{{end}}</div>
 	<div class="hp-desc{{$board.CurrentTag .}}{{.StatusTag}}">{{.Status}}</div>
 	<div class="hp{{$board.CurrentTag .}}">
 		<div class="hp-cur">{{.FormattedHP}}</div>
