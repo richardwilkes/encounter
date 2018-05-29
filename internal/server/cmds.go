@@ -232,14 +232,14 @@ func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {
 	}
 	var buffer bytes.Buffer
 	if panel {
-		c := board.NewCombatant(s.board.SuggestName("#1"))
+		c := board.NewCombatant(0, s.board.SuggestName("#1"))
 		if err := tmpl.ExecuteTemplate(&buffer, "/edit_combatant.html", c); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	} else {
-		c := board.NewCombatant(s.board.SuggestName("#1"))
+		c := board.NewCombatant(s.board.NextID(), s.board.SuggestName("#1"))
 		s.board.Combatants = append(s.board.Combatants, c)
 		updateCombatant(c, j)
 		if err := tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {

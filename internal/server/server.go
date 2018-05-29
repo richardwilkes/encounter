@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/richardwilkes/toolbox/xio/fs"
+
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/rpgtools/dice"
@@ -12,7 +14,10 @@ import (
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
 )
 
-const connectionTimeout = 5 * time.Second
+const (
+	connectionTimeout = 5 * time.Second
+	boardFile         = "board.json"
+)
 
 type ctxPathType int
 
@@ -42,6 +47,14 @@ func New(address string) *Server {
 		board:    board.Board{InitiativeDice: dice.New(nil, "1d20")},
 	}
 	s.Server.WebServer.Handler = s
+	s.Server.ShutdownCallback = s.handleShutdown
+	if fs.FileExists(boardFile) {
+		t := jot.Time("Loading previous board")
+		if err := s.board.Load(boardFile); err != nil {
+			jot.Error(err)
+		}
+		t.End()
+	}
 	return s
 }
 
@@ -57,4 +70,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	default:
 		s.staticFS.ServeHTTP(w, req)
 	}
+}
+
+func (s *Server) handleShutdown() {
+	t := jot.Time("Saving board")
+	if err := s.board.Save(boardFile); err != nil {
+		jot.Error(err)
+	}
+	t.End()
 }

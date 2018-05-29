@@ -20,9 +20,9 @@ type Combatant struct {
 }
 
 // New creates a new combatant.
-func NewCombatant(name string) *Combatant {
+func NewCombatant(id int, name string) *Combatant {
 	return &Combatant{
-		ID:     NextID(),
+		ID:     id,
 		Name:   name,
 		Enemy:  true,
 		HPFull: 6,
@@ -37,9 +37,9 @@ func (c *Combatant) PossessiveName() string {
 }
 
 // Clone creates a copy of the combatant, but with a new ID.
-func (c *Combatant) Clone() *Combatant {
+func (c *Combatant) Clone(newID int) *Combatant {
 	clone := *c
-	clone.ID = NextID()
+	clone.ID = newID
 	clone.Notes = make([]Note, len(c.Notes))
 	copy(clone.Notes, c.Notes)
 	return &clone
