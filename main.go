@@ -20,10 +20,10 @@ func main() {
 	cmdline.CopyrightHolder = "Richard A. Wilkes"
 	cmdline.License = "Mozilla Public License Version 2.0"
 
-	address := "127.0.0.1:8080"
+	address := "127.0.0.1:8001"
 
 	cl := cmdline.New(true)
-	cl.NewStringOption(&address).SetSingle('a').SetName("address").SetUsage("Network address and port to listen on")
+	cl.NewStringOption(&address).SetSingle('a').SetName("address").SetUsage(`Network address and port to listen on. Specify just the port (":8000") to listen on all connected networks`)
 	jotrotate.ParseAndSetup(cl)
 
 	s := server.New(address)
