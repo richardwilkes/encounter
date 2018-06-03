@@ -12,8 +12,7 @@ function rollInitiative() {
                             var inputs = document.getElementById("fields").getElementsByTagName("input");
                             var length = inputs.length;
                             var inits = []
-                            var i;
-                            for (i = 0; i < length; i++) {
+                            for (var i = 0; i < length; i++) {
                                 inits.push({
                                     "id": inputs[i].name,
                                     "init": inputs[i].value
@@ -55,8 +54,7 @@ function globalOptions() {
                             var payload = {
                                 "panel": false
                             }
-                            var i;
-                            for (i = 0; i < length; i++) {
+                            for (var i = 0; i < length; i++) {
                                 payload[inputs[i].name] = inputs[i].value;
                             }
                             post("/cmds/globalOptions", function(xhttp) {
@@ -88,8 +86,7 @@ function newCombatant() {
                             var payload = {
                                 "panel": false
                             }
-                            var i;
-                            for (i = 0; i < length; i++) {
+                            for (var i = 0; i < length; i++) {
                                 if (inputs[i].type == "checkbox") {
                                     payload[inputs[i].name] = inputs[i].checked;
                                 } else {
@@ -129,8 +126,7 @@ function editCombatant(id) {
                                 "id": id,
                                 "panel": false
                             }
-                            var i;
-                            for (i = 0; i < length; i++) {
+                            for (var i = 0; i < length; i++) {
                                 if (inputs[i].type == "checkbox") {
                                     payload[inputs[i].name] = inputs[i].checked;
                                 } else {
@@ -191,8 +187,7 @@ function adjustHP(id) {
                                 "id": id,
                                 "panel": false
                             }
-                            var i;
-                            for (i = 0; i < length; i++) {
+                            for (var i = 0; i < length; i++) {
                                 payload[inputs[i].name] = inputs[i].value;
                             }
                             post("/cmds/adjustHP", function(xhttp) {
@@ -274,8 +269,7 @@ function getNotePayload(id) {
         "id": id,
         "panel": false
     }
-    var i;
-    for (i = 0; i < length; i++) {
+    for (var i = 0; i < length; i++) {
         if (inputs[i].type == "checkbox") {
             payload[inputs[i].name] = inputs[i].checked;
         } else {
@@ -284,7 +278,7 @@ function getNotePayload(id) {
     }
     inputs = document.getElementById("fields").getElementsByTagName("select");
     length = inputs.length;
-    for (i = 0; i < length; i++) {
+    for (var i = 0; i < length; i++) {
         payload[inputs[i].name] = inputs[i].value;
     }
     return payload;
@@ -352,10 +346,9 @@ function simpleModal(options) {
     dialog.querySelector(".modal-content").innerHTML = options.content;
     var buttons = dialog.querySelector(".modal-buttons");
     buttons.innerHTML = "";
-    var i;
     var needAutofocus = true;
     var len = options.buttons.length;
-    for (i = 0; i < len; i++) {
+    for (var i = 0; i < len; i++) {
         var button = document.createElement("button");
         button.onclick = options.buttons[i].onclick;
         if (options.buttons[i].autofocus) {
@@ -452,4 +445,159 @@ function adjustRound(xhttp) {
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(new SpeechSynthesisUtterance("start of " + text));
     }
+}
+
+var combatantDNDType = "application/combatant";
+var dragStartCombatant;
+var dragStartIndex;
+var dragCurrentOrder = [];
+
+function dragStartHandler(event) {
+    dragCurrentOrder = [];
+    dragStartCombatant = findCombatantID(event.target);
+    if (dragStartCombatant != "") {
+        event.dataTransfer.setData(combatantDNDType, dragStartCombatant);
+        event.dataTransfer.effectAllowed = "move";
+        var board = document.getElementById("board")
+        var divs = board.getElementsByTagName("div");
+        var length = divs.length;
+        var last = "x";
+        for (var i = 0; i < length; i++) {
+            var cid = divs[i].getAttribute("cid");
+            if (cid != null && cid != last) {
+                last = cid;
+                dragCurrentOrder.push(cid);
+            }
+        }
+        dragStartIndex = dragCurrentOrder.indexOf(dragStartCombatant);
+    } else {
+        event.preventDefault();
+    }
+}
+
+function dragEnterHandler(event) {
+    if (acceptableDrag(event)) {
+        event.preventDefault();
+        return;
+    }
+}
+
+function dragOverHandler(event) {
+    event.preventDefault();
+    removePreviousDragMarkers();
+    event.dataTransfer.dropEffect = "none";
+    if (acceptableDrag(event)) {
+        var i = dragToIndex(event);
+        if (i != -1) {
+            if (i == dragCurrentOrder.length) {
+                mark(dragCurrentOrder[i - 1], "drag-marker-bottom");
+            } else {
+                mark(dragCurrentOrder[i], "drag-marker-top");
+            }
+            event.dataTransfer.dropEffect = "move";
+        }
+    }
+}
+
+function dragLeaveHandler(event) {
+    removePreviousDragMarkers();
+}
+
+function dropHandler(event) {
+    removePreviousDragMarkers();
+    event.preventDefault();
+    if (acceptableDrag(event)) {
+        var i = dragToIndex(event);
+        if (i != -1) {
+            var pastEnd = i == dragCurrentOrder.length;
+            var cid = dragCurrentOrder.splice(dragStartIndex, 1)[0];
+            if (pastEnd) {
+                dragCurrentOrder.push(cid);
+            } else {
+                if (dragStartIndex < i) {
+                    i--;
+                }
+                dragCurrentOrder.splice(i, 0, cid);
+            }
+            post("/cmds/reorder", function(xhttp) {
+                if (xhttp.status == 200) {
+                    document.getElementById("content").innerHTML = xhttp.responseText;
+                }
+            }, JSON.stringify({
+                "order" : dragCurrentOrder.slice(0)
+            }));
+        }
+    }
+}
+
+function dragEndHandler(event) {
+    removePreviousDragMarkers();
+    dragCurrentOrder = [];
+}
+
+function dragToIndex(event) {
+    var node = findCombatantNode(event.toElement);
+    if (node == null) {
+        return -1;
+    }
+    var i = dragCurrentOrder.indexOf(node.getAttribute("cid"));
+    if (event.clientY - (node.offsetTop + node.offsetHeight / 2) > 0) {
+        i++;
+    }
+    if (i == dragStartIndex || i == dragStartIndex + 1) {
+        return -1;
+    }
+    return i;
+}
+
+function mark(cid, className) {
+    var board = document.getElementById("board")
+    var divs = board.getElementsByTagName("div");
+    var length = divs.length;
+    for (var i = 0; i < length; i++) {
+        if (divs[i].getAttribute("cid") == cid) {
+            divs[i].classList.add(className);
+        }
+    }
+}
+
+function removePreviousDragMarkers() {
+    var board = document.getElementById("board")
+    removeClassFromChildren(board, "drag-marker-top");
+    removeClassFromChildren(board, "drag-marker-bottom");
+}
+
+function removeClassFromChildren(parent, className) {
+    var elems = parent.children;
+    var length = elems.length;
+    for (var i = 0; i < length; i++) {
+        elems[i].classList.remove(className);
+    }
+}
+
+function acceptableDrag(event) {
+    var items = event.dataTransfer.items;
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if (item.type == combatantDNDType) {
+            var targetID = findCombatantID(event.toElement);
+            return (targetID != "" && targetID != dragStartCombatant);
+        }
+    }
+    return false;
+}
+
+function findCombatantID(elem) {
+    var node = findCombatantNode(elem);
+    return node == null ? "" : node.getAttribute("cid");
+}
+
+function findCombatantNode(elem) {
+    while (elem !== undefined && elem != null && elem.getAttribute !== undefined && elem.getAttribute("cid") == null) {
+        elem = elem.parentNode;
+    }
+    if (elem !== undefined && elem != null && elem.getAttribute !== undefined) {
+        return elem;
+    }
+    return null;
 }

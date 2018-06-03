@@ -1,4 +1,6 @@
-<div id="board">
+<div id="board" ondragstart="dragStartHandler(event)" ondragenter="dragEnterHandler(event)"
+	ondragover="dragOverHandler(event)" ondragleave="dragLeaveHandler(event)" ondrop="dropHandler(event)"
+	ondragend="dragEndHandler(event)">
 	<div class="hname"><br>Who</div>
 	<div class="hinit"><br>Init</div>
 	<div class="hhp-hdr">Hit Points</div>
@@ -7,8 +9,8 @@
 	<div class="hhp-max">Max</div>
 	<div class="hnotes"><br>Notes</div>
 {{- $board := .}}{{range .Combatants}}
-	<div class="name{{$board.CurrentTag .}}">
-		<div>
+	<div class="name{{$board.CurrentTag .}}" cid="{{.ID}}">
+		<div class="drag-handle" draggable="true">
 			<i class="fas fa-user {{.Type}}" title="{{.TypeDescription}}"></i>
 			{{if .Out}}<span class="out">{{end}}{{.Name}}{{if .Out}}</span>{{end}}
 		</div>
@@ -19,14 +21,14 @@
 			<i class="fas fa-trash button" title="Delete combatant" onclick="deleteCombatant({{.Name}}, {{.ID}})"></i>
 		</div>
 	</div>
-	<div class="init{{$board.CurrentTag .}}">{{if $board.Round}}{{.Initiative}}{{else}}{{printf "%+d" .InitiativeBase}}{{end}}</div>
-	<div class="hp-desc{{$board.CurrentTag .}}{{.StatusTag}}">{{.Status}}</div>
-	<div class="hp{{$board.CurrentTag .}}">
+	<div class="init{{$board.CurrentTag .}}" cid="{{.ID}}">{{if $board.Round}}{{.Initiative}}{{else}}{{printf "%+d" .InitiativeBase}}{{end}}</div>
+	<div class="hp-desc{{$board.CurrentTag .}}{{.StatusTag}}" cid="{{.ID}}">{{.Status}}</div>
+	<div class="hp{{$board.CurrentTag .}}" cid="{{.ID}}">
 		<div class="hp-cur">{{.FormattedHP}}</div>
 		<div class="controls"><i class="fas fa-heart button" title="Adjust hit points" onclick="adjustHP({{.ID}})"></i></div>
 	</div>
-	<div class="hp-max{{$board.CurrentTag .}}">{{.HPFull}}</div>
-	<div class="notes{{$board.CurrentTag .}}">
+	<div class="hp-max{{$board.CurrentTag .}}" cid="{{.ID}}">{{.HPFull}}</div>
+	<div class="notes{{$board.CurrentTag .}}" cid="{{.ID}}">
 		<i class="fas fa-plus-circle button" title="Add note" onclick="addNote({{.ID}})"></i>
 		{{- $combatant := .}}{{range $index, $note := .Notes}}
 		<span class="tag">

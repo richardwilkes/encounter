@@ -141,6 +141,8 @@ i {
 	color: var(--board-hdr-fg);
 	font-size: .8em;
 	text-align: center;
+	padding-top: .2ex;
+	padding-bottom: .2ex;
 }
 
 .hname,
@@ -159,8 +161,6 @@ i {
 	border-bottom: 1px solid var(--border);
 	padding-left: .3em;
 	padding-right: .3em;
-	padding-top: .2ex;
-	padding-bottom: .2ex;
 }
 
 .hname,
@@ -189,8 +189,8 @@ i {
 .hp,
 .hp-max,
 .notes {
-	padding-top: .5ex;
-	padding-bottom: .5ex;
+	padding-top: calc(.5ex + var(--drag-marker-height));
+	padding-bottom: calc(.5ex + var(--drag-marker-height));
 }
 
 .name:nth-last-child(6),
@@ -200,6 +200,7 @@ i {
 .hp-max:nth-last-child(2),
 .notes:nth-last-child(1) {
 	border-bottom: none;
+	padding-bottom: calc(.5ex + var(--drag-marker-height) + 1px);
 }
 
 .name:nth-child(12n+8),
@@ -370,4 +371,24 @@ i {
 
 .invisible {
 	visibility: hidden;
+}
+
+.drag-handle {
+	width: 100%;
+}
+
+.drag-marker-top {
+	border-top: var(--drag-marker-height) dashed var(--drag-marker-fg);
+	padding-top: .5ex;
+}
+
+.drag-marker-bottom,
+.drag-marker-bottom:nth-last-child(6),
+.drag-marker-bottom:nth-last-child(5),
+.drag-marker-bottom:nth-last-child(4),
+.drag-marker-bottom:nth-last-child(3),
+.drag-marker-bottom:nth-last-child(2),
+.drag-marker-bottom:nth-last-child(1) {
+	border-bottom: var(--drag-marker-height) dashed var(--drag-marker-fg);
+	padding-bottom: calc(.5ex + 1px);
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/rpgtools/dice"
+	"github.com/richardwilkes/toolbox/collection"
 	"github.com/richardwilkes/toolbox/errs"
 	"github.com/richardwilkes/toolbox/formats/json"
 	"github.com/richardwilkes/toolbox/log/jot"
@@ -59,6 +60,8 @@ func (s *Server) handleCmds(w http.ResponseWriter, req *http.Request) {
 		s.rollInitiative(w, req)
 	case "globalOptions":
 		s.globalOptions(w, req)
+	case "reorder":
+		s.reorder(w, req)
 	default:
 		http.Error(w, "unknown command: "+cmd, http.StatusBadRequest)
 	}
@@ -577,4 +580,34 @@ func (s *Server) refreshBoard(w http.ResponseWriter) {
 	if _, err := buffer.WriteTo(w); err != nil {
 		jot.Warn(errs.Wrap(err))
 	}
+}
+
+func (s *Server) reorder(w http.ResponseWriter, req *http.Request) {
+	j := json.MustParseStream(req.Body)
+	xio.CloseIgnoringErrors(req.Body)
+	order := j.Path("order")
+	length := order.Size()
+	if !order.IsArray() || length != len(s.board.Combatants) {
+		jot.Error(errs.New("Invalid input: " + j.String()))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	ids := make([]int, length)
+	for i := 0; i < length; i++ {
+		ids[i] = int(order.Index(i).Int64Relaxed(""))
+	}
+	set := collection.NewIntSet(ids...)
+	for _, c := range s.board.Combatants {
+		if !set.Contains(c.ID) {
+			jot.Error(errs.Newf("Missing ID %d", c.ID))
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+	combatants := make([]*board.Combatant, length)
+	for i, id := range ids {
+		combatants[i] = s.board.Lookup(id)
+	}
+	s.board.Combatants = combatants
+	s.refreshBoard(w)
 }
