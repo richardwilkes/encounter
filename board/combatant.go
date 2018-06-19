@@ -16,16 +16,25 @@ type Combatant struct {
 	HPFull           int
 	HPTemporary      int
 	HPDamage         int
+	AC               int
+	TouchAC          int
+	FlatAC           int
+	FortitudeSave    int
+	ReflexSave       int
+	WillSave         int
+	Attacks          string
 	Notes            []Note
 }
 
 // New creates a new combatant.
 func NewCombatant(id int, name string) *Combatant {
 	return &Combatant{
-		ID:     id,
-		Name:   name,
-		Enemy:  true,
-		HPFull: 6,
+		ID:      id,
+		Name:    name,
+		Enemy:   true,
+		AC:      10,
+		TouchAC: 10,
+		FlatAC:  10,
 	}
 }
 

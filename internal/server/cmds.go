@@ -281,6 +281,39 @@ func updateCombatant(c *board.Combatant, j *json.Data) {
 			c.HPDamage = int(v)
 		}
 	}
+	if j.Exists("ac") {
+		if v := j.Int64Relaxed("ac"); v >= 0 {
+			c.AC = int(v)
+		}
+	}
+	if j.Exists("ac-touch") {
+		if v := j.Int64Relaxed("ac-touch"); v >= 0 {
+			c.TouchAC = int(v)
+		}
+	}
+	if j.Exists("ac-flat") {
+		if v := j.Int64Relaxed("ac-flat"); v >= 0 {
+			c.FlatAC = int(v)
+		}
+	}
+	if j.Exists("fortitude") {
+		if v := j.Int64Relaxed("fortitude"); v >= 0 {
+			c.FortitudeSave = int(v)
+		}
+	}
+	if j.Exists("reflex") {
+		if v := j.Int64Relaxed("reflex"); v >= 0 {
+			c.ReflexSave = int(v)
+		}
+	}
+	if j.Exists("will") {
+		if v := j.Int64Relaxed("will"); v >= 0 {
+			c.WillSave = int(v)
+		}
+	}
+	if j.Exists("attacks") {
+		c.Attacks = j.Str("attacks")
+	}
 }
 
 func (s *Server) editCombatant(w http.ResponseWriter, req *http.Request) {
