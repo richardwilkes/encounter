@@ -15,6 +15,7 @@ import (
 	"unicode"
 
 	"github.com/richardwilkes/encounter/board"
+	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/atexit"
 	"github.com/richardwilkes/toolbox/collection"
 	"github.com/richardwilkes/toolbox/log/jot"
@@ -66,7 +67,7 @@ func load() []board.Entity {
 		m.AC = record[13]
 		m.ACMods = record[14]
 		m.HP = parseInt(record[15], 0, line, "HP")
-		m.HD = record[16]
+		m.HD = processHD(record[16])
 		m.HPMods = record[17]
 		m.Saves = record[18]
 		// m.Fort = record[19]
@@ -88,7 +89,7 @@ func load() []board.Entity {
 		m.SpecialAttacks = record[35]
 		m.SpellLikeAbilities = record[36]
 		m.SpellsKnown = record[37]
-		m.SpellsPrepared = record[38]
+		m.SpellsPrepared = fixSpellsPrepared(record[38])
 		m.SpellDomains = record[39]
 		m.AbilityScores = record[40]
 		// m.AbilityScoreMods = record[41]
@@ -122,11 +123,11 @@ func load() []board.Entity {
 		m.Note = record[69]
 		m.CharacterFlag = parseFlag(record[70], line, "Is Character")
 		m.CompanionFlag = parseFlag(record[71], line, "Is Companion")
-		// m.Fly = parseFlag(record[72], line, "Has Fly Speed")
-		// m.Climb = parseFlag(record[73], line, "Has Climb Speed")
-		// m.Burrow = parseFlag(record[74], line, "Has Burrow Speed")
-		// m.Swim = parseFlag(record[75], line, "Has Swim Speed")
-		// m.Land = parseFlag(record[76], line, "Has Land Speed")
+		m.Fly = parseFlag(record[72], line, "Has Fly Speed")
+		m.Climb = parseFlag(record[73], line, "Has Climb Speed")
+		m.Burrow = parseFlag(record[74], line, "Has Burrow Speed")
+		m.Swim = parseFlag(record[75], line, "Has Swim Speed")
+		m.Land = parseFlag(record[76], line, "Has Land Speed")
 		m.TemplatesApplied = record[77]
 		m.OffenseNote = record[78]
 		m.BaseStatistics = record[79]
@@ -153,6 +154,72 @@ func load() []board.Entity {
 	return monsters
 }
 
+func fixSpellsPrepared(in string) string {
+	var buffer bytes.Buffer
+	scanner := bufio.NewScanner(strings.NewReader(in))
+	scanner.Split(bufio.ScanWords)
+	for scanner.Scan() {
+		if buffer.Len() > 0 {
+			buffer.WriteByte(' ')
+		}
+		txt := scanner.Text()
+		if len(txt) > 1 && strings.HasSuffix(txt, "D") {
+			if unicode.IsLower(rune(txt[len(txt)-2])) {
+				txt = txt[:len(txt)-1] + " (D)"
+			}
+		} else if len(txt) > 2 && strings.HasSuffix(txt, "D,") {
+			if unicode.IsLower(rune(txt[len(txt)-3])) {
+				txt = txt[:len(txt)-2] + " (D),"
+			}
+		}
+		buffer.WriteString(txt)
+	}
+	return buffer.String()
+}
+
+func processHD(in string) []*dice.Dice {
+	original := in
+	if strings.HasPrefix(in, "(") && strings.HasSuffix(in, ")") {
+		in = in[1 : len(in)-1]
+	}
+	if i := strings.Index(in, "HD; "); i != -1 {
+		in = in[i+4:]
+	}
+	in = strings.Replace(in, " +", "+", -1)
+	in = strings.Replace(in, "++", "+", -1)
+	in = strings.Replace(in, " plus ", "+", -1)
+	d := dice.New(nil, in)
+	if d.String() == in || "1"+d.String() == in {
+		return []*dice.Dice{d}
+	}
+	result := make([]*dice.Dice, 0)
+	for _, p := range strings.Split(in, "+") {
+		d = dice.New(nil, p)
+		if d.String() != p && "1"+d.String() != p {
+			var buffer strings.Builder
+			for _, c := range p {
+				if c >= '0' && c <= '9' {
+					buffer.WriteRune(c)
+				} else {
+					break
+				}
+			}
+			v, err := strconv.Atoi(buffer.String())
+			if err != nil {
+				jot.Warnf("Unable to parse HD: %s", original)
+			}
+			if len(result) > 0 {
+				result[len(result)-1].Modifier += v
+			} else {
+				jot.Warnf("No dice prior to modifier: %s", original)
+			}
+		} else {
+			result = append(result, d)
+		}
+	}
+	return result
+}
+
 func save(monsters []board.Entity) {
 	var spelling [][]string
 	if err := fs.LoadJSON("internal/assets/original/spelling.json", &spelling); err != nil {
@@ -162,7 +229,10 @@ func save(monsters []board.Entity) {
 
 	var buffer bytes.Buffer
 	buffer.WriteString("package data\n\n")
-	buffer.WriteString("import \"github.com/richardwilkes/encounter/board\"\n\n")
+	buffer.WriteString("import (\n")
+	buffer.WriteString("\t\"github.com/richardwilkes/encounter/board\"\n")
+	buffer.WriteString("\t\"github.com/richardwilkes/rpgtools/dice\"\n")
+	buffer.WriteString(")\n")
 	buffer.WriteString("// Monsters holds the monsters obtained from http://www.pathfindercommunity.net/home/databases\n")
 	buffer.WriteString("var Monsters = []board.Entity{\n")
 	typ := reflect.TypeOf(board.Entity{})
@@ -191,39 +261,28 @@ func save(monsters []board.Entity) {
 					fmt.Fprintf(&buffer, "%s: %d,\n", fs.Name, val)
 				}
 			case reflect.String:
-				val := f.String()
+				val := strings.TrimSpace(f.String())
 				if val != "" && strings.ToLower(val) != "null" {
 					// Perform some cleanup to the data
 					for _, one := range spelling {
 						val = strings.Replace(val, one[0], one[1], -1)
 					}
-					if fs.Name == "SpellsPrepared" {
-						scanner := bufio.NewScanner(strings.NewReader(val))
-						scanner.Split(bufio.ScanWords)
-						var valBuf bytes.Buffer
-						for scanner.Scan() {
-							if valBuf.Len() > 0 {
-								valBuf.WriteByte(' ')
-							}
-							txt := scanner.Text()
-							if len(txt) > 1 && strings.HasSuffix(txt, "D") {
-								if unicode.IsLower(rune(txt[len(txt)-2])) {
-									txt = txt[:len(txt)-1] + " (D)"
-								}
-							} else if len(txt) > 2 && strings.HasSuffix(txt, "D,") {
-								if unicode.IsLower(rune(txt[len(txt)-3])) {
-									txt = txt[:len(txt)-2] + " (D),"
-								}
-							}
-							valBuf.WriteString(txt)
-						}
-						val = valBuf.String()
-					}
 					fmt.Fprintf(&buffer, "%s: %q,\n", fs.Name, val)
 				}
 			default:
-				fmt.Println("Unhandled type within Entity structure: ", f.Kind())
-				atexit.Exit(1)
+				if fs.Name == "HD" {
+					buffer.WriteString("HD: []*dice.Dice{ ")
+					for j, d := range e.HD {
+						if j != 0 {
+							buffer.WriteString(", ")
+						}
+						fmt.Fprintf(&buffer, "dice.New(nil, %q)", d.String())
+					}
+					buffer.WriteString(" },\n")
+				} else {
+					fmt.Println("Unhandled type within Entity structure: ", f.Kind())
+					atexit.Exit(1)
+				}
 			}
 		}
 		buffer.WriteString("},\n")
