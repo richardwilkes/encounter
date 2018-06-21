@@ -15,6 +15,7 @@ type Note struct {
 	Round       int
 }
 
+// Detail returns the detail to use in a tooltip.
 func (n *Note) Detail(b *Board) string {
 	if !n.Timed {
 		return ""

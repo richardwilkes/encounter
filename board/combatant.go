@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// Combantant holds information for a single entity in combat.
+// Combatant holds information for a single entity in combat.
 type Combatant struct {
 	ID               int
 	Name             string
@@ -23,10 +23,11 @@ type Combatant struct {
 	ReflexSave       int
 	WillSave         int
 	Attacks          string
+	Entity           *Entity
 	Notes            []Note
 }
 
-// New creates a new combatant.
+// NewCombatant creates a new combatant.
 func NewCombatant(id int, name string) *Combatant {
 	return &Combatant{
 		ID:      id,
@@ -38,6 +39,7 @@ func NewCombatant(id int, name string) *Combatant {
 	}
 }
 
+// PossessiveName returns the possessive form of the combatant's name.
 func (c *Combatant) PossessiveName() string {
 	if strings.HasSuffix(strings.ToLower(c.Name), "s") {
 		return c.Name + "'"
@@ -54,6 +56,7 @@ func (c *Combatant) Clone(newID int) *Combatant {
 	return &clone
 }
 
+// Type returns the type of combatant, enemy or ally.
 func (c *Combatant) Type() string {
 	if c.Enemy {
 		return "enemy"
@@ -61,6 +64,7 @@ func (c *Combatant) Type() string {
 	return "ally"
 }
 
+// TypeDescription returns a human-readable type for the combatant.
 func (c *Combatant) TypeDescription() string {
 	if c.Enemy {
 		return "Enemy"
@@ -68,6 +72,7 @@ func (c *Combatant) TypeDescription() string {
 	return "Ally"
 }
 
+// Out returns true if the combatant is out of the combat.
 func (c *Combatant) Out() bool {
 	return c.CurrentHP() < 0
 }
@@ -90,6 +95,7 @@ func (c *Combatant) Status() string {
 	return "Dying"
 }
 
+// StatusTag returns the current status tag to use.
 func (c *Combatant) StatusTag() string {
 	if c.CurrentHP() <= c.HPFull/2 {
 		return " danger"
@@ -130,6 +136,7 @@ func (c *Combatant) Harm(amount int) {
 	c.HPDamage += amount
 }
 
+// FormattedHP returns the HP formatted for display.
 func (c *Combatant) FormattedHP() string {
 	if c.HPTemporary == 0 {
 		return fmt.Sprintf("%d", c.HPFull-c.HPDamage)

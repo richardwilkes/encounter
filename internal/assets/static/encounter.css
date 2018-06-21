@@ -17,9 +17,14 @@ body {
 }
 
 #content {
+	display: flex;
 	flex-grow: 1;
 	flex-basis: auto;
 	overflow: scroll;
+}
+
+#board-area {
+	flex-grow: 1;
 }
 
 #hdr {

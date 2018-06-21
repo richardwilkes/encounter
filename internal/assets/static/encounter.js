@@ -20,7 +20,7 @@ function rollInitiative() {
                             }
                             post("/cmds/rollInitiative", function(xhttp) {
                                 if (xhttp.status == 200) {
-                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                    document.getElementById("board-area").innerHTML = xhttp.responseText;
                                     adjustRound(xhttp);
                                 }
                                 closeSimpleModal();
@@ -95,7 +95,7 @@ function newCombatant() {
                             }
                             post("/cmds/newCombatant", function(xhttp) {
                                 if (xhttp.status == 200) {
-                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                    document.getElementById("board-area").innerHTML = xhttp.responseText;
                                 }
                                 closeSimpleModal();
                             }, JSON.stringify(payload));
@@ -135,7 +135,7 @@ function editCombatant(id) {
                             }
                             post("/cmds/editCombatant", function(xhttp) {
                                 if (xhttp.status == 200) {
-                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                    document.getElementById("board-area").innerHTML = xhttp.responseText;
                                 }
                                 closeSimpleModal();
                             }, JSON.stringify(payload));
@@ -159,7 +159,7 @@ function deleteAllEnemies() {
                 onclick: function() {
                     post("/cmds/deleteAllEnemies", function(xhttp) {
                         if (xhttp.status == 200) {
-                            document.getElementById("content").innerHTML = xhttp.responseText;
+                            document.getElementById("board-area").innerHTML = xhttp.responseText;
                             adjustRound(xhttp);
                         }
                         closeSimpleModal();
@@ -192,7 +192,7 @@ function adjustHP(id) {
                             }
                             post("/cmds/adjustHP", function(xhttp) {
                                 if (xhttp.status == 200) {
-                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                    document.getElementById("board-area").innerHTML = xhttp.responseText;
                                 }
                                 closeSimpleModal();
                             }, JSON.stringify(payload));
@@ -224,7 +224,7 @@ function deleteCombatant(name, id) {
                 onclick: function() {
                     post("/cmds/deleteCombatant", function(xhttp) {
                         if (xhttp.status == 200) {
-                            document.getElementById("content").innerHTML = xhttp.responseText;
+                            document.getElementById("board-area").innerHTML = xhttp.responseText;
                         }
                         closeSimpleModal();
                     }, JSON.stringify({ "id" : id }));
@@ -247,7 +247,7 @@ function addNote(id) {
                         onclick: function() {
                             post("/cmds/addNote", function(xhttp) {
                                 if (xhttp.status == 200) {
-                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                    document.getElementById("board-area").innerHTML = xhttp.responseText;
                                 }
                                 closeSimpleModal();
                             }, JSON.stringify(getNotePayload(id)));
@@ -297,7 +297,7 @@ function editNote(id, index) {
                         onclick: function() {
                             post("/cmds/editNote", function(xhttp) {
                                 if (xhttp.status == 200) {
-                                    document.getElementById("content").innerHTML = xhttp.responseText;
+                                    document.getElementById("board-area").innerHTML = xhttp.responseText;
                                 }
                                 closeSimpleModal();
                             }, JSON.stringify(getNotePayload(id)));
@@ -316,7 +316,7 @@ function editNote(id, index) {
 function deleteNote(id, index) {
     post("/cmds/deleteNote", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("content").innerHTML = xhttp.responseText;
+            document.getElementById("board-area").innerHTML = xhttp.responseText;
         }
     }, JSON.stringify({
         "id" : id,
@@ -327,7 +327,7 @@ function deleteNote(id, index) {
 function nextTurn() {
     post("/cmds/nextTurn", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("content").innerHTML = xhttp.responseText;
+            document.getElementById("board-area").innerHTML = xhttp.responseText;
             adjustRound(xhttp);
         }
     });
@@ -336,7 +336,7 @@ function nextTurn() {
 function sendSimpleCommand(cmd, id) {
     post("/cmds/" + cmd, function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("content").innerHTML = xhttp.responseText;
+            document.getElementById("board-area").innerHTML = xhttp.responseText;
         }
     }, JSON.stringify({ "id" : id }));
 }
@@ -521,7 +521,7 @@ function dropHandler(event) {
             }
             post("/cmds/reorder", function(xhttp) {
                 if (xhttp.status == 200) {
-                    document.getElementById("content").innerHTML = xhttp.responseText;
+                    document.getElementById("board-area").innerHTML = xhttp.responseText;
                 }
             }, JSON.stringify({
                 "order" : dragCurrentOrder.slice(0)

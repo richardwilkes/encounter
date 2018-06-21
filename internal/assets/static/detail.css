@@ -1,0 +1,25 @@
+#detail {
+	margin: 1em;
+	margin-left: 0;
+	min-width: 100px;
+	max-width: 300px;
+	box-shadow: 3px 3px 3px var(--shadow);
+	border: 1px solid var(--border);
+	display: grid;
+	grid-template:
+		"dlabel dfield"
+		/ auto 1fr;
+	justify-items: stretch;
+	align-items: stretch;
+}
+
+.dlabel {
+	padding-left: .5em;
+	padding-right: .5em;
+	justify-self: right;
+}
+
+.dfield {
+	min-width: 2em;
+	padding-right: .5em;
+}

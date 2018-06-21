@@ -1,7 +1,8 @@
 package main
 
-//go:generate mkembeddedfs --output internal/assets/dynamic_fs_gen.go --pkg assets --name dynamicFS --strip internal/assets/dynamic internal/assets/dynamic
-//go:generate mkembeddedfs --output internal/assets/static_fs_gen.go --pkg assets --name staticFS --strip internal/assets/static internal/assets/static
+//go:generate go run internal/assets/original/main.go
+//go:generate mkembeddedfs --no-modtime --output internal/assets/dynamic_fs_gen.go --pkg assets --name dynamicFS --strip internal/assets/dynamic internal/assets/dynamic
+//go:generate mkembeddedfs --no-modtime --output internal/assets/static_fs_gen.go --pkg assets --name staticFS --strip internal/assets/static internal/assets/static
 
 import (
 	"github.com/richardwilkes/encounter/internal/server"
