@@ -1,19 +1,13 @@
 package board
 
 import (
-	"bufio"
-	"encoding/json"
 	"fmt"
-	"io"
-	"os"
 	"strings"
 	"sync/atomic"
 
 	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/collection"
-	"github.com/richardwilkes/toolbox/errs"
-	"github.com/richardwilkes/toolbox/xio"
-	"github.com/richardwilkes/toolbox/xio/fs/safe"
+	"github.com/richardwilkes/toolbox/xio/fs"
 )
 
 // Board holds the initiative board data.
@@ -22,54 +16,23 @@ type Board struct {
 	Current        int
 	Combatants     []*Combatant
 	InitiativeDice *dice.Dice
-	lastID         int64
-}
-
-type boardForJSON struct {
-	Round          int
-	Current        int
-	Combatants     []*Combatant
-	InitiativeDice string
+	HPMethod       HPMethod
 	LastID         int64
 }
 
 // Load state from the specified path.
 func (b *Board) Load(path string) error {
-	f, err := os.Open(path)
-	if err != nil {
-		return errs.Wrap(err)
-	}
-	defer xio.CloseIgnoringErrors(f)
-	var data boardForJSON
-	if err = json.NewDecoder(bufio.NewReader(f)).Decode(&data); err != nil {
-		return errs.Wrap(err)
-	}
-	b.Round = data.Round
-	b.Current = data.Current
-	b.Combatants = data.Combatants
-	b.InitiativeDice = dice.New(nil, data.InitiativeDice)
-	b.lastID = data.LastID
-	return nil
+	return fs.LoadJSON(path, b)
 }
 
 // Save state to the specified path.
 func (b *Board) Save(path string) error {
-	return safe.WriteFile(path, func(w io.Writer) error {
-		encoder := json.NewEncoder(w)
-		encoder.SetIndent("", "  ")
-		return errs.Wrap(encoder.Encode(&boardForJSON{
-			Round:          b.Round,
-			Current:        b.Current,
-			Combatants:     b.Combatants,
-			InitiativeDice: b.InitiativeDice.String(),
-			LastID:         b.lastID,
-		}))
-	})
+	return fs.SaveJSON(path, b, true)
 }
 
 // NextID returns the next ID to use for a combatant.
 func (b *Board) NextID() int {
-	return int(atomic.AddInt64(&b.lastID, 1))
+	return int(atomic.AddInt64(&b.LastID, 1))
 }
 
 // NewCombatant creates a new combatant and adds them to the board.

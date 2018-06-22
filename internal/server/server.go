@@ -40,8 +40,11 @@ func New(address string) *Server {
 			},
 		},
 		staticFS: http.FileServer(assets.StaticFS),
-		board:    board.Board{InitiativeDice: dice.New(nil, "1d20")},
-		detail:   &board.Entity{},
+		board: board.Board{
+			InitiativeDice: dice.New(nil, "1d20"),
+			HPMethod:       board.AverageHPMethod,
+		},
+		detail: &board.Entity{},
 	}
 	s.Server.WebServer.Handler = s
 	s.Server.ShutdownCallback = s.handleShutdown
