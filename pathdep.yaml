@@ -5,7 +5,7 @@ dependencies:
 - import: github.com/pkg/term
   commit: cda20d4ac917ad418d86e151eff439648b06185b
 - import: github.com/richardwilkes/rpgtools
-  commit: 8792b4daa2d0c6e43d221980a36082cd8086917e
+  commit: cb22341bc21cfcccf275b1b4bc6801a5042f6c7c
 - import: github.com/richardwilkes/toolbox
   commit: 1e7546520f95f3d18a671f5b26497837f8e1b1bc
 - import: gopkg.in/yaml.v2
