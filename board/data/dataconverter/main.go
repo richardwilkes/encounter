@@ -70,7 +70,7 @@ func main() {
 }
 
 func load() []board.Entity {
-	f, err := os.Open("internal/assets/original/monsters.csv")
+	f, err := os.Open("board/data/dataconverter/monsters.csv")
 	if err != nil {
 		fmt.Println(err)
 		atexit.Exit(1)
@@ -247,7 +247,7 @@ func hasPCClass(classes string) bool {
 
 func save(monsters []board.Entity) {
 	var spelling [][]string
-	if err := fs.LoadJSON("internal/assets/original/spelling.json", &spelling); err != nil {
+	if err := fs.LoadJSON("board/data/dataconverter/spelling.json", &spelling); err != nil {
 		fmt.Println(err)
 		atexit.Exit(1)
 	}
