@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/richardwilkes/rpgtools/dice"
-	"github.com/richardwilkes/toolbox/log/jot"
 )
 
 // HPMethod is an enum of possible ways to determine HP for an entity.
@@ -87,15 +86,12 @@ func (hpm HPMethod) MarshalText() (text []byte, err error) {
 // UnmarshalText implements the encoding.TextUnmarshaler interface.
 func (hpm *HPMethod) UnmarshalText(text []byte) error {
 	key := string(text)
-	jot.Info(key)
 	for i, one := range hpMethodsTable {
 		if one.key == key {
 			*hpm = HPMethod(i)
-			jot.Info("found ", *hpm)
 			return nil
 		}
 	}
-	jot.Info("Default")
 	*hpm = AverageHPMethod
 	return nil
 }
