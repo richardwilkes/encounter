@@ -1,6 +1,22 @@
 package board
 
-import "github.com/richardwilkes/rpgtools/dice"
+import (
+	"strconv"
+	"strings"
+
+	"github.com/richardwilkes/rpgtools/dice"
+)
+
+// HPMethod is an enum of possible ways to determine HP for an entity.
+type HPMethod byte
+
+// Possible HPMethods.
+const (
+	RolledHPMethod HPMethod = iota
+	MinimumHPMethod
+	AverageHPMethod
+	MaximumHPMethod
+)
 
 // Entity holds the static information for a combatant.
 type Entity struct {
@@ -10,19 +26,19 @@ type Entity struct {
 	Race  string // 3
 	Class string // 4
 	// MonsterSource         string  // 5
-	Alignment string       // 6
-	Size      string       // 7
-	Type      string       // 8
-	SubType   string       // 9
-	Init      string       // 10
-	Senses    string       // 11
-	Aura      string       // 12
-	AC        string       // 13
-	ACMods    string       // 14
-	HP        int          // 15
-	HD        []*dice.Dice // 16
-	HPMods    string       // 17
-	Saves     string       // 18
+	Alignment string // 6
+	Size      string // 7
+	Type      string // 8
+	SubType   string // 9
+	Init      string // 10
+	Senses    string // 11
+	Aura      string // 12
+	AC        string // 13
+	ACMods    string // 14
+	// HP        int          // 15
+	HD     string // 16
+	HPMods string // 17
+	Saves  string // 18
 	// Fort                  string // 19
 	// Ref                   string // 20
 	// Will                  string // 21
@@ -102,4 +118,115 @@ type Entity struct {
 	MR                    int    // 95
 	Mythic                bool   // 96
 	MT                    bool   // 97
+	HasPCClass            bool
+}
+
+// SortingName returns the name to sort by.
+func (e *Entity) SortingName() string {
+	if e.LinkText != "" {
+		return e.LinkText
+	}
+	return e.Name
+}
+
+// HP returns the HP using the specified method.
+func (e *Entity) HP(method HPMethod) int {
+	switch method {
+	case MinimumHPMethod:
+		return e.MinimumHP()
+	case AverageHPMethod:
+		return e.AverageHP()
+	case MaximumHPMethod:
+		return e.MaximumHP()
+	default:
+		return e.RolledHP()
+	}
+}
+
+// MinimumHP returns the minimum HP.
+func (e *Entity) MinimumHP() int {
+	total := 0
+	hd := extractDice(e.HD)
+	for i, d := range hd {
+		if e.HasPCClass && i == len(hd)-1 {
+			d.Count--
+			total += d.Sides
+		}
+		if d.Count > 0 {
+			total += d.Minimum()
+		} else {
+			total += d.Modifier
+		}
+	}
+	return total
+}
+
+// AverageHP returns the average HP.
+func (e *Entity) AverageHP() int {
+	total := 0
+	hd := extractDice(e.HD)
+	for i, d := range hd {
+		if e.HasPCClass && i == len(hd)-1 {
+			d.Count--
+			total += d.Sides
+		}
+		if d.Count > 0 {
+			total += d.Average()
+		} else {
+			total += d.Modifier
+		}
+	}
+	return total
+}
+
+// MaximumHP returns the maximum HP.
+func (e *Entity) MaximumHP() int {
+	total := 0
+	hd := extractDice(e.HD)
+	for _, d := range hd {
+		total += d.Maximum()
+	}
+	return total
+}
+
+// RolledHP returns the rolled HP.
+func (e *Entity) RolledHP() int {
+	total := 0
+	hd := extractDice(e.HD)
+	for _, d := range hd {
+		total += d.Roll()
+	}
+	return total
+}
+
+func extractDice(in string) []*dice.Dice {
+	in = strings.Replace(in, " plus ", "+", -1)
+	d := dice.New(nil, in)
+	if d.String() == in || "1"+d.String() == in {
+		return []*dice.Dice{d}
+	}
+	result := make([]*dice.Dice, 0)
+	for _, p := range strings.Split(in, "+") {
+		d = dice.New(nil, p)
+		if d.String() != p && "1"+d.String() != p {
+			var buffer strings.Builder
+			for _, c := range p {
+				if c >= '0' && c <= '9' {
+					buffer.WriteRune(c)
+				} else {
+					break
+				}
+			}
+			v, err := strconv.Atoi(buffer.String())
+			if err != nil {
+				v = 0
+			}
+			if len(result) > 0 {
+				result[len(result)-1].Modifier += v
+			}
+		} else {
+			result = append(result, d)
+		}
+	}
+	return result
 }

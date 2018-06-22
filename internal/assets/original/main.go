@@ -10,18 +10,60 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"unicode"
 
 	"github.com/richardwilkes/encounter/board"
-	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/atexit"
 	"github.com/richardwilkes/toolbox/collection"
 	"github.com/richardwilkes/toolbox/log/jot"
+	"github.com/richardwilkes/toolbox/txt"
 	"github.com/richardwilkes/toolbox/xio"
 	"github.com/richardwilkes/toolbox/xio/fs"
 )
+
+var pcClasses = []string{
+	"alchemist",
+	"arcanist",
+	"barbarian",
+	"bard",
+	"bloodrager",
+	"brawler",
+	"cavalier",
+	"cleric",
+	"druid",
+	"fighter",
+	"gunslinger",
+	"hunter",
+	"inquisitor",
+	"investigator",
+	"kineticist",
+	"magus",
+	"medium",
+	"mesmerist",
+	"monk",
+	"ninja",
+	"occultist",
+	"oracle",
+	"paladin",
+	"psychic",
+	"ranger",
+	"rogue",
+	"samurai",
+	"shaman",
+	"skald",
+	"slayer",
+	"spiritualist",
+	"sorcerer",
+	"summoner",
+	"swashbuckler",
+	"vigilante",
+	"warpriest",
+	"witch",
+	"wizard",
+}
 
 func main() {
 	save(load())
@@ -66,8 +108,8 @@ func load() []board.Entity {
 		m.Aura = record[12]
 		m.AC = record[13]
 		m.ACMods = record[14]
-		m.HP = parseInt(record[15], 0, line, "HP")
-		m.HD = processHD(record[16])
+		// m.HP = parseInt(record[15], 0, line, "HP")
+		m.HD = cleanupHD(record[16])
 		m.HPMods = record[17]
 		m.Saves = record[18]
 		// m.Fort = record[19]
@@ -149,8 +191,12 @@ func load() []board.Entity {
 		m.MR = parseInt(record[95], 0, line, "MR")
 		m.Mythic = parseFlag(record[96], line, "Is Mythic")
 		m.MT = parseFlag(record[97], line, "MT")
+		m.HasPCClass = hasPCClass(m.Class)
 		monsters = append(monsters, m)
 	}
+	sort.Slice(monsters, func(i, j int) bool {
+		return txt.NaturalLess(monsters[i].SortingName(), monsters[j].SortingName(), true)
+	})
 	return monsters
 }
 
@@ -177,8 +223,7 @@ func fixSpellsPrepared(in string) string {
 	return buffer.String()
 }
 
-func processHD(in string) []*dice.Dice {
-	original := in
+func cleanupHD(in string) string {
 	if strings.HasPrefix(in, "(") && strings.HasSuffix(in, ")") {
 		in = in[1 : len(in)-1]
 	}
@@ -187,37 +232,17 @@ func processHD(in string) []*dice.Dice {
 	}
 	in = strings.Replace(in, " +", "+", -1)
 	in = strings.Replace(in, "++", "+", -1)
-	in = strings.Replace(in, " plus ", "+", -1)
-	d := dice.New(nil, in)
-	if d.String() == in || "1"+d.String() == in {
-		return []*dice.Dice{d}
-	}
-	result := make([]*dice.Dice, 0)
-	for _, p := range strings.Split(in, "+") {
-		d = dice.New(nil, p)
-		if d.String() != p && "1"+d.String() != p {
-			var buffer strings.Builder
-			for _, c := range p {
-				if c >= '0' && c <= '9' {
-					buffer.WriteRune(c)
-				} else {
-					break
-				}
-			}
-			v, err := strconv.Atoi(buffer.String())
-			if err != nil {
-				jot.Warnf("Unable to parse HD: %s", original)
-			}
-			if len(result) > 0 {
-				result[len(result)-1].Modifier += v
-			} else {
-				jot.Warnf("No dice prior to modifier: %s", original)
-			}
-		} else {
-			result = append(result, d)
+	return in
+}
+
+func hasPCClass(classes string) bool {
+	classes = strings.ToLower(classes)
+	for _, c := range pcClasses {
+		if strings.Contains(classes, c) {
+			return true
 		}
 	}
-	return result
+	return false
 }
 
 func save(monsters []board.Entity) {
@@ -231,8 +256,7 @@ func save(monsters []board.Entity) {
 	buffer.WriteString("package data\n\n")
 	buffer.WriteString("import (\n")
 	buffer.WriteString("\t\"github.com/richardwilkes/encounter/board\"\n")
-	buffer.WriteString("\t\"github.com/richardwilkes/rpgtools/dice\"\n")
-	buffer.WriteString(")\n")
+	buffer.WriteString(")\n\n")
 	buffer.WriteString("// Monsters holds the monsters obtained from http://www.pathfindercommunity.net/home/databases\n")
 	buffer.WriteString("var Monsters = []board.Entity{\n")
 	typ := reflect.TypeOf(board.Entity{})
@@ -270,19 +294,8 @@ func save(monsters []board.Entity) {
 					fmt.Fprintf(&buffer, "%s: %q,\n", fs.Name, val)
 				}
 			default:
-				if fs.Name == "HD" {
-					buffer.WriteString("HD: []*dice.Dice{ ")
-					for j, d := range e.HD {
-						if j != 0 {
-							buffer.WriteString(", ")
-						}
-						fmt.Fprintf(&buffer, "dice.New(nil, %q)", d.String())
-					}
-					buffer.WriteString(" },\n")
-				} else {
-					fmt.Println("Unhandled type within Entity structure: ", f.Kind())
-					atexit.Exit(1)
-				}
+				fmt.Println("Unhandled type within Entity structure: ", f.Kind())
+				atexit.Exit(1)
 			}
 		}
 		buffer.WriteString("},\n")
