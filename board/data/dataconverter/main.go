@@ -15,7 +15,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/richardwilkes/encounter/board"
+	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/toolbox/atexit"
 	"github.com/richardwilkes/toolbox/collection"
 	"github.com/richardwilkes/toolbox/log/jot"
@@ -69,14 +69,14 @@ func main() {
 	save(load())
 }
 
-func load() []board.Entity {
+func load() []data.Entity {
 	f, err := os.Open("board/data/dataconverter/monsters.csv")
 	if err != nil {
 		fmt.Println(err)
 		atexit.Exit(1)
 	}
 	defer xio.CloseIgnoringErrors(f)
-	monsters := make([]board.Entity, 0)
+	monsters := make([]data.Entity, 0)
 	r := csv.NewReader(bufio.NewReader(f))
 	line := 0
 	for {
@@ -92,7 +92,7 @@ func load() []board.Entity {
 		if line == 1 {
 			continue
 		}
-		var m board.Entity
+		var m data.Entity
 		m.Name = record[0]
 		m.CR = record[1]
 		m.XP = parseInt(record[2], 0, line, "XP")
@@ -245,7 +245,7 @@ func hasPCClass(classes string) bool {
 	return false
 }
 
-func save(monsters []board.Entity) {
+func save(monsters []data.Entity) {
 	var spelling [][]string
 	if err := fs.LoadJSON("board/data/dataconverter/spelling.json", &spelling); err != nil {
 		fmt.Println(err)
@@ -254,12 +254,9 @@ func save(monsters []board.Entity) {
 
 	var buffer bytes.Buffer
 	buffer.WriteString("package data\n\n")
-	buffer.WriteString("import (\n")
-	buffer.WriteString("\t\"github.com/richardwilkes/encounter/board\"\n")
-	buffer.WriteString(")\n\n")
 	buffer.WriteString("// Monsters holds the monsters obtained from http://www.pathfindercommunity.net/home/databases\n")
-	buffer.WriteString("var Monsters = []board.Entity{\n")
-	typ := reflect.TypeOf(board.Entity{})
+	buffer.WriteString("var Monsters = []Entity{\n")
+	typ := reflect.TypeOf(data.Entity{})
 	ids := collection.NewIntSet()
 	fieldCount := typ.NumField()
 	for _, e := range monsters {

@@ -1,5 +1,5 @@
-<div id="library">
-	{{- range .}}
-	<div class="library-item" onclick="showMonster({{.MonsterID}})">{{.SortingName}}</div>
+<div id="library">{{$sel := .Board.LibrarySelection}}
+	{{- range .Monsters}}
+	<div class="library-item{{if eq .MonsterID $sel}} library-selected{{end}}" mid="{{.MonsterID}}" onclick="showMonster(this)">{{.SortingName}}</div>
 	{{- end}}
 </div>

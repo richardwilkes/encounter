@@ -5,6 +5,7 @@ import (
 	"strings"
 	"sync/atomic"
 
+	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/collection"
 	"github.com/richardwilkes/toolbox/xio/fs"
@@ -12,17 +13,40 @@ import (
 
 // Board holds the initiative board data.
 type Board struct {
-	Round          int
-	Current        int
-	Combatants     []*Combatant
-	InitiativeDice *dice.Dice
-	HPMethod       HPMethod
-	LastID         int64
+	Round            int
+	Current          int
+	Combatants       []*Combatant
+	InitiativeDice   *dice.Dice
+	HPMethod         HPMethod
+	LibrarySelection int
+	lastID           int64
 }
 
 // Load state from the specified path.
 func (b *Board) Load(path string) error {
-	return fs.LoadJSON(path, b)
+	if err := fs.LoadJSON(path, b); err != nil {
+		return err
+	}
+	if b.InitiativeDice == nil {
+		b.InitiativeDice = dice.New(nil, "1d20")
+	}
+	found := false
+	for _, m := range data.Monsters {
+		if m.MonsterID == b.LibrarySelection {
+			found = true
+			break
+		}
+	}
+	if !found {
+		b.LibrarySelection = data.Monsters[0].MonsterID
+	}
+	b.lastID = 0
+	for _, c := range b.Combatants {
+		if b.lastID < int64(c.ID) {
+			b.lastID = int64(c.ID)
+		}
+	}
+	return nil
 }
 
 // Save state to the specified path.
@@ -32,7 +56,7 @@ func (b *Board) Save(path string) error {
 
 // NextID returns the next ID to use for a combatant.
 func (b *Board) NextID() int {
-	return int(atomic.AddInt64(&b.LastID, 1))
+	return int(atomic.AddInt64(&b.lastID, 1))
 }
 
 // NewCombatant creates a new combatant and adds them to the board.

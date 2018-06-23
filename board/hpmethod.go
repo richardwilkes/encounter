@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/rpgtools/dice"
 )
 
@@ -24,7 +25,7 @@ var (
 	hpMethodsTable = []struct {
 		key    string
 		desc   string
-		method func(*Entity) int
+		method func(*data.Entity) int
 	}{
 		{
 			key:    "rolled",
@@ -70,7 +71,7 @@ func (hpm HPMethod) index() int {
 }
 
 // HP determines the HP for an entity based on the method chosen.
-func (hpm HPMethod) HP(e *Entity) int {
+func (hpm HPMethod) HP(e *data.Entity) int {
 	return hpMethodsTable[hpm.index()].method(e)
 }
 
@@ -96,7 +97,7 @@ func (hpm *HPMethod) UnmarshalText(text []byte) error {
 	return nil
 }
 
-func rolledHP(e *Entity) int {
+func rolledHP(e *data.Entity) int {
 	total := 0
 	hd := extractDice(e.HD)
 	for _, d := range hd {
@@ -105,7 +106,7 @@ func rolledHP(e *Entity) int {
 	return total
 }
 
-func minimumHP(e *Entity) int {
+func minimumHP(e *data.Entity) int {
 	total := 0
 	hd := extractDice(e.HD)
 	for i, d := range hd {
@@ -122,7 +123,7 @@ func minimumHP(e *Entity) int {
 	return total
 }
 
-func averageHP(e *Entity) int {
+func averageHP(e *data.Entity) int {
 	total := 0
 	hd := extractDice(e.HD)
 	for i, d := range hd {
@@ -139,7 +140,7 @@ func averageHP(e *Entity) int {
 	return total
 }
 
-func maximumHP(e *Entity) int {
+func maximumHP(e *data.Entity) int {
 	total := 0
 	hd := extractDice(e.HD)
 	for _, d := range hd {
@@ -148,7 +149,7 @@ func maximumHP(e *Entity) int {
 	return total
 }
 
-func threeQuartersHP(e *Entity) int {
+func threeQuartersHP(e *data.Entity) int {
 	total := 0
 	hd := extractDice(e.HD)
 	for i, d := range hd {

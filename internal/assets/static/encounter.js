@@ -405,6 +405,20 @@ function handleGlobalKeyDown(event) {
                 nextTurn();
             }
             break;
+        case "ArrowDown":
+            if (!isModalOpen()) {
+                event.stopPropagation();
+                event.preventDefault();
+                showNextMonster();
+            }
+            break;
+        case "ArrowUp":
+        if (!isModalOpen()) {
+            event.stopPropagation();
+            event.preventDefault();
+            showPreviousMonster();
+        }
+        break;
     }
 }
 
@@ -602,12 +616,57 @@ function findCombatantNode(elem) {
     return null;
 }
 
-function showMonster(id) {
+function showPreviousMonster() {
+    var elems = document.getElementById("library").children;
+    var length = elems.length;
+    var selectedElem;
+    for (var i = 0; i < length; i++) {
+        if (elems[i].classList.contains("library-selected")) {
+            if (i != 0) {
+                showMonster(elems[i - 1]);
+            }
+            break;
+        }
+    }
+}
+
+function showNextMonster() {
+    var elems = document.getElementById("library").children;
+    var length = elems.length;
+    var selectedElem;
+    for (var i = 0; i < length; i++) {
+        if (elems[i].classList.contains("library-selected")) {
+            if (i != length - 1) {
+                showMonster(elems[i + 1]);
+            }
+            break;
+        }
+    }
+}
+
+function showMonster(target) {
+    if (target.classList.contains("library-selected")) {
+        return;
+    }
+    var elems = document.getElementById("library").children;
+    var length = elems.length;
+    var selectedElem;
+    for (var i = 0; i < length; i++) {
+        if (elems[i].classList.contains("library-selected")) {
+            selectedElem = elems[i];
+            break;
+        }
+    }
     post("/cmds/showMonster", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("detail").innerHTML = xhttp.responseText;
+            selectedElem.classList.remove("library-selected");
+            target.classList.add("library-selected");
+            target.scrollIntoViewIfNeeded(false);
+            var detail = document.getElementById("detail");
+            detail.innerHTML = xhttp.responseText;
+            detail.children[0].scrollIntoView();
         }
     }, JSON.stringify({
-        "id" : id
+        "id" : target.getAttribute("mid")
     }));
 }

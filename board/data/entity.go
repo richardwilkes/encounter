@@ -1,4 +1,4 @@
-package board
+package data
 
 // Entity holds the static information for a combatant.
 type Entity struct {

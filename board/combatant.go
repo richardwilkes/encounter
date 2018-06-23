@@ -3,6 +3,8 @@ package board
 import (
 	"fmt"
 	"strings"
+
+	"github.com/richardwilkes/encounter/board/data"
 )
 
 // Combatant holds information for a single entity in combat.
@@ -23,7 +25,7 @@ type Combatant struct {
 	ReflexSave       int
 	WillSave         int
 	Attacks          string
-	Entity           *Entity
+	Entity           *data.Entity
 	Notes            []Note
 }
 

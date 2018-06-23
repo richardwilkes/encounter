@@ -1,8 +1,6 @@
 #library {
 	margin: 1em;
 	margin-right: 0;
-	padding-left: .5em;
-	padding-right: .5em;
 	box-shadow: 3px 3px 3px var(--shadow);
 	border: 1px solid var(--border);
 	overflow-x: scroll;
@@ -10,6 +8,12 @@
 }
 
 .library-item {
+	padding-left: .5em;
+	padding-right: .5em;
 	white-space: nowrap;
 	cursor: pointer;
+}
+
+.library-selected {
+	background-color: var(--current);
 }

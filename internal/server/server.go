@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/richardwilkes/encounter/board"
+	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/log/jot"
@@ -23,7 +24,7 @@ type Server struct {
 	web.Server
 	staticFS http.Handler
 	board    board.Board
-	detail   *board.Entity
+	detail   *data.Entity
 }
 
 // New creates a new server.
@@ -44,7 +45,7 @@ func New(address string) *Server {
 			InitiativeDice: dice.New(nil, "1d20"),
 			HPMethod:       board.AverageHPMethod,
 		},
-		detail: &board.Entity{},
+		detail: &data.Entity{},
 	}
 	s.Server.WebServer.Handler = s
 	s.Server.ShutdownCallback = s.handleShutdown
