@@ -149,7 +149,7 @@ func load() []board.Entity {
 		m.DescriptionVisual = record[53]
 		m.Group = record[54]
 		m.Source = record[55]
-		m.IsTemplate = parseFlag(record[56], line, "Is Template")
+		// m.IsTemplate = parseFlag(record[56], line, "Is Template")
 		m.SpecialAbilities = record[57]
 		m.Description = record[58]
 		// m.FullHTMLText = record[59]
@@ -163,8 +163,8 @@ func load() []board.Entity {
 		m.OtherGear = record[67]
 		m.Vulnerability = record[68]
 		m.Note = record[69]
-		m.CharacterFlag = parseFlag(record[70], line, "Is Character")
-		m.CompanionFlag = parseFlag(record[71], line, "Is Companion")
+		// m.CharacterFlag = parseFlag(record[70], line, "Is Character")
+		// m.CompanionFlag = parseFlag(record[71], line, "Is Companion")
 		m.Fly = parseFlag(record[72], line, "Has Fly Speed")
 		m.Climb = parseFlag(record[73], line, "Has Climb Speed")
 		m.Burrow = parseFlag(record[74], line, "Has Burrow Speed")
@@ -180,17 +180,17 @@ func load() []board.Entity {
 		m.Mystery = record[84]
 		m.ClassArchetypes = record[85]
 		m.Patron = record[86]
-		m.CompanionFamiliarLink = record[87]
+		// m.CompanionFamiliarLink = record[87]
 		m.FocusedSchool = record[88]
 		m.Traits = record[89]
 		m.AlternateNameForm = record[90]
 		m.StatisticsNote = record[91]
 		m.LinkText = record[92]
 		m.MonsterID = parseInt(record[93], -1, line, "Monster ID")
-		m.UniqueMonster = parseFlag(record[94], line, "Is Unique")
+		// m.UniqueMonster = parseFlag(record[94], line, "Is Unique")
 		m.MR = parseInt(record[95], 0, line, "MR")
 		m.Mythic = parseFlag(record[96], line, "Is Mythic")
-		m.MT = parseFlag(record[97], line, "MT")
+		// m.MT = parseFlag(record[97], line, "MT")
 		m.HasPCClass = hasPCClass(m.Class)
 		monsters = append(monsters, m)
 	}

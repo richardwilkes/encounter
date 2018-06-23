@@ -1,74 +1,98 @@
 <div id="detail">
 	<div class="dlabel">Name:</div>
-	<div class="dfield">{{.Detail.Name}}</div>
+	<div class="dfield">{{.Detail.NameWithTags}}</div>
 	<div class="dlabel">CR:</div>
 	<div class="dfield">{{.Detail.CR}}</div>
 	<div class="dlabel">XP:</div>
 	<div class="dfield">{{.Detail.XP}}</div>
+	{{- if .Detail.Race}}
 	<div class="dlabel">Race:</div>
 	<div class="dfield">{{.Detail.Race}}</div>
+	{{- end}}
+	{{- if .Detail.Class}}
 	<div class="dlabel">Class:</div>
 	<div class="dfield">{{.Detail.Class}}</div>
+	{{- end}}
 	<div class="dlabel">Alignment:</div>
 	<div class="dfield">{{.Detail.Alignment}}</div>
 	<div class="dlabel">Size:</div>
 	<div class="dfield">{{.Detail.Size}}</div>
 	<div class="dlabel">Type:</div>
-	<div class="dfield">{{.Detail.Type}}</div>
-	<div class="dlabel">Sub-Type(s):</div>
-	<div class="dfield">{{.Detail.SubType}}</div>
+	<div class="dfield">{{.Detail.Type}} {{.Detail.SubType}}</div>
 	<div class="dlabel">Init:</div>
 	<div class="dfield">{{.Detail.Init}}</div>
 	<div class="dlabel">Senses:</div>
 	<div class="dfield">{{.Detail.Senses}}</div>
+	{{- if .Detail.Aura}}
 	<div class="dlabel">Aura:</div>
 	<div class="dfield">{{.Detail.Aura}}</div>
+	{{- end}}
 	<div class="dlabel">AC:</div>
-	<div class="dfield">{{.Detail.AC}}</div>
-	<div class="dlabel">AC Mods:</div>
-	<div class="dfield">{{.Detail.ACMods}}</div>
+	<div class="dfield">{{.Detail.AC}} {{.Detail.ACMods}}</div>
 	<div class="dlabel">HP:</div>
-	<div class="dfield">{{.Board.HPMethod.HP .Detail}}</div>
-	<div class="dlabel">HP Mods:</div>
-	<div class="dfield">{{.Detail.HPMods}}</div>
+	<div class="dfield">{{.Board.HPMethod.HP .Detail}} {{.Detail.HPMods}}</div>
 	<div class="dlabel">HD:</div>
 	<div class="dfield">{{.Detail.HD}}</div>
 	<div class="dlabel">Saves:</div>
 	<div class="dfield">{{.Detail.Saves}}</div>
+	{{- if .Detail.DefensiveAbilities}}
 	<div class="dlabel">Defense Abilities:</div>
 	<div class="dfield">{{.Detail.DefensiveAbilities}}</div>
+	{{- end}}
+	{{- if .Detail.DR}}
 	<div class="dlabel">DR:</div>
 	<div class="dfield">{{.Detail.DR}}</div>
+	{{- end}}
+	{{- if .Detail.Immune}}
 	<div class="dlabel">Immune:</div>
 	<div class="dfield">{{.Detail.Immune}}</div>
+	{{- end}}
+	{{- if .Detail.Resist}}
 	<div class="dlabel">Resist:</div>
 	<div class="dfield">{{.Detail.Resist}}</div>
+	{{- end}}
+	{{- if .Detail.SR}}
 	<div class="dlabel">SR:</div>
 	<div class="dfield">{{.Detail.SR}}</div>
+	{{- end}}
+	{{- if .Detail.Weaknesses}}
 	<div class="dlabel">Weaknesses:</div>
 	<div class="dfield">{{.Detail.Weaknesses}}</div>
+	{{- end}}
 	<div class="dlabel">Speed:</div>
-	<div class="dfield">{{.Detail.Speed}}</div>
-	<div class="dlabel">Speed Mod:</div>
-	<div class="dfield">{{.Detail.SpeedMod}}</div>
+	<div class="dfield">{{.Detail.Speed}} {{.Detail.SpeedMod}}</div>
+	{{- if .Detail.Melee}}
 	<div class="dlabel">Melee:</div>
 	<div class="dfield">{{.Detail.Melee}}</div>
+	{{- end}}
+	{{- if .Detail.Ranged}}
 	<div class="dlabel">Ranged:</div>
 	<div class="dfield">{{.Detail.Ranged}}</div>
+	{{- end}}
 	<div class="dlabel">Space:</div>
 	<div class="dfield">{{.Detail.Space}}</div>
 	<div class="dlabel">Reach:</div>
 	<div class="dfield">{{.Detail.Reach}}</div>
+	{{- if .Detail.SpecialAttacks}}
 	<div class="dlabel">Special Attacks:</div>
 	<div class="dfield">{{.Detail.SpecialAttacks}}</div>
+	{{- end}}
+	{{- if .Detail.SpellLikeAbilities}}
 	<div class="dlabel">Spell-like Abilities:</div>
 	<div class="dfield">{{.Detail.SpellLikeAbilities}}</div>
+	{{- end}}
+	{{- if .Detail.SpellsKnown}}
 	<div class="dlabel">Spells Known:</div>
 	<div class="dfield">{{.Detail.SpellsKnown}}</div>
+	{{- end}}
+	{{- if .Detail.SpellsPrepared}}
 	<div class="dlabel">Spells Prepared:</div>
 	<div class="dfield">{{.Detail.SpellsPrepared}}</div>
+	{{- end}}
+	{{- if .Detail.SpellDomains}}
 	<div class="dlabel">Spell Domains:</div>
 	<div class="dfield">{{.Detail.SpellDomains}}</div>
+	{{- end}}
 	<div class="dlabel">Ability Scores:</div>
 	<div class="dfield">{{.Detail.AbilityScores}}</div>
 	<div class="dlabel">Base Attack:</div>
@@ -81,12 +105,18 @@
 	<div class="dfield">{{.Detail.Feats}}</div>
 	<div class="dlabel">Skills:</div>
 	<div class="dfield">{{.Detail.Skills}}</div>
+	{{- if .Detail.RacialMods}}
 	<div class="dlabel">Racial Mods:</div>
 	<div class="dfield">{{.Detail.RacialMods}}</div>
+	{{- end}}
+	{{- if .Detail.Languages}}
 	<div class="dlabel">Languages:</div>
 	<div class="dfield">{{.Detail.Languages}}</div>
+	{{- end}}
+	{{- if .Detail.SQ}}
 	<div class="dlabel">SQ:</div>
 	<div class="dfield">{{.Detail.SQ}}</div>
+	{{- end}}
 	<div class="dlabel">Environment:</div>
 	<div class="dfield">{{.Detail.Environment}}</div>
 	<div class="dlabel">Organization:</div>
@@ -95,72 +125,108 @@
 	<div class="dfield">{{.Detail.Treasure}}</div>
 	<div class="dlabel">Description (Visual):</div>
 	<div class="dfield">{{.Detail.DescriptionVisual}}</div>
+	{{- if .Detail.Group}}
 	<div class="dlabel">Group:</div>
 	<div class="dfield">{{.Detail.Group}}</div>
-	<div class="dlabel">Source:</div>
-	<div class="dfield">{{.Detail.Source}}</div>
-	<div class="dlabel">Is Template:</div>
-	<div class="dfield">{{.Detail.IsTemplate}}</div>
+	{{- end}}
+	{{- if .Detail.SpecialAbilities}}
 	<div class="dlabel">Special Abilities:</div>
 	<div class="dfield">{{.Detail.SpecialAbilities}}</div>
+	{{- end}}
 	<div class="dlabel">Description:</div>
 	<div class="dfield">{{.Detail.Description}}</div>
+	{{- if .Detail.Gender}}
 	<div class="dlabel">Gender:</div>
 	<div class="dfield">{{.Detail.Gender}}</div>
+	{{- end}}
+	{{- if .Detail.Bloodline}}
 	<div class="dlabel">Bloodline:</div>
 	<div class="dfield">{{.Detail.Bloodline}}</div>
+	{{- end}}
+	{{- if .Detail.ProhibitedSchools}}
 	<div class="dlabel">Prohibited Schools:</div>
 	<div class="dfield">{{.Detail.ProhibitedSchools}}</div>
+	{{- end}}
+	{{- if .Detail.BeforeCombat}}
 	<div class="dlabel">Before Combat:</div>
 	<div class="dfield">{{.Detail.BeforeCombat}}</div>
+	{{- end}}
+	{{- if .Detail.DuringCombat}}
 	<div class="dlabel">During Combat:</div>
 	<div class="dfield">{{.Detail.DuringCombat}}</div>
+	{{- end}}
+	{{- if .Detail.Morale}}
 	<div class="dlabel">Morale:</div>
 	<div class="dfield">{{.Detail.Morale}}</div>
+	{{- end}}
+	{{- if .Detail.Gear}}
 	<div class="dlabel">Gear:</div>
 	<div class="dfield">{{.Detail.Gear}}</div>
+	{{- end}}
+	{{- if .Detail.OtherGear}}
 	<div class="dlabel">Other Gear:</div>
 	<div class="dfield">{{.Detail.OtherGear}}</div>
+	{{- end}}
+	{{- if .Detail.Vulnerability}}
 	<div class="dlabel">Vulnerability:</div>
 	<div class="dfield">{{.Detail.Vulnerability}}</div>
+	{{- end}}
+	{{- if .Detail.Note}}
 	<div class="dlabel">Note:</div>
 	<div class="dfield">{{.Detail.Note}}</div>
-	<div class="dlabel">Is PC:</div>
-	<div class="dfield">{{.Detail.CharacterFlag}}</div>
-	<div class="dlabel">Is Companion:</div>
-	<div class="dfield">{{.Detail.CompanionFlag}}</div>
+	{{- end}}
+	{{- if .Detail.TemplatesApplied}}
 	<div class="dlabel">Templates Applied:</div>
 	<div class="dfield">{{.Detail.TemplatesApplied}}</div>
+	{{- end}}
+	{{- if .Detail.OffenseNote}}
 	<div class="dlabel">Offense Note:</div>
 	<div class="dfield">{{.Detail.OffenseNote}}</div>
+	{{- end}}
+	{{- if .Detail.BaseStatistics}}
 	<div class="dlabel">Base Statistics:</div>
 	<div class="dfield">{{.Detail.BaseStatistics}}</div>
+	{{- end}}
+	{{- if .Detail.ExtractsPrepared}}
 	<div class="dlabel">ExtractsPrepared:</div>
 	<div class="dfield">{{.Detail.ExtractsPrepared}}</div>
+	{{- end}}
+	{{- if .Detail.AgeCategory}}
 	<div class="dlabel">Age Category:</div>
 	<div class="dfield">{{.Detail.AgeCategory}}</div>
+	{{- end}}
+	{{- if .Detail.Mystery}}
 	<div class="dlabel">Mystery:</div>
 	<div class="dfield">{{.Detail.Mystery}}</div>
+	{{- end}}
+	{{- if .Detail.ClassArchetypes}}
 	<div class="dlabel">Class Archetypes:</div>
 	<div class="dfield">{{.Detail.ClassArchetypes}}</div>
+	{{- end}}
+	{{- if .Detail.Patron}}
 	<div class="dlabel">Patron:</div>
 	<div class="dfield">{{.Detail.Patron}}</div>
-	<div class="dlabel">Companion Familiar Link:</div>
-	<div class="dfield">{{.Detail.CompanionFamiliarLink}}</div>
+	{{- end}}
+	{{- if .Detail.FocusedSchool}}
 	<div class="dlabel">Focused School:</div>
 	<div class="dfield">{{.Detail.FocusedSchool}}</div>
+	{{- end}}
+	{{- if .Detail.Traits}}
 	<div class="dlabel">Traits:</div>
 	<div class="dfield">{{.Detail.Traits}}</div>
+	{{- end}}
+	{{- if .Detail.AlternateNameForm}}
 	<div class="dlabel">Alternate Name:</div>
 	<div class="dfield">{{.Detail.AlternateNameForm}}</div>
+	{{- end}}
+	{{- if .Detail.StatisticsNote}}
 	<div class="dlabel">Statistics Note:</div>
 	<div class="dfield">{{.Detail.StatisticsNote}}</div>
-	<div class="dlabel">Unique:</div>
-	<div class="dfield">{{.Detail.UniqueMonster}}</div>
+	{{- end}}
+	{{- if .Detail.MR}}
 	<div class="dlabel">Magic Resistance:</div>
 	<div class="dfield">{{.Detail.MR}}</div>
-	<div class="dlabel">Mythic:</div>
-	<div class="dfield">{{.Detail.Mythic}}</div>
-	<div class="dlabel">MT:</div>
-	<div class="dfield">{{.Detail.MT}}</div>
+	{{- end}}
+	<div class="dlabel">Source:</div>
+	<div class="dfield">{{.Detail.Source}}</div>
 </div>

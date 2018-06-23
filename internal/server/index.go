@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/richardwilkes/encounter/board"
+	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/toolbox/cmdline"
 	"github.com/richardwilkes/toolbox/errs"
@@ -17,6 +18,7 @@ type document struct {
 	Copyright string
 	Board     *board.Board
 	Detail    *board.Entity
+	Monsters  []board.Entity
 }
 
 func (s *Server) handleIndex(w http.ResponseWriter, req *http.Request) {
@@ -32,6 +34,7 @@ func (s *Server) handleIndex(w http.ResponseWriter, req *http.Request) {
 		Copyright: cmdline.Copyright(),
 		Board:     &s.board,
 		Detail:    s.detail,
+		Monsters:  data.Monsters,
 	}); err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)

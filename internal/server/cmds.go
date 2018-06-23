@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/richardwilkes/encounter/board"
+	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/collection"
@@ -62,6 +63,8 @@ func (s *Server) handleCmds(w http.ResponseWriter, req *http.Request) {
 		s.globalOptions(w, req)
 	case "reorder":
 		s.reorder(w, req)
+	case "showMonster":
+		s.showMonster(w, req)
 	default:
 		http.Error(w, "unknown command: "+cmd, http.StatusBadRequest)
 	}
@@ -643,4 +646,39 @@ func (s *Server) reorder(w http.ResponseWriter, req *http.Request) {
 	}
 	s.board.Combatants = combatants
 	s.refreshBoard(w)
+}
+
+func (s *Server) showMonster(w http.ResponseWriter, req *http.Request) {
+	id := int(json.MustParseStream(req.Body).Int64Relaxed("id"))
+	xio.CloseIgnoringErrors(req.Body)
+	for _, monster := range data.Monsters {
+		if monster.MonsterID == id {
+			s.detail = &monster
+			tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+			if err != nil {
+				jot.Error(errs.Wrap(err))
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			var buffer bytes.Buffer
+			doc := struct {
+				Board  *board.Board
+				Detail *board.Entity
+			}{
+				Board:  &s.board,
+				Detail: s.detail,
+			}
+			if err := tmpl.ExecuteTemplate(&buffer, "/detail.html", &doc); err != nil {
+				jot.Error(errs.Wrap(err))
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			if _, err := buffer.WriteTo(w); err != nil {
+				jot.Warn(errs.Wrap(err))
+			}
+			return
+		}
+	}
+	jot.Warnf("Monster ID %d not found", id)
+	w.WriteHeader(http.StatusNotFound)
 }

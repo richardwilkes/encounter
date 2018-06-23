@@ -1,0 +1,15 @@
+#library {
+	margin: 1em;
+	margin-right: 0;
+	padding-left: .5em;
+	padding-right: .5em;
+	box-shadow: 3px 3px 3px var(--shadow);
+	border: 1px solid var(--border);
+	overflow-x: scroll;
+	overflow-y: scroll;
+}
+
+.library-item {
+	white-space: nowrap;
+	cursor: pointer;
+}
