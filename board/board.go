@@ -19,7 +19,8 @@ type Board struct {
 	InitiativeDice   *dice.Dice
 	HPMethod         HPMethod
 	LibrarySelection int
-	lastID           int64
+	LibraryEntity    *data.Entity `json:"-"`
+	LastID           int64        `json:"-"`
 }
 
 // Load state from the specified path.
@@ -30,23 +31,30 @@ func (b *Board) Load(path string) error {
 	if b.InitiativeDice == nil {
 		b.InitiativeDice = dice.New(nil, "1d20")
 	}
-	found := false
+	var monster *data.Entity
 	for _, m := range data.Monsters {
 		if m.MonsterID == b.LibrarySelection {
-			found = true
+			monster = &m
 			break
 		}
 	}
-	if !found {
-		b.LibrarySelection = data.Monsters[0].MonsterID
+	if monster == nil {
+		monster = &data.Monsters[0]
 	}
-	b.lastID = 0
+	b.SetLibrarySelection(monster)
+	b.LastID = 0
 	for _, c := range b.Combatants {
-		if b.lastID < int64(c.ID) {
-			b.lastID = int64(c.ID)
+		if b.LastID < int64(c.ID) {
+			b.LastID = int64(c.ID)
 		}
 	}
 	return nil
+}
+
+// SetLibrarySelection sets the current library selection.
+func (b *Board) SetLibrarySelection(e *data.Entity) {
+	b.LibrarySelection = e.MonsterID
+	b.LibraryEntity = e
 }
 
 // Save state to the specified path.
@@ -56,7 +64,7 @@ func (b *Board) Save(path string) error {
 
 // NextID returns the next ID to use for a combatant.
 func (b *Board) NextID() int {
-	return int(atomic.AddInt64(&b.lastID, 1))
+	return int(atomic.AddInt64(&b.LastID, 1))
 }
 
 // NewCombatant creates a new combatant and adds them to the board.

@@ -653,8 +653,7 @@ func (s *Server) showMonster(w http.ResponseWriter, req *http.Request) {
 	xio.CloseIgnoringErrors(req.Body)
 	for _, monster := range data.Monsters {
 		if monster.MonsterID == id {
-			s.board.LibrarySelection = id
-			s.detail = &monster
+			s.board.SetLibrarySelection(&monster)
 			tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
 			if err != nil {
 				jot.Error(errs.Wrap(err))
@@ -662,14 +661,7 @@ func (s *Server) showMonster(w http.ResponseWriter, req *http.Request) {
 				return
 			}
 			var buffer bytes.Buffer
-			doc := struct {
-				Board  *board.Board
-				Detail *data.Entity
-			}{
-				Board:  &s.board,
-				Detail: s.detail,
-			}
-			if err := tmpl.ExecuteTemplate(&buffer, "/detail.html", &doc); err != nil {
+			if err := tmpl.ExecuteTemplate(&buffer, "/detail.html", &s.board); err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return

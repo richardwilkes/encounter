@@ -24,7 +24,6 @@ type Server struct {
 	web.Server
 	staticFS http.Handler
 	board    board.Board
-	detail   *data.Entity
 }
 
 // New creates a new server.
@@ -45,8 +44,8 @@ func New(address string) *Server {
 			InitiativeDice: dice.New(nil, "1d20"),
 			HPMethod:       board.AverageHPMethod,
 		},
-		detail: &data.Entity{},
 	}
+	s.board.SetLibrarySelection(&data.Monsters[0])
 	s.Server.WebServer.Handler = s
 	s.Server.ShutdownCallback = s.handleShutdown
 	if fs.FileExists(boardFile) {

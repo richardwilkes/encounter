@@ -33,7 +33,6 @@ func (s *Server) handleIndex(w http.ResponseWriter, req *http.Request) {
 		Title:     cmdline.AppName,
 		Copyright: cmdline.Copyright(),
 		Board:     &s.board,
-		Detail:    s.detail,
 		Monsters:  data.Monsters,
 	}); err != nil {
 		jot.Error(errs.Wrap(err))
