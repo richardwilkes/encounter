@@ -11,6 +11,8 @@
 		/ auto 1fr;
 	justify-items: stretch;
 	align-items: stretch;
+	overflow-x: none;
+	overflow-y: scroll;
 }
 
 .dlabel {

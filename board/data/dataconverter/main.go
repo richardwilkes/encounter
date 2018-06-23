@@ -147,7 +147,7 @@ func load() []board.Entity {
 		m.Organization = record[51]
 		m.Treasure = record[52]
 		m.DescriptionVisual = record[53]
-		m.Group = record[54]
+		// m.Group = record[54]
 		m.Source = record[55]
 		// m.IsTemplate = parseFlag(record[56], line, "Is Template")
 		m.SpecialAbilities = record[57]
@@ -189,7 +189,7 @@ func load() []board.Entity {
 		m.MonsterID = parseInt(record[93], -1, line, "Monster ID")
 		// m.UniqueMonster = parseFlag(record[94], line, "Is Unique")
 		m.MR = parseInt(record[95], 0, line, "MR")
-		m.Mythic = parseFlag(record[96], line, "Is Mythic")
+		// m.Mythic = parseFlag(record[96], line, "Is Mythic")
 		// m.MT = parseFlag(record[97], line, "MT")
 		m.HasPCClass = hasPCClass(m.Class)
 		monsters = append(monsters, m)

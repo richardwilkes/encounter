@@ -56,8 +56,8 @@ type Entity struct {
 	Organization      string // 51
 	Treasure          string // 52
 	DescriptionVisual string // 53
-	Group             string // 54
-	Source            string // 55
+	// Group             string // 54
+	Source string // 55
 	// IsTemplate        bool   // 56
 	SpecialAbilities string // 57
 	Description      string // 58
@@ -97,8 +97,8 @@ type Entity struct {
 	LinkText          string // 92
 	MonsterID         int    // 93
 	// UniqueMonster     bool   // 94
-	MR     int  // 95
-	Mythic bool // 96
+	MR int // 95
+	// Mythic bool // 96
 	// MT                bool   // 97
 	HasPCClass bool
 }
@@ -109,12 +109,4 @@ func (e *Entity) SortingName() string {
 		return e.LinkText
 	}
 	return e.Name
-}
-
-// NameWithTags returns the entities name plus any tags.
-func (e *Entity) NameWithTags() string {
-	if !e.Mythic {
-		return e.Name
-	}
-	return e.Name + " (Mythic)"
 }

@@ -605,7 +605,7 @@ function findCombatantNode(elem) {
 function showMonster(id) {
     post("/cmds/showMonster", function(xhttp) {
         if (xhttp.status == 200) {
-            document.getElementById("detail-area").innerHTML = xhttp.responseText;
+            document.getElementById("detail").innerHTML = xhttp.responseText;
         }
     }, JSON.stringify({
         "id" : id
