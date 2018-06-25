@@ -1,9 +1,12 @@
 package server
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/dustin/go-humanize"
 
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/board/data"
@@ -11,6 +14,7 @@ import (
 	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/xio/fs"
+	"github.com/richardwilkes/toolbox/xio/fs/embedded/htmltmpl"
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
 )
 
@@ -23,6 +27,7 @@ const (
 type Server struct {
 	web.Server
 	staticFS http.Handler
+	funcMap  template.FuncMap
 	board    board.Board
 }
 
@@ -40,6 +45,9 @@ func New(address string) *Server {
 			},
 		},
 		staticFS: http.FileServer(assets.StaticFS),
+		funcMap: template.FuncMap{
+			"comma": func(v int) string { return humanize.Comma(int64(v)) },
+		},
 		board: board.Board{
 			InitiativeDice: dice.New(nil, "1d20"),
 			HPMethod:       board.AverageHPMethod,
@@ -67,9 +75,15 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/", http.StatusTemporaryRedirect)
 	case "cmds":
 		s.handleCmds(w, req)
+	case "describe":
+		s.handleDescribe(w, req)
 	default:
 		s.staticFS.ServeHTTP(w, req)
 	}
+}
+
+func (s *Server) loadTemplates() (*template.Template, error) {
+	return htmltmpl.Load(template.New("root").Funcs(s.funcMap), assets.DynamicFS, "/", nil)
 }
 
 func (s *Server) handleShutdown() {

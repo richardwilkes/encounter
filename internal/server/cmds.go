@@ -10,7 +10,6 @@ import (
 
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/board/data"
-	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/collection"
 	"github.com/richardwilkes/toolbox/errs"
@@ -18,7 +17,6 @@ import (
 	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/txt"
 	"github.com/richardwilkes/toolbox/xio"
-	"github.com/richardwilkes/toolbox/xio/fs/embedded/htmltmpl"
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
 )
 
@@ -78,7 +76,7 @@ func (s *Server) addNote(w http.ResponseWriter, req *http.Request) {
 	if c := s.board.Lookup(id); c == nil {
 		http.Error(w, "no such combatant", http.StatusBadRequest)
 	} else {
-		tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+		tmpl, err := s.loadTemplates()
 		if err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
@@ -153,7 +151,7 @@ func (s *Server) editNote(w http.ResponseWriter, req *http.Request) {
 		if index < 0 || index >= len(c.Notes) {
 			http.Error(w, "no such note", http.StatusBadRequest)
 		} else {
-			tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+			tmpl, err := s.loadTemplates()
 			if err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)
@@ -193,7 +191,7 @@ func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {
 	if c := s.board.Lookup(id); c == nil {
 		http.Error(w, "no such combatant", http.StatusBadRequest)
 	} else {
-		tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+		tmpl, err := s.loadTemplates()
 		if err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
@@ -230,7 +228,7 @@ func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {
 	j := json.MustParseStream(req.Body)
 	panel := j.BoolRelaxed("panel")
 	xio.CloseIgnoringErrors(req.Body)
-	tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+	tmpl, err := s.loadTemplates()
 	if err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)
@@ -327,7 +325,7 @@ func (s *Server) editCombatant(w http.ResponseWriter, req *http.Request) {
 	if c := s.board.Lookup(id); c == nil {
 		http.Error(w, "no such combatant", http.StatusBadRequest)
 	} else {
-		tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+		tmpl, err := s.loadTemplates()
 		if err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
@@ -358,7 +356,7 @@ func (s *Server) rollInitiative(w http.ResponseWriter, req *http.Request) {
 	j := json.MustParseStream(req.Body)
 	panel := j.BoolRelaxed("panel")
 	xio.CloseIgnoringErrors(req.Body)
-	tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+	tmpl, err := s.loadTemplates()
 	if err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)
@@ -450,7 +448,7 @@ func (s *Server) globalOptions(w http.ResponseWriter, req *http.Request) {
 	panel := j.BoolRelaxed("panel")
 	xio.CloseIgnoringErrors(req.Body)
 	if panel {
-		tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+		tmpl, err := s.loadTemplates()
 		if err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
@@ -481,7 +479,7 @@ func (s *Server) deleteAllEnemies(w http.ResponseWriter, req *http.Request) {
 	}
 	s.board.Combatants = remaining
 	s.board.Round = 0
-	tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+	tmpl, err := s.loadTemplates()
 	if err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)
@@ -601,7 +599,7 @@ func (s *Server) nextTurn(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *Server) refreshBoard(w http.ResponseWriter) {
-	tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+	tmpl, err := s.loadTemplates()
 	if err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)
@@ -654,7 +652,7 @@ func (s *Server) showMonster(w http.ResponseWriter, req *http.Request) {
 	for _, monster := range data.Monsters {
 		if monster.MonsterID == id {
 			s.board.SetLibrarySelection(&monster)
-			tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+			tmpl, err := s.loadTemplates()
 			if err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)

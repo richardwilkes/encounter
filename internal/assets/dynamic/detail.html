@@ -1,226 +1,149 @@
-<div class="dlabel">Name:</div>
-<div class="dfield">{{.LibraryEntity.Name}}</div>
-<div class="dlabel">CR:</div>
-<div class="dfield">{{.LibraryEntity.CR}}</div>
-<div class="dlabel">XP:</div>
-<div class="dfield">{{.LibraryEntity.XP}}</div>
-{{- if .LibraryEntity.Race}}
-<div class="dlabel">Race:</div>
-<div class="dfield">{{.LibraryEntity.Race}}</div>
+<div class="dname">{{.LibraryEntity.Name}}</div>
+<div class="dtype">{{.LibraryEntity.Alignment}} {{.LibraryEntity.Size}} ({{.LibraryEntity.Space}}) {{.LibraryEntity.Type}} {{.LibraryEntity.SubType}}</div>
+<div class="dsource">{{.LibraryEntity.Source}}</div>
+<div class="dcrxp">
+	<div>CR {{.LibraryEntity.CR}}{{- if .LibraryEntity.MR}}; MR {{.LibraryEntity.MR}}{{- end}}</div>
+	<div>XP {{comma .LibraryEntity.XP}}</div>
+</div>
+
+<div class="dvisual">{{.LibraryEntity.DescriptionVisual}}{{if .LibraryEntity.Description}}<br><a href="/describe/{{.LibraryEntity.MonsterID}}" target="_blank">Full Description</a>{{end}}</div>
+
+<div class="dhdr">Defense</div>
+<div class="labeledfields">
+	<div class="dlabel">HP:</div>
+	<div class="dfield">{{.HPMethod.HP .LibraryEntity}} {{.LibraryEntity.HPMods}} ({{.LibraryEntity.HD}})</div>
+	<div class="dlabel">AC:</div>
+	<div class="dfield" title="{{.LibraryEntity.ACMods}}">{{.LibraryEntity.AC}}</div>
+	<div class="dlabel">CMD:</div>
+	<div class="dfield">{{.LibraryEntity.CMD}}</div>
+	<div class="dlabel">Saves:</div>
+	<div class="dfield">{{.LibraryEntity.Saves}}</div>
+	{{- if .LibraryEntity.DR}}
+	<div class="dlabel">DR:</div>
+	<div class="dfield">{{.LibraryEntity.DR}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.SR}}
+	<div class="dlabel">SR:</div>
+	<div class="dfield">{{.LibraryEntity.SR}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.Immune}}
+	<div class="dlabel">Immune:</div>
+	<div class="dfield">{{.LibraryEntity.Immune}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.Resist}}
+	<div class="dlabel">Resist:</div>
+	<div class="dfield">{{.LibraryEntity.Resist}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.Weaknesses}}
+	<div class="dlabel">Weaknesses:</div>
+	<div class="dfield">{{.LibraryEntity.Weaknesses}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.DefensiveAbilities}}
+	<div class="dlabel">Abilities:</div>
+	<div class="dfield">{{.LibraryEntity.DefensiveAbilities}}</div>
+	{{- end}}
+</div>
+
+<div class="dhdr">Offense</div>
+<div class="labeledfields">
+	{{- if .LibraryEntity.Melee}}
+	<div class="dlabel">Melee:</div>
+	<div class="dfield">{{if and .LibraryEntity.Reach (ne .LibraryEntity.Reach "5'")}}Reach {{.LibraryEntity.Reach}}; {{end}}{{.LibraryEntity.Melee}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.Ranged}}
+	<div class="dlabel">Ranged:</div>
+	<div class="dfield">{{.LibraryEntity.Ranged}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.SpecialAttacks}}
+	<div class="dlabel">Special:</div>
+	<div class="dfield">{{.LibraryEntity.SpecialAttacks}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.Aura}}
+	<div class="dlabel">Aura:</div>
+	<div class="dfield">{{.LibraryEntity.Aura}}</div>
+	{{- end}}
+	<div class="dlabel">BAB:</div>
+	<div class="dfield">{{.LibraryEntity.BaseAttack}}</div>
+	<div class="dlabel">CMB:</div>
+	<div class="dfield">{{.LibraryEntity.CMB}}</div>
+</div>
+
+<div class="dhdr">Statistics</div>
+<div class="dhdr">{{.LibraryEntity.AbilityScores}}</div>
+<div class="labeledfields">
+	<div class="dlabel">Init:</div>
+	<div class="dfield">{{.LibraryEntity.Init}}</div>
+	<div class="dlabel">Speed:</div>
+	<div class="dfield">{{.LibraryEntity.Speed}} {{.LibraryEntity.SpeedMod}}</div>
+	<div class="dlabel">Senses:</div>
+	<div class="dfield">{{.LibraryEntity.Senses}}</div>
+	<div class="dlabel">Skills:</div>
+	<div class="dfield">{{.LibraryEntity.Skills}}</div>
+	{{- if .LibraryEntity.Languages}}
+	<div class="dlabel">Lang:</div>
+	<div class="dfield">{{.LibraryEntity.Languages}}</div>
+	{{- end}}
+</div>
+
+{{- $sa := .LibraryEntity.ExtractSpecialAbilities -}}
+{{- if $sa}}
+<div class="dhdr">Special Abilities</div>
+{{- range $i, $e := $sa}}
+<div class="dcontent{{if $i}} dcontent-sep{{end}}"><b>{{$e.Label}}:</b> {{$e.Field}}</div>
 {{- end}}
-{{- if .LibraryEntity.Class}}
-<div class="dlabel">Class:</div>
-<div class="dfield">{{.LibraryEntity.Class}}</div>
 {{- end}}
-<div class="dlabel">Alignment:</div>
-<div class="dfield">{{.LibraryEntity.Alignment}}</div>
-<div class="dlabel">Size:</div>
-<div class="dfield">{{.LibraryEntity.Size}}</div>
-<div class="dlabel">Type:</div>
-<div class="dfield">{{.LibraryEntity.Type}} {{.LibraryEntity.SubType}}</div>
-<div class="dlabel">Init:</div>
-<div class="dfield">{{.LibraryEntity.Init}}</div>
-<div class="dlabel">Senses:</div>
-<div class="dfield">{{.LibraryEntity.Senses}}</div>
-{{- if .LibraryEntity.Aura}}
-<div class="dlabel">Aura:</div>
-<div class="dfield">{{.LibraryEntity.Aura}}</div>
+
+{{- if .LibraryEntity.SQ}}
+<div class="dhdr">Special Qualities:</div>
+<div class="dcontent">{{.LibraryEntity.SQ}}</div>
 {{- end}}
-<div class="dlabel">AC:</div>
-<div class="dfield">{{.LibraryEntity.AC}} {{.LibraryEntity.ACMods}}</div>
-<div class="dlabel">HP:</div>
-<div class="dfield">{{.HPMethod.HP .LibraryEntity}} {{.LibraryEntity.HPMods}}</div>
-<div class="dlabel">HD:</div>
-<div class="dfield">{{.LibraryEntity.HD}}</div>
-<div class="dlabel">Saves:</div>
-<div class="dfield">{{.LibraryEntity.Saves}}</div>
-{{- if .LibraryEntity.DefensiveAbilities}}
-<div class="dlabel">Defense Abilities:</div>
-<div class="dfield">{{.LibraryEntity.DefensiveAbilities}}</div>
-{{- end}}
-{{- if .LibraryEntity.DR}}
-<div class="dlabel">DR:</div>
-<div class="dfield">{{.LibraryEntity.DR}}</div>
-{{- end}}
-{{- if .LibraryEntity.Immune}}
-<div class="dlabel">Immune:</div>
-<div class="dfield">{{.LibraryEntity.Immune}}</div>
-{{- end}}
-{{- if .LibraryEntity.Resist}}
-<div class="dlabel">Resist:</div>
-<div class="dfield">{{.LibraryEntity.Resist}}</div>
-{{- end}}
-{{- if .LibraryEntity.SR}}
-<div class="dlabel">SR:</div>
-<div class="dfield">{{.LibraryEntity.SR}}</div>
-{{- end}}
-{{- if .LibraryEntity.Weaknesses}}
-<div class="dlabel">Weaknesses:</div>
-<div class="dfield">{{.LibraryEntity.Weaknesses}}</div>
-{{- end}}
-<div class="dlabel">Speed:</div>
-<div class="dfield">{{.LibraryEntity.Speed}} {{.LibraryEntity.SpeedMod}}</div>
-{{- if .LibraryEntity.Melee}}
-<div class="dlabel">Melee:</div>
-<div class="dfield">{{.LibraryEntity.Melee}}</div>
-{{- end}}
-{{- if .LibraryEntity.Ranged}}
-<div class="dlabel">Ranged:</div>
-<div class="dfield">{{.LibraryEntity.Ranged}}</div>
-{{- end}}
-<div class="dlabel">Space:</div>
-<div class="dfield">{{.LibraryEntity.Space}}</div>
-<div class="dlabel">Reach:</div>
-<div class="dfield">{{.LibraryEntity.Reach}}</div>
-{{- if .LibraryEntity.SpecialAttacks}}
-<div class="dlabel">Special Attacks:</div>
-<div class="dfield">{{.LibraryEntity.SpecialAttacks}}</div>
-{{- end}}
+
 {{- if .LibraryEntity.SpellLikeAbilities}}
-<div class="dlabel">Spell-like Abilities:</div>
-<div class="dfield">{{.LibraryEntity.SpellLikeAbilities}}</div>
+<div class="dhdr">Spell-like Abilities:</div>
+<div class="dcontent">{{.LibraryEntity.SpellLikeAbilities}}</div>
 {{- end}}
+
 {{- if .LibraryEntity.SpellsKnown}}
-<div class="dlabel">Spells Known:</div>
-<div class="dfield">{{.LibraryEntity.SpellsKnown}}</div>
+<div class="dhdr">Spells Known:</div>
+<div class="dcontent">{{.LibraryEntity.SpellsKnown}}</div>
 {{- end}}
 {{- if .LibraryEntity.SpellsPrepared}}
-<div class="dlabel">Spells Prepared:</div>
-<div class="dfield">{{.LibraryEntity.SpellsPrepared}}</div>
+<div class="dhdr">Spells Prepared:</div>
+<div class="dcontent">{{.LibraryEntity.SpellsPrepared}}</div>
 {{- end}}
 {{- if .LibraryEntity.SpellDomains}}
-<div class="dlabel">Spell Domains:</div>
-<div class="dfield">{{.LibraryEntity.SpellDomains}}</div>
+<div class="dhdr">Spell Domains:</div>
+<div class="dcontent">{{.LibraryEntity.SpellDomains}}</div>
 {{- end}}
-<div class="dlabel">Ability Scores:</div>
-<div class="dfield">{{.LibraryEntity.AbilityScores}}</div>
-<div class="dlabel">Base Attack:</div>
-<div class="dfield">{{.LibraryEntity.BaseAttack}}</div>
-<div class="dlabel">CMB:</div>
-<div class="dfield">{{.LibraryEntity.CMB}}</div>
-<div class="dlabel">CMD:</div>
-<div class="dfield">{{.LibraryEntity.CMD}}</div>
-<div class="dlabel">Feats:</div>
-<div class="dfield">{{.LibraryEntity.Feats}}</div>
-<div class="dlabel">Skills:</div>
-<div class="dfield">{{.LibraryEntity.Skills}}</div>
-{{- if .LibraryEntity.RacialMods}}
-<div class="dlabel">Racial Mods:</div>
-<div class="dfield">{{.LibraryEntity.RacialMods}}</div>
+
+
+{{- if .LibraryEntity.Feats}}
+<div class="dhdr">Feats:</div>
+<div class="dcontent">{{.LibraryEntity.Feats}}</div>
 {{- end}}
-{{- if .LibraryEntity.Languages}}
-<div class="dlabel">Languages:</div>
-<div class="dfield">{{.LibraryEntity.Languages}}</div>
+
+{{- if or .LibraryEntity.Gear .LibraryEntity.OtherGear (and .LibraryEntity.Treasure (ne .LibraryEntity.Treasure "none"))}}
+<div class="dhdr">Items</div>
+<div class="labeledfields">
+	{{- if .LibraryEntity.Gear}}
+	<div class="dlabel">Gear:</div>
+	<div class="dfield">{{.LibraryEntity.Gear}}</div>
+	{{- end}}
+	{{- if .LibraryEntity.OtherGear}}
+	<div class="dlabel">Other Gear:</div>
+	<div class="dfield">{{.LibraryEntity.OtherGear}}</div>
+	{{- end}}
+	{{- if and .LibraryEntity.Treasure (ne .LibraryEntity.Treasure "none")}}
+	<div class="dlabel">Treasure:</div>
+	<div class="dfield">{{.LibraryEntity.Treasure}}</div>
+	{{- end}}
+</div>
 {{- end}}
-{{- if .LibraryEntity.SQ}}
-<div class="dlabel">SQ:</div>
-<div class="dfield">{{.LibraryEntity.SQ}}</div>
-{{- end}}
-<div class="dlabel">Environment:</div>
-<div class="dfield">{{.LibraryEntity.Environment}}</div>
-<div class="dlabel">Organization:</div>
-<div class="dfield">{{.LibraryEntity.Organization}}</div>
-<div class="dlabel">Treasure:</div>
-<div class="dfield">{{.LibraryEntity.Treasure}}</div>
-<div class="dlabel">Description (Visual):</div>
-<div class="dfield">{{.LibraryEntity.DescriptionVisual}}</div>
-{{- if .LibraryEntity.SpecialAbilities}}
-<div class="dlabel">Special Abilities:</div>
-<div class="dfield">{{.LibraryEntity.SpecialAbilities}}</div>
-{{- end}}
-<div class="dlabel">Description:</div>
-<div class="dfield">{{.LibraryEntity.Description}}</div>
-{{- if .LibraryEntity.Gender}}
-<div class="dlabel">Gender:</div>
-<div class="dfield">{{.LibraryEntity.Gender}}</div>
-{{- end}}
-{{- if .LibraryEntity.Bloodline}}
-<div class="dlabel">Bloodline:</div>
-<div class="dfield">{{.LibraryEntity.Bloodline}}</div>
-{{- end}}
-{{- if .LibraryEntity.ProhibitedSchools}}
-<div class="dlabel">Prohibited Schools:</div>
-<div class="dfield">{{.LibraryEntity.ProhibitedSchools}}</div>
-{{- end}}
-{{- if .LibraryEntity.BeforeCombat}}
-<div class="dlabel">Before Combat:</div>
-<div class="dfield">{{.LibraryEntity.BeforeCombat}}</div>
-{{- end}}
-{{- if .LibraryEntity.DuringCombat}}
-<div class="dlabel">During Combat:</div>
-<div class="dfield">{{.LibraryEntity.DuringCombat}}</div>
-{{- end}}
-{{- if .LibraryEntity.Morale}}
-<div class="dlabel">Morale:</div>
-<div class="dfield">{{.LibraryEntity.Morale}}</div>
-{{- end}}
-{{- if .LibraryEntity.Gear}}
-<div class="dlabel">Gear:</div>
-<div class="dfield">{{.LibraryEntity.Gear}}</div>
-{{- end}}
-{{- if .LibraryEntity.OtherGear}}
-<div class="dlabel">Other Gear:</div>
-<div class="dfield">{{.LibraryEntity.OtherGear}}</div>
-{{- end}}
-{{- if .LibraryEntity.Vulnerability}}
-<div class="dlabel">Vulnerability:</div>
-<div class="dfield">{{.LibraryEntity.Vulnerability}}</div>
-{{- end}}
-{{- if .LibraryEntity.Note}}
-<div class="dlabel">Note:</div>
-<div class="dfield">{{.LibraryEntity.Note}}</div>
-{{- end}}
-{{- if .LibraryEntity.TemplatesApplied}}
-<div class="dlabel">Templates Applied:</div>
-<div class="dfield">{{.LibraryEntity.TemplatesApplied}}</div>
-{{- end}}
-{{- if .LibraryEntity.OffenseNote}}
-<div class="dlabel">Offense Note:</div>
-<div class="dfield">{{.LibraryEntity.OffenseNote}}</div>
-{{- end}}
-{{- if .LibraryEntity.BaseStatistics}}
-<div class="dlabel">Base Statistics:</div>
-<div class="dfield">{{.LibraryEntity.BaseStatistics}}</div>
-{{- end}}
-{{- if .LibraryEntity.ExtractsPrepared}}
-<div class="dlabel">ExtractsPrepared:</div>
-<div class="dfield">{{.LibraryEntity.ExtractsPrepared}}</div>
-{{- end}}
-{{- if .LibraryEntity.AgeCategory}}
-<div class="dlabel">Age Category:</div>
-<div class="dfield">{{.LibraryEntity.AgeCategory}}</div>
-{{- end}}
-{{- if .LibraryEntity.Mystery}}
-<div class="dlabel">Mystery:</div>
-<div class="dfield">{{.LibraryEntity.Mystery}}</div>
-{{- end}}
-{{- if .LibraryEntity.ClassArchetypes}}
-<div class="dlabel">Class Archetypes:</div>
-<div class="dfield">{{.LibraryEntity.ClassArchetypes}}</div>
-{{- end}}
-{{- if .LibraryEntity.Patron}}
-<div class="dlabel">Patron:</div>
-<div class="dfield">{{.LibraryEntity.Patron}}</div>
-{{- end}}
-{{- if .LibraryEntity.FocusedSchool}}
-<div class="dlabel">Focused School:</div>
-<div class="dfield">{{.LibraryEntity.FocusedSchool}}</div>
-{{- end}}
-{{- if .LibraryEntity.Traits}}
-<div class="dlabel">Traits:</div>
-<div class="dfield">{{.LibraryEntity.Traits}}</div>
-{{- end}}
-{{- if .LibraryEntity.AlternateNameForm}}
-<div class="dlabel">Alternate Name:</div>
-<div class="dfield">{{.LibraryEntity.AlternateNameForm}}</div>
-{{- end}}
-{{- if .LibraryEntity.StatisticsNote}}
-<div class="dlabel">Statistics Note:</div>
-<div class="dfield">{{.LibraryEntity.StatisticsNote}}</div>
-{{- end}}
-{{- if .LibraryEntity.MR}}
-<div class="dlabel">Magic Resistance:</div>
-<div class="dfield">{{.LibraryEntity.MR}}</div>
-{{- end}}
-<div class="dlabel">Source:</div>
-<div class="dfield">{{.LibraryEntity.Source}}</div>
+
+<div class="dhdr">Ecology</div>
+<div class="labeledfields">
+	<div class="dlabel">Environment:</div>
+	<div class="dfield">{{.LibraryEntity.Environment}}</div>
+	<div class="dlabel">Organization:</div>
+	<div class="dfield">{{.LibraryEntity.Organization}}</div>
+</div>

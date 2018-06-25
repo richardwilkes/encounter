@@ -2,17 +2,84 @@
 	margin: 1em;
 	margin-left: 0;
 	min-width: 100px;
-	max-width: 300px;
+	max-width: 24em;
 	box-shadow: 3px 3px 3px var(--shadow);
 	border: 1px solid var(--border);
+	display: flex;
+	flex-direction: column;
+	align-content: flex-start;
+	overflow-x: none;
+	overflow-y: scroll;
+}
+
+.dname {
+	text-align: center;
+	padding-left: .5em;
+	padding-right: .5em;
+	padding-top: .1em;
+	font-weight: bold;
+	color: var(--board-hdr-fg);
+	background-color: var(--board-hdr-bg);
+}
+
+.dtype {
+	text-align: center;
+	padding-left: .5em;
+	padding-right: .5em;
+	color: var(--board-hdr-fg);
+	background-color: var(--board-hdr-bg);
+	font-size: 80%;
+}
+
+.dsource {
+	text-align: center;
+	padding-left: .5em;
+	padding-right: .5em;
+	color: var(--board-hdr-fg);
+	background-color: var(--board-hdr-bg);
+	font-size: 70%;
+}
+.dcrxp {
+	padding-left: .5em;
+	padding-right: .5em;
+	padding-bottom: .1em;
+	color: var(--board-hdr-fg);
+	background-color: var(--board-hdr-bg);
+	display: grid;
+	grid-template: "cr xp" / auto auto;
+	justify-content: space-between;
+	font-size: 90%;
+}
+
+.dvisual {
+	padding-left: .5em;
+	padding-right: .5em;
+	font-size: 80%;
+}
+
+.dhdr {
+	text-align: center;
+	padding-left: .5em;
+	padding-right: .5em;
+	color: var(--board-hdr-fg);
+	background-color: var(--board-hdr-bg);
+}
+
+.dcontent {
+	padding-left: .5em;
+	padding-right: .5em;
+}
+
+.dcontent-sep {
+	padding-top: .5em;
+}
+
+.labeledfields {
 	display: grid;
 	grid-template:
 		"dlabel dfield"
 		/ auto 1fr;
-	justify-items: stretch;
-	align-items: stretch;
-	overflow-x: none;
-	overflow-y: scroll;
+	align-content: start;
 }
 
 .dlabel {

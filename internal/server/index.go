@@ -6,23 +6,20 @@ import (
 
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/board/data"
-	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/toolbox/cmdline"
 	"github.com/richardwilkes/toolbox/errs"
 	"github.com/richardwilkes/toolbox/log/jot"
-	"github.com/richardwilkes/toolbox/xio/fs/embedded/htmltmpl"
 )
 
 type document struct {
 	Title     string
 	Copyright string
 	Board     *board.Board
-	Detail    *data.Entity
 	Monsters  []data.Entity
 }
 
 func (s *Server) handleIndex(w http.ResponseWriter, req *http.Request) {
-	tmpl, err := htmltmpl.Load(nil, assets.DynamicFS, "/", nil)
+	tmpl, err := s.loadTemplates()
 	if err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)

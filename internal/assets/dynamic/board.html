@@ -7,15 +7,6 @@
 	<div class="hhp-desc">Status</div>
 	<div class="hhp">Current</div>
 	<div class="hhp-max">Max</div>
-	<div class="hac-hdr">Armor Class</div>
-	<div class="hac">AC</div>
-	<div class="hac-touch">Touch</div>
-	<div class="hac-flat">Flat</div>
-	<div class="hsaves-hdr">Saving Throws</div>
-	<div class="hfortitude">Fort</div>
-	<div class="hreflex">Reflex</div>
-	<div class="hwill">Will</div>
-	<div class="hattacks"><br>Attacks</div>
 	<div class="hnotes"><br>Notes</div>
 {{- $board := .}}{{range .Combatants}}
 	<div class="name{{$board.CurrentTag .}}" cid="{{.ID}}">
@@ -37,13 +28,6 @@
 		<div class="controls"><i class="fas fa-heart button" title="Adjust hit points" onclick="adjustHP({{.ID}})"></i></div>
 	</div>
 	<div class="hp-max{{$board.CurrentTag .}}" cid="{{.ID}}">{{.HPFull}}</div>
-	<div class="ac{{$board.CurrentTag .}}" cid="{{.ID}}">{{.AC}}</div>
-	<div class="ac-touch{{$board.CurrentTag .}}" cid="{{.ID}}">{{.TouchAC}}</div>
-	<div class="ac-flat{{$board.CurrentTag .}}" cid="{{.ID}}">{{.FlatAC}}</div>
-	<div class="fortitude{{$board.CurrentTag .}}" cid="{{.ID}}">{{.FortitudeSave}}</div>
-	<div class="reflex{{$board.CurrentTag .}}" cid="{{.ID}}">{{.ReflexSave}}</div>
-	<div class="will{{$board.CurrentTag .}}" cid="{{.ID}}">{{.WillSave}}</div>
-	<div class="attacks{{$board.CurrentTag .}}" cid="{{.ID}}">{{.Attacks}}</div>
 	<div class="notes{{$board.CurrentTag .}}" cid="{{.ID}}">
 		<i class="fas fa-plus-circle button" title="Add note" onclick="addNote({{.ID}})"></i>
 		{{- $combatant := .}}{{range $index, $note := .Notes}}

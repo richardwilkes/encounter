@@ -99,10 +99,10 @@ i {
 	border: 1px solid var(--border);
 	display: grid;
 	grid-template:
-		"hname hinit hhp-hdr hhp-hdr hhp-hdr hac-hdr hac-hdr hac-hdr hsaves-hdr hsaves-hdr hsaves-hdr hattacks hnotes"
-		"hname hinit hhp-desc hhp hhp-max hac hac-touch hac-flat hfortitude hreflex hwill hattacks hnotes"
-		"name init hp-desc hp hp-max ac ac-touch ac-flat fortitude reflex will attacks notes"
-		/ auto auto auto auto auto auto auto auto auto auto auto auto 1fr;
+		"hname hinit hhp-hdr hhp-hdr hhp-hdr hnotes"
+		"hname hinit hhp-desc hhp hhp-max hnotes"
+		"name init hp-desc hp hp-max notes"
+		/ auto auto auto auto auto 1fr;
 	justify-items: stretch;
 	align-items: stretch;
 }
@@ -131,42 +131,6 @@ i {
 	grid-area: hhp-max;
 }
 
-.hac-hdr {
-	grid-area: hac-hdr;
-}
-
-.hac {
-	grid-area: hac;
-}
-
-.hac-touch {
-	grid-area: hac-touch;
-}
-
-.hac-flat {
-	grid-area: hac-flat;
-}
-
-.hsaves-hdr {
-	grid-area: hsaves-hdr;
-}
-
-.hfortitude {
-	grid-area: hfortitude;
-}
-
-.hreflex {
-	grid-area: hreflex;
-}
-
-.hwill {
-	grid-area: hwill;
-}
-
-.hattacks {
-	grid-area: hattacks;
-}
-
 .hnotes {
 	grid-area: hnotes;
 }
@@ -177,15 +141,6 @@ i {
 .hhp-desc,
 .hhp,
 .hhp-max,
-.hac-hdr,
-.hac,
-.hac-touch,
-.hac-flat,
-.hsaves-hdr,
-.hfortitude,
-.hreflex,
-.hwill,
-.hattacks,
 .hnotes {
 	background-color: var(--board-hdr-bg);
 	color: var(--board-hdr-fg);
@@ -201,28 +156,12 @@ i {
 .hhp-desc,
 .hhp,
 .hhp-max,
-.hac-hdr,
-.hac,
-.hac-touch,
-.hac-flat,
-.hsaves-hdr,
-.hfortitude,
-.hreflex,
-.hwill,
-.hattacks,
 .hnotes,
 .name,
 .init,
 .hp-desc,
 .hp,
 .hp-max,
-.ac,
-.ac-touch,
-.ac-flat,
-.fortitude,
-.reflex,
-.will,
-.attacks,
 .notes {
 	border-bottom: 1px solid var(--border);
 	padding-left: .3em;
@@ -231,7 +170,6 @@ i {
 
 .hname,
 .hinit,
-.hattacks,
 .hnotes {
 	padding-top: calc(.6ex + 1px);
 }
@@ -241,27 +179,11 @@ i {
 .hhp-desc,
 .hhp,
 .hhp-max,
-.hac-hdr,
-.hac,
-.hac-touch,
-.hac-flat,
-.hsaves-hdr,
-.hfortitude,
-.hreflex,
-.hwill,
-.hattacks,
 .hnotes,
 .init,
 .hp-desc,
 .hp,
 .hp-max,
-.ac,
-.ac-touch,
-.ac-flat,
-.fortitude,
-.reflex,
-.will,
-.attacks,
 .notes {
 	border-left: 1px solid var(--border);
 }
@@ -271,64 +193,36 @@ i {
 .hp-desc,
 .hp,
 .hp-max,
-.ac,
-.ac-touch,
-.ac-flat,
-.fortitude,
-.reflex,
-.will,
-.attacks,
 .notes {
 	padding-top: calc(.5ex + var(--drag-marker-height));
 	padding-bottom: calc(.5ex + var(--drag-marker-height));
 }
 
-.name:nth-last-child(13),
-.init:nth-last-child(12),
-.hp-desc:nth-last-child(11),
-.hp:nth-last-child(10),
-.hp-max:nth-last-child(9),
-.ac:nth-last-child(8),
-.ac-touch:nth-last-child(7),
-.ac-flat:nth-last-child(6),
-.fortitude:nth-last-child(5),
-.reflex:nth-last-child(4),
-.will:nth-last-child(3),
-.attacks:nth-last-child(2),
+.name:nth-last-child(6),
+.init:nth-last-child(5),
+.hp-desc:nth-last-child(4),
+.hp:nth-last-child(3),
+.hp-max:nth-last-child(2),
 .notes:nth-last-child(1) {
 	border-bottom: none;
 	padding-bottom: calc(.5ex + var(--drag-marker-height) + 1px);
 }
 
-.name:nth-child(26n+17),
-.init:nth-child(26n+18),
-.hp-desc:nth-child(26n+19),
-.hp:nth-child(26n+20),
-.hp-max:nth-child(26n+21),
-.ac:nth-child(26n+22),
-.ac-touch:nth-child(26n+23),
-.ac-flat:nth-child(26n+24),
-.fortitude:nth-child(26n+25),
-.reflex:nth-child(26n+26),
-.will:nth-child(26n+27),
-.attacks:nth-child(26n+28),
-.notes:nth-child(26n+29) {
+.name:nth-child(12n+8),
+.init:nth-child(12n+9),
+.hp-desc:nth-child(12n+10),
+.hp:nth-child(12n+11),
+.hp-max:nth-child(12n+12),
+.notes:nth-child(12n+13) {
 	background-color: #eeeeff;
 }
 
-.name:nth-child(26n+29),
-.init:nth-child(26n+30),
-.hp-desc:nth-child(26n+31),
-.hp:nth-child(26n+32),
-.hp-max:nth-child(26n+33),
-.ac:nth-child(26n+34),
-.ac-touch:nth-child(26n+35),
-.ac-flat:nth-child(26n+36),
-.fortitude:nth-child(26n+37),
-.reflex:nth-child(26n+38),
-.will:nth-child(26n+39),
-.attacks:nth-child(26n+40),
-.notes:nth-child(26n+41) {
+.name:nth-child(12n+13),
+.init:nth-child(12n+14),
+.hp-desc:nth-child(12n+15),
+.hp:nth-child(12n+16),
+.hp-max:nth-child(12n+17),
+.notes:nth-child(12n+18) {
 	background-color: #eeffee;
 }
 
@@ -353,13 +247,7 @@ i {
 
 .init,
 .hp,
-.hp-max,
-.ac,
-.ac-touch,
-.ac-flat,
-.fortitude,
-.reflex,
-.will {
+.hp-max {
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
@@ -374,7 +262,6 @@ i {
 	margin-left: .5em;
 }
 
-.attacks,
 .notes {
 	display: flex;
 	justify-content: flex-start;
@@ -501,13 +388,6 @@ i {
 }
 
 .drag-marker-bottom,
-.drag-marker-bottom:nth-last-child(13),
-.drag-marker-bottom:nth-last-child(12),
-.drag-marker-bottom:nth-last-child(11),
-.drag-marker-bottom:nth-last-child(10),
-.drag-marker-bottom:nth-last-child(9),
-.drag-marker-bottom:nth-last-child(8),
-.drag-marker-bottom:nth-last-child(7),
 .drag-marker-bottom:nth-last-child(6),
 .drag-marker-bottom:nth-last-child(5),
 .drag-marker-bottom:nth-last-child(4),

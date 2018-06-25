@@ -96,9 +96,7 @@ func load() []data.Entity {
 		m.Name = record[0]
 		m.CR = record[1]
 		m.XP = parseInt(record[2], 0, line, "XP")
-		m.Race = record[3]
-		m.Class = record[4]
-		//m.MonsterSource = record[5]
+		m.HasPCClass = hasPCClass(record[4])
 		m.Alignment = record[6]
 		m.Size = record[7]
 		m.Type = record[8]
@@ -108,14 +106,9 @@ func load() []data.Entity {
 		m.Aura = record[12]
 		m.AC = record[13]
 		m.ACMods = record[14]
-		// m.HP = parseInt(record[15], 0, line, "HP")
 		m.HD = cleanupHD(record[16])
 		m.HPMods = record[17]
 		m.Saves = record[18]
-		// m.Fort = record[19]
-		// m.Ref = record[20]
-		// m.Will = record[21]
-		// m.SaveMods = record[22]
 		m.DefensiveAbilities = record[23]
 		m.DR = record[24]
 		m.Immune = record[25]
@@ -134,70 +127,86 @@ func load() []data.Entity {
 		m.SpellsPrepared = fixSpellsPrepared(record[38])
 		m.SpellDomains = record[39]
 		m.AbilityScores = record[40]
-		// m.AbilityScoreMods = record[41]
 		m.BaseAttack = parseInt(record[42], 0, line, "Base Attack")
 		m.CMB = record[43]
 		m.CMD = record[44]
 		m.Feats = record[45]
 		m.Skills = record[46]
-		m.RacialMods = record[47]
 		m.Languages = record[48]
 		m.SQ = record[49]
 		m.Environment = record[50]
 		m.Organization = record[51]
 		m.Treasure = record[52]
 		m.DescriptionVisual = record[53]
-		// m.Group = record[54]
 		m.Source = record[55]
-		// m.IsTemplate = parseFlag(record[56], line, "Is Template")
 		m.SpecialAbilities = record[57]
 		m.Description = record[58]
-		// m.FullHTMLText = record[59]
-		m.Gender = record[60]
-		m.Bloodline = record[61]
-		m.ProhibitedSchools = record[62]
-		m.BeforeCombat = record[63]
-		m.DuringCombat = record[64]
-		m.Morale = record[65]
 		m.Gear = record[66]
 		m.OtherGear = record[67]
-		m.Vulnerability = record[68]
-		m.Note = record[69]
-		// m.CharacterFlag = parseFlag(record[70], line, "Is Character")
-		// m.CompanionFlag = parseFlag(record[71], line, "Is Companion")
-		m.Fly = parseFlag(record[72], line, "Has Fly Speed")
-		m.Climb = parseFlag(record[73], line, "Has Climb Speed")
-		m.Burrow = parseFlag(record[74], line, "Has Burrow Speed")
-		m.Swim = parseFlag(record[75], line, "Has Swim Speed")
-		m.Land = parseFlag(record[76], line, "Has Land Speed")
-		m.TemplatesApplied = record[77]
-		m.OffenseNote = record[78]
-		m.BaseStatistics = record[79]
-		m.ExtractsPrepared = record[80]
-		m.AgeCategory = record[81]
-		m.DontUseRacialHD = parseFlag(record[82], line, "Don't Use Racial HD")
-		m.VariantParent = record[83]
-		m.Mystery = record[84]
-		m.ClassArchetypes = record[85]
-		m.Patron = record[86]
-		// m.CompanionFamiliarLink = record[87]
-		m.FocusedSchool = record[88]
-		m.Traits = record[89]
-		m.AlternateNameForm = record[90]
-		m.StatisticsNote = record[91]
-		m.LinkText = record[92]
+		appendData(record[68], &m.Weaknesses)
+		appendData(record[80], &m.SpellsPrepared)
+		if record[92] != "" {
+			m.Name = record[92]
+		}
+		if record[90] != "" {
+			// Those that have a parenthetical after their name already have the alternate name form embedded.
+			if !strings.HasSuffix(m.Name, ")") {
+				// Prune out some odd cases
+				if !strings.HasPrefix(record[90], "Chaos Lord Of ") {
+					m.Name += " (" + record[90] + ")"
+				}
+			}
+		}
+		m.Name = renameDragons(m.Name)
 		m.MonsterID = parseInt(record[93], -1, line, "Monster ID")
-		// m.UniqueMonster = parseFlag(record[94], line, "Is Unique")
 		m.MR = parseInt(record[95], 0, line, "MR")
-		// m.Mythic = parseFlag(record[96], line, "Is Mythic")
-		// m.MT = parseFlag(record[97], line, "MT")
-		m.HasPCClass = hasPCClass(m.Class)
 		monsters = append(monsters, m)
 	}
 	sort.Slice(monsters, func(i, j int) bool {
-		return txt.NaturalLess(monsters[i].SortingName(), monsters[j].SortingName(), true)
+		return txt.NaturalLess(monsters[i].Name, monsters[j].Name, true)
 	})
 	return monsters
+}
+
+func appendData(in string, dest *string) {
+	if in != "" {
+		if *dest == "" {
+			*dest = in
+		} else {
+			*dest += "; " + in
+		}
+	}
+}
+
+func renameDragons(in string) string {
+	if !strings.HasSuffix(in, " Dragon") {
+		return in
+	}
+	parts := strings.Split(in, " ")
+	switch parts[0] {
+	case "Mythic":
+		return renameDragons(strings.Join(parts[1:], " ")) + ", Mythic"
+	case "Great":
+		return "Dragon, " + parts[2] + ", Great Wyrm"
+	case "Mature":
+		if len(parts) == 3 {
+			return "Dragon, " + parts[1] + ", " + parts[0]
+		}
+		return "Dragon, " + parts[2] + ", Mature Adult"
+	case "Young":
+		if parts[1] == "Adult" {
+			return "Dragon, " + parts[2] + ", Young Adult"
+		}
+		return "Dragon, " + parts[1] + ", Young"
+	case "Very":
+		return "Dragon, " + parts[2] + ", " + parts[0] + " " + parts[1]
+	case "Adult", "Ancient", "Juvenile", "Old", "Wyrm", "Wyrmling":
+		return "Dragon, " + parts[1] + ", " + parts[0]
+	case "Elemental":
+		return "Dragon, Elemental, " + parts[1]
+	default:
+		return "Dragon, " + strings.Join(parts[:len(parts)-1], " ")
+	}
 }
 
 func fixSpellsPrepared(in string) string {
