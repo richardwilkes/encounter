@@ -1,9 +1,32 @@
-#library {
+#library-area {
 	margin: 1em;
 	margin-right: 0;
 	box-shadow: 3px 3px 3px var(--shadow);
 	border: 1px solid var(--border);
-	overflow-x: scroll;
+	display: flex;
+	flex-direction: column;
+	align-content: flex-start;
+}
+
+#library-filter {
+	color: var(--board-hdr-fg);
+	background-color: var(--board-hdr-bg);
+	padding-left: .5em;
+	padding-right: .5em;
+	padding-top: .2ex;
+	padding-bottom: .2ex;
+	white-space: nowrap;
+}
+
+#library-filter input {
+	width: 100%;
+}
+
+#library {
+	display: flex;
+	flex-direction: column;
+	align-content: flex-start;
+	overflow-x: hidden;
 	overflow-y: scroll;
 }
 
@@ -16,4 +39,8 @@
 
 .library-selected {
 	background-color: var(--current);
+}
+
+.hide {
+	display: none;
 }

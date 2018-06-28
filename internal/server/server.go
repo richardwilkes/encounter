@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -46,7 +47,8 @@ func New(address string) *Server {
 		},
 		staticFS: http.FileServer(assets.StaticFS),
 		funcMap: template.FuncMap{
-			"comma": func(v int) string { return humanize.Comma(int64(v)) },
+			"comma":     func(v int) string { return humanize.Comma(int64(v)) },
+			"lowercase": func(str string) string { return strings.ToLower(str) },
 		},
 		board: board.Board{
 			InitiativeDice: dice.New(nil, "1d20"),

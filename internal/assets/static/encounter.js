@@ -381,8 +381,20 @@ function closeSimpleModal() {
     document.getElementById("simple-modal-dialog").classList.add("closed");
 }
 
+function isModalClosed() {
+    return document.getElementById("modal-overlay").classList.contains("closed");
+}
+
 function isModalOpen() {
-    return !document.getElementById("modal-overlay").classList.contains("closed");
+    return !isModalClosed();
+}
+
+function isActiveElementInput() {
+    return document.activeElement !== undefined && document.activeElement.nodeName == "INPUT";
+}
+
+function isForGlobalKeyHandler() {
+    return !isActiveElementInput() && isModalClosed();
 }
 
 function post(url, callback, data) {
@@ -398,51 +410,47 @@ function post(url, callback, data) {
 }
 
 function handleGlobalKeyDown(event) {
-    switch (event.code) {
-        case "KeyN":
-            if (!isModalOpen()) {
+    if (isForGlobalKeyHandler()) {
+        switch (event.code) {
+            case "KeyN":
                 event.stopPropagation();
                 nextTurn();
-            }
-            break;
-        case "ArrowDown":
-            if (!isModalOpen()) {
+                break;
+            case "ArrowDown":
                 event.stopPropagation();
                 event.preventDefault();
                 showNextMonster();
-            }
-            break;
-        case "ArrowUp":
-        if (!isModalOpen()) {
-            event.stopPropagation();
-            event.preventDefault();
-            showPreviousMonster();
+                break;
+            case "ArrowUp":
+                event.stopPropagation();
+                event.preventDefault();
+                showPreviousMonster();
+                break;
         }
-        break;
     }
 }
 
 function handleDefaultButton(event) {
-    switch (event.code) {
-        case "Enter":
-        case "NumpadEnter":
-            if (isModalOpen()) {
-                var defButton = document.getElementById("simple-modal-dialog").default_button;
-                if (defButton !== undefined) {
-                    event.stopPropagation();
-                    defButton.click();
-                }
+    if (isForGlobalKeyHandler()) {
+        if (isModalOpen()) {
+            switch (event.code) {
+                case "Enter":
+                case "NumpadEnter":
+                    var defButton = document.getElementById("simple-modal-dialog").default_button;
+                    if (defButton !== undefined) {
+                        event.stopPropagation();
+                        defButton.click();
+                    }
+                    break;
+                case "Escape":
+                    var cancelButton = document.getElementById("simple-modal-dialog").cancel_button;
+                    if (cancelButton !== undefined) {
+                        event.stopPropagation();
+                        cancelButton.click();
+                    }
+                    break;
             }
-            break;
-        case "Escape":
-            if (isModalOpen()) {
-                var cancelButton = document.getElementById("simple-modal-dialog").cancel_button;
-                if (cancelButton !== undefined) {
-                    event.stopPropagation();
-                    cancelButton.click();
-                }
-            }
-            break;
+        }
     }
 }
 
@@ -669,4 +677,66 @@ function showMonster(target) {
     }, JSON.stringify({
         "id" : target.getAttribute("mid")
     }));
+}
+
+function libraryFilterChanged(value) {
+    var exact = null;
+    var contains = null;
+    var containsIndex = 999999;
+    var elems = document.getElementById("library").children;
+    var length = elems.length;
+    if (value == "") {
+        for (var i = 0; i < length; i++) {
+            elems[i].classList.remove("hide");
+        }
+    } else {
+        value = value.toLowerCase();
+        for (var i = 0; i < length; i++) {
+            var e = elems[i];
+            var name = e.getAttribute("name");
+            var index = name.indexOf(value);
+            if (index == -1) {
+                if (!e.classList.contains("hide")) {
+                    e.classList.add("hide");
+                }
+            } else {
+                if (e.classList.contains("hide")) {
+                    e.classList.remove("hide");
+                }
+                if (exact === null) {
+                    if (name == value) {
+                        exact = e;
+                    } else if (index < containsIndex) {
+                        contains = e;
+                        containsIndex = index;
+                    }
+                }
+            }
+        }
+    }
+    if (exact !== null) {
+        showMonster(exact);
+    } else if (contains !== null) {
+        showMonster(contains);
+    }
+    scrollLibrarySelectionIntoViewIfNeeded();
+}
+
+function clearLibraryFilterOnEnter(event) {
+    if (event.code == "Enter" || event.code == "NumpadEnter") {
+        event.target.value = "";
+        event.target.blur();
+        libraryFilterChanged("");
+    }
+}
+
+function scrollLibrarySelectionIntoViewIfNeeded() {
+    var elems = document.getElementById("library").children;
+    var length = elems.length;
+    for (var i = 0; i < length; i++) {
+        if (elems[i].classList.contains("library-selected")) {
+            elems[i].scrollIntoViewIfNeeded(false);
+            break;
+        }
+    }
 }
