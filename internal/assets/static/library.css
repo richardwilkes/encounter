@@ -3,9 +3,11 @@
 	margin-right: 0;
 	box-shadow: 3px 3px 3px var(--shadow);
 	border: 1px solid var(--border);
+	background-color: var(--content-bg);
 	display: flex;
 	flex-direction: column;
 	align-content: flex-start;
+	width: 19.5em;
 }
 
 #library-filter {
@@ -16,10 +18,10 @@
 	padding-top: .2ex;
 	padding-bottom: .2ex;
 	white-space: nowrap;
-}
-
-#library-filter input {
-	width: 100%;
+	display: grid;
+	grid-template-columns: 0fr 1fr;
+	grid-column-gap: .2em;
+	align-items: center;
 }
 
 #library {

@@ -1,10 +1,11 @@
 <div id="library-area">
 	<div id="library-filter">
+		Filter:
 		<input type="search" name="filter" autocomplete="off" oninput="libraryFilterChanged(this.value)" onkeypress="clearLibraryFilterOnEnter(event)">
 	</div>
 	<div id="library">{{$sel := .Board.LibrarySelection}}
 		{{- range .Monsters}}
-		<div class="library-item{{if eq .MonsterID $sel}} library-selected{{end}}" mid="{{.MonsterID}}" name="{{lowercase .Name}}" onclick="showMonster(this)">{{.Name}}</div>
+		<div class="library-item{{if eq .MonsterID $sel}} library-selected{{end}}" mid="{{.MonsterID}}" name="{{lowercase .Name}}" onclick="showMonster(this)">{{.Name}} (CR {{.CR}})</div>
 		{{- end}}
 	</div>
 </div>

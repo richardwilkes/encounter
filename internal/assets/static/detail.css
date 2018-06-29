@@ -5,6 +5,7 @@
 	max-width: 24em;
 	box-shadow: 3px 3px 3px var(--shadow);
 	border: 1px solid var(--border);
+	background-color: var(--content-bg);
 	display: flex;
 	flex-direction: column;
 	align-content: flex-start;
