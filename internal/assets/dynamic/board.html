@@ -16,6 +16,9 @@
 		</div>
 		<div class="controls">
 			<i class="fas fa-bullseye button{{if or (eq $board.Round 0) ($board.IsCurrent .)}} invisible{{end}}" title="Focus this combatant" onclick="makeCurrentCombatant({{.ID}})"></i>
+			{{- if .Entity}}
+			<i class="fas fa-eye button" title="View combatant" onclick="showMonster(findMonsterByID({{.Entity.MonsterID}}))"></i>
+			{{- end}}
 			<i class="fas fa-pencil-alt button" title="Edit combatant" onclick="editCombatant({{.ID}})"></i>
 			<i class="fas fa-copy button" title="Duplicate combatant" onclick="duplicateCombatant({{.ID}})"></i>
 			<i class="fas fa-trash button" title="Delete combatant" onclick="deleteCombatant({{.Name}}, {{.ID}})"></i>

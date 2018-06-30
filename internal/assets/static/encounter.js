@@ -679,6 +679,17 @@ function showMonster(target) {
     }));
 }
 
+function findMonsterByID(id) {
+    var elems = document.getElementById("library").children;
+    var length = elems.length;
+    for (var i = 0; i < length; i++) {
+        if (elems[i].getAttribute("mid") == id) {
+            return elems[i];
+        }
+    }
+    return null;
+}
+
 function libraryFilterChanged(value) {
     var exact = null;
     var contains = null;
