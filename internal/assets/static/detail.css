@@ -11,6 +11,7 @@
 	align-content: flex-start;
 	overflow-x: hidden;
 	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 }
 
 .dname {
