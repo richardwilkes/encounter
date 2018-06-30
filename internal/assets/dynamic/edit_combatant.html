@@ -9,20 +9,6 @@
 	<input class="field" type="text" name="hp_tmp" maxlength="6" autocomplete="off" value="{{.HPTemporary}}" onkeydown="handleDefaultButton(event)">
 	<div class="label">Hit Points (Damage):</div>
 	<input class="field" type="text" name="hp_damage" maxlength="6" autocomplete="off" value="{{.HPDamage}}" onkeydown="handleDefaultButton(event)">
-	<div class="label">Armor Class:</div>
-	<input class="field" type="text" name="ac" maxlength="3" autocomplete="off" value="{{.AC}}" onkeydown="handleDefaultButton(event)">
-	<div class="label">Touch Armor Class:</div>
-	<input class="field" type="text" name="ac-touch" maxlength="3" autocomplete="off" value="{{.TouchAC}}" onkeydown="handleDefaultButton(event)">
-	<div class="label">Flat-Footed Armor Class:</div>
-	<input class="field" type="text" name="ac-flat" maxlength="3" autocomplete="off" value="{{.FlatAC}}" onkeydown="handleDefaultButton(event)">
-	<div class="label">Fortitude Save:</div>
-	<input class="field" type="text" name="fortitude" maxlength="3" autocomplete="off" value="{{.FortitudeSave}}" onkeydown="handleDefaultButton(event)">
-	<div class="label">Reflex Save:</div>
-	<input class="field" type="text" name="reflex" maxlength="3" autocomplete="off" value="{{.ReflexSave}}" onkeydown="handleDefaultButton(event)">
-	<div class="label">Will Save:</div>
-	<input class="field" type="text" name="will" maxlength="3" autocomplete="off" value="{{.WillSave}}" onkeydown="handleDefaultButton(event)">
-	<div class="label">Attacks:</div>
-	<input class="field" type="text" name="attacks" autocomplete="off" value="{{.Attacks}}" onkeydown="handleDefaultButton(event)">
 	<hr>
 	<div class="checkbox"><input class="checkbox" type="checkbox" name="enemy"{{if .Enemy}} checked{{end}}> Enemy</div>
 </div>

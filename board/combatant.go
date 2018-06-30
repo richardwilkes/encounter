@@ -11,33 +11,23 @@ import (
 type Combatant struct {
 	ID               int
 	Name             string
-	Enemy            bool
 	Initiative       int
 	InitiativeBase   int
 	RandomTieBreaker int
 	HPFull           int
 	HPTemporary      int
 	HPDamage         int
-	AC               int
-	TouchAC          int
-	FlatAC           int
-	FortitudeSave    int
-	ReflexSave       int
-	WillSave         int
-	Attacks          string
 	Entity           *data.Entity
 	Notes            []Note
+	Enemy            bool
 }
 
 // NewCombatant creates a new combatant.
 func NewCombatant(id int, name string) *Combatant {
 	return &Combatant{
-		ID:      id,
-		Name:    name,
-		Enemy:   true,
-		AC:      10,
-		TouchAC: 10,
-		FlatAC:  10,
+		ID:    id,
+		Name:  name,
+		Enemy: true,
 	}
 }
 
