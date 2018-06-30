@@ -227,6 +227,10 @@ func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {
 func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {
 	j := json.MustParseStream(req.Body)
 	panel := j.BoolRelaxed("panel")
+	var basedOn *data.Entity
+	if j.Exists("based_on") {
+		basedOn = data.ByID[int(j.Int64Relaxed("based_on"))]
+	}
 	xio.CloseIgnoringErrors(req.Body)
 	tmpl, err := s.loadTemplates()
 	if err != nil {
@@ -236,14 +240,14 @@ func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {
 	}
 	var buffer bytes.Buffer
 	if panel {
-		c := board.NewCombatant(0, s.board.SuggestName("#1"))
+		c := s.board.NewCombatant(false, basedOn)
 		if err := tmpl.ExecuteTemplate(&buffer, "/edit_combatant.html", c); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	} else {
-		c := board.NewCombatant(s.board.NextID(), s.board.SuggestName("#1"))
+		c := s.board.NewCombatant(true, basedOn)
 		s.board.Combatants = append(s.board.Combatants, c)
 		updateCombatant(c, j)
 		if err := tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {

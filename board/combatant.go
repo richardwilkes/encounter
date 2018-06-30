@@ -22,15 +22,6 @@ type Combatant struct {
 	Enemy            bool
 }
 
-// NewCombatant creates a new combatant.
-func NewCombatant(id int, name string) *Combatant {
-	return &Combatant{
-		ID:    id,
-		Name:  name,
-		Enemy: true,
-	}
-}
-
 // PossessiveName returns the possessive form of the combatant's name.
 func (c *Combatant) PossessiveName() string {
 	if strings.HasSuffix(strings.ToLower(c.Name), "s") {

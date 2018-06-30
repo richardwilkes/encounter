@@ -23,6 +23,14 @@
 	background-color: var(--board-hdr-bg);
 }
 
+.dname .button {
+	color: var(--board-hdr-fg);
+}
+
+.dname .button:hover {
+	color: var(--clickable);
+}
+
 .dtype {
 	text-align: center;
 	padding-left: .5em;

@@ -2,6 +2,7 @@ package data
 
 import (
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -147,4 +148,32 @@ func (e *Entity) ExtractSpecialAbilities() []*LabeledField {
 		}
 	}
 	return result
+}
+
+// ExtractInitiativeBase returns the base initiative.
+func (e *Entity) ExtractInitiativeBase() int {
+	var buffer strings.Builder
+	leading := true
+	for _, ch := range e.Init {
+		if leading {
+			if ch == ' ' {
+				continue
+			}
+			if ch == '-' || ch >= '0' && ch <= '9' {
+				buffer.WriteRune(ch)
+				leading = false
+			}
+		} else {
+			if ch >= '0' && ch <= '9' {
+				buffer.WriteRune(ch)
+			} else {
+				break
+			}
+		}
+	}
+	init, err := strconv.Atoi(buffer.String())
+	if err != nil {
+		return 0
+	}
+	return init
 }

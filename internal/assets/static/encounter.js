@@ -70,7 +70,11 @@ function globalOptions() {
     }));
 }
 
-function newCombatant() {
+function newCombatant(id) {
+    var payload = { "panel": true };
+    if (id !== undefined) {
+        payload.based_on = id;
+    }
     post("/cmds/newCombatant", function(xhttp) {
         if (xhttp.status == 200) {
             simpleModal({
@@ -83,9 +87,7 @@ function newCombatant() {
                         onclick: function() {
                             var inputs = document.getElementById("fields").getElementsByTagName("input");
                             var length = inputs.length;
-                            var payload = {
-                                "panel": false
-                            }
+                            payload.panel = false;
                             for (var i = 0; i < length; i++) {
                                 if (inputs[i].type == "checkbox") {
                                     payload[inputs[i].name] = inputs[i].checked;
@@ -104,9 +106,7 @@ function newCombatant() {
                 ]
             });
         }
-    }, JSON.stringify({
-        "panel" : true
-    }));
+    }, JSON.stringify(payload));
 }
 
 function editCombatant(id) {

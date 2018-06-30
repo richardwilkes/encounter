@@ -306,6 +306,14 @@ func save(monsters []data.Entity) {
 		}
 		buffer.WriteString("},\n")
 	}
+	buffer.WriteString("}\n\n")
+	buffer.WriteString("// ByID allows for fast monster lookup by ID.\n")
+	buffer.WriteString("var ByID = make(map[int]*Entity)\n\n")
+	buffer.WriteString("func init() {\n")
+	buffer.WriteString("	for _, e := range Monsters {\n")
+	buffer.WriteString("		var entity = e\n")
+	buffer.WriteString("		ByID[e.MonsterID] = &entity\n")
+	buffer.WriteString("	}\n")
 	buffer.WriteString("}\n")
 
 	data, err := format.Source(buffer.Bytes())

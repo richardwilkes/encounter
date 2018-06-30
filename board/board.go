@@ -67,10 +67,26 @@ func (b *Board) NextID() int {
 	return int(atomic.AddInt64(&b.LastID, 1))
 }
 
-// NewCombatant creates a new combatant and adds them to the board.
-func (b *Board) NewCombatant(nameHint string) *Combatant {
-	c := NewCombatant(b.NextID(), b.SuggestName(nameHint))
-	b.Combatants = append(b.Combatants, c)
+// NewCombatant creates a new combatant.
+func (b *Board) NewCombatant(genID bool, entity *data.Entity) *Combatant {
+	id := 0
+	if genID {
+		id = b.NextID()
+	}
+	nameHint := "#1"
+	if entity != nil {
+		nameHint = entity.Name
+	}
+	c := &Combatant{
+		ID:     id,
+		Name:   b.SuggestName(nameHint),
+		Entity: entity,
+		Enemy:  entity != nil,
+	}
+	if entity != nil {
+		c.InitiativeBase = entity.ExtractInitiativeBase()
+		c.HPFull = b.HPMethod.HP(entity)
+	}
 	return c
 }
 
