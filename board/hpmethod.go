@@ -62,6 +62,21 @@ func init() {
 	}
 }
 
+// AllMethods returns all possible methods.
+func (hpm HPMethod) AllMethods() []HPMethod {
+	return AllHPMethods
+}
+
+// Lookup returns the HPMethod by keyed name.
+func (hpm HPMethod) Lookup(key string) HPMethod {
+	for i, one := range hpMethodsTable {
+		if one.key == key {
+			return HPMethod(i)
+		}
+	}
+	return AverageHPMethod
+}
+
 func (hpm HPMethod) index() int {
 	i := int(hpm)
 	if i < 0 || i >= len(hpMethodsTable) {
@@ -79,9 +94,14 @@ func (hpm HPMethod) String() string {
 	return hpMethodsTable[hpm.index()].desc
 }
 
+// Key returns the key used for encoding.
+func (hpm HPMethod) Key() string {
+	return hpMethodsTable[hpm.index()].key
+}
+
 // MarshalText implements the encoding.TextMarshaler interface.
 func (hpm HPMethod) MarshalText() (text []byte, err error) {
-	return []byte(hpMethodsTable[hpm.index()].key), nil
+	return []byte(hpm.Key()), nil
 }
 
 // UnmarshalText implements the encoding.TextUnmarshaler interface.

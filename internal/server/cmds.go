@@ -438,6 +438,9 @@ func (s *Server) globalOptions(w http.ResponseWriter, req *http.Request) {
 		if j.Exists("init_dice") {
 			s.board.InitiativeDice = dice.New(nil, j.Str("init_dice"))
 		}
+		if j.Exists("hp_method") {
+			s.board.HPMethod.UnmarshalText([]byte(j.Str("hp_method")))
+		}
 	}
 }
 

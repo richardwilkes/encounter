@@ -2,4 +2,10 @@
 <div id="fields" onkeydown="handleDefaultButton(event)">
 	<div class="label">Initiative Dice:</div>
 	<input class="field" type="text" name="init_dice" maxlength="20" value="{{.InitiativeDice}}" autocomplete="off" onkeydown="handleDefaultButton(event)" autofocus>
+	<div class="label">Hit Point Method:</div>
+	<select class="field" name="hp_method">
+		{{$cur := .HPMethod}}{{range .HPMethod.AllMethods}}
+		<option value="{{.Key}}"{{if eq . $cur}} selected{{end}}>{{.String}}</option>
+		{{end}}
+	</select>
 </div>

@@ -49,15 +49,21 @@ function globalOptions() {
                         title: "Apply",
                         autofocus: true,
                         onclick: function() {
+                            var payload = { "panel": false };
                             var inputs = document.getElementById("fields").getElementsByTagName("input");
                             var length = inputs.length;
-                            var payload = {
-                                "panel": false
+                            for (var i = 0; i < length; i++) {
+                                payload[inputs[i].name] = inputs[i].value;
                             }
+                            inputs = document.getElementById("fields").getElementsByTagName("select");
+                            length = inputs.length;
                             for (var i = 0; i < length; i++) {
                                 payload[inputs[i].name] = inputs[i].value;
                             }
                             post("/cmds/globalOptions", function(xhttp) {
+                                if (xhttp.status == 200) {
+                                    showMonster(selectedMonsterElem(), true);
+                                }
                                 closeSimpleModal();
                             }, JSON.stringify(payload));
                         },
@@ -73,38 +79,43 @@ function globalOptions() {
 function newCombatant(id) {
     var payload = { "panel": true };
     if (id !== undefined) {
+        payload.panel = false;
         payload.based_on = id;
     }
     post("/cmds/newCombatant", function(xhttp) {
         if (xhttp.status == 200) {
-            simpleModal({
-                content: xhttp.responseText,
-                wantAutoFocus: false,
-                buttons: [
-                    {
-                        title: "Add",
-                        autofocus: true,
-                        onclick: function() {
-                            var inputs = document.getElementById("fields").getElementsByTagName("input");
-                            var length = inputs.length;
-                            payload.panel = false;
-                            for (var i = 0; i < length; i++) {
-                                if (inputs[i].type == "checkbox") {
-                                    payload[inputs[i].name] = inputs[i].checked;
-                                } else {
-                                    payload[inputs[i].name] = inputs[i].value;
+            if (payload.panel) {
+                simpleModal({
+                    content: xhttp.responseText,
+                    wantAutoFocus: false,
+                    buttons: [
+                        {
+                            title: "Add",
+                            autofocus: true,
+                            onclick: function() {
+                                var inputs = document.getElementById("fields").getElementsByTagName("input");
+                                var length = inputs.length;
+                                payload.panel = false;
+                                for (var i = 0; i < length; i++) {
+                                    if (inputs[i].type == "checkbox") {
+                                        payload[inputs[i].name] = inputs[i].checked;
+                                    } else {
+                                        payload[inputs[i].name] = inputs[i].value;
+                                    }
                                 }
-                            }
-                            post("/cmds/newCombatant", function(xhttp) {
-                                if (xhttp.status == 200) {
-                                    document.getElementById("board-area").innerHTML = xhttp.responseText;
-                                }
-                                closeSimpleModal();
-                            }, JSON.stringify(payload));
-                        },
-                    }
-                ]
-            });
+                                post("/cmds/newCombatant", function(xhttp) {
+                                    if (xhttp.status == 200) {
+                                        document.getElementById("board-area").innerHTML = xhttp.responseText;
+                                    }
+                                    closeSimpleModal();
+                                }, JSON.stringify(payload));
+                            },
+                        }
+                    ]
+                });
+            } else {
+                document.getElementById("board-area").innerHTML = xhttp.responseText;
+            }
         }
     }, JSON.stringify(payload));
 }
@@ -662,8 +673,19 @@ function showNextMonster() {
     }
 }
 
-function showMonster(target) {
-    if (target.classList.contains("library-selected")) {
+function selectedMonsterElem() {
+    var elems = document.getElementById("library").children;
+    var length = elems.length;
+    for (var i = 0; i < length; i++) {
+        if (elems[i].classList.contains("library-selected")) {
+            return elems[i];
+        }
+    }
+    return null;
+}
+
+function showMonster(target, force) {
+    if ((force === undefined || !force) && target.classList.contains("library-selected")) {
         return;
     }
     var elems = document.getElementById("library").children;

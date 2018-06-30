@@ -11,7 +11,14 @@
 <div class="dhdr">Defense</div>
 <div class="labeledfields">
 	<div class="dlabel">HP:</div>
-	<div class="dfield">{{.HPMethod.HP .LibraryEntity}} {{.LibraryEntity.HPMods}} ({{.LibraryEntity.HD}})</div>
+	<div class="dfield">
+		{{if eq .HPMethod.Key "rolled"}}
+		{{(.HPMethod.Lookup "minimum").HP .LibraryEntity}} to {{(.HPMethod.Lookup "maximum").HP .LibraryEntity}}
+		{{else}}
+		{{.HPMethod.HP .LibraryEntity}}
+		{{end}}
+		{{.LibraryEntity.HPMods}} ({{.LibraryEntity.HD}})
+	</div>
 	<div class="dlabel">AC:</div>
 	<div class="dfield" title="{{.LibraryEntity.ACMods}}">{{.LibraryEntity.AC}}</div>
 	<div class="dlabel">CMD:</div>
