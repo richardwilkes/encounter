@@ -631,7 +631,12 @@ function showPreviousMonster() {
     for (var i = 0; i < length; i++) {
         if (elems[i].classList.contains("library-selected")) {
             if (i != 0) {
-                showMonster(elems[i - 1]);
+                for (var j = i - 1; j >= 0; j--) {
+                    if (!elems[j].classList.contains("hide")) {
+                        showMonster(elems[j]);
+                        break;
+                    }
+                }
             }
             break;
         }
@@ -645,7 +650,12 @@ function showNextMonster() {
     for (var i = 0; i < length; i++) {
         if (elems[i].classList.contains("library-selected")) {
             if (i != length - 1) {
-                showMonster(elems[i + 1]);
+                for (var j = i + 1; j < length; j++) {
+                    if (!elems[j].classList.contains("hide")) {
+                        showMonster(elems[j]);
+                        break;
+                    }
+                }
             }
             break;
         }
