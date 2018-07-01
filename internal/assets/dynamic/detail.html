@@ -35,13 +35,13 @@
 	<div class="dlabel">SR:</div>
 	<div class="dfield">{{.LibraryEntity.SR}}</div>
 	{{- end}}
-	{{- if .LibraryEntity.Immune}}
-	<div class="dlabel">Immune:</div>
-	<div class="dfield">{{.LibraryEntity.Immune}}</div>
+	{{- if .LibraryEntity.Immunities}}
+	<div class="dlabel">Immunities:</div>
+	<div class="dfield">{{.LibraryEntity.Immunities}}</div>
 	{{- end}}
-	{{- if .LibraryEntity.Resist}}
-	<div class="dlabel">Resist:</div>
-	<div class="dfield">{{.LibraryEntity.Resist}}</div>
+	{{- if .LibraryEntity.Resistances}}
+	<div class="dlabel">Resistances:</div>
+	<div class="dfield">{{.LibraryEntity.Resistances}}</div>
 	{{- end}}
 	{{- if .LibraryEntity.Weaknesses}}
 	<div class="dlabel">Weaknesses:</div>
@@ -80,8 +80,8 @@
 <div class="dhdr">Statistics</div>
 <div class="dhdr">{{.LibraryEntity.AbilityScores}}</div>
 <div class="labeledfields">
-	<div class="dlabel">Init:</div>
-	<div class="dfield">{{.LibraryEntity.Init}}</div>
+	<div class="dlabel">Initiative:</div>
+	<div class="dfield">{{.LibraryEntity.Initiative}}</div>
 	<div class="dlabel">Speed:</div>
 	<div class="dfield">{{.LibraryEntity.Speed}} {{.LibraryEntity.SpeedMod}}</div>
 	<div class="dlabel">Senses:</div>
@@ -102,9 +102,9 @@
 {{- end}}
 {{- end}}
 
-{{- if .LibraryEntity.SQ}}
+{{- if .LibraryEntity.SpecialQualities}}
 <div class="dhdr">Special Qualities:</div>
-<div class="dcontent">{{.LibraryEntity.SQ}}</div>
+<div class="dcontent">{{.LibraryEntity.SpecialQualities}}</div>
 {{- end}}
 
 {{- if .LibraryEntity.SpellLikeAbilities}}
@@ -124,7 +124,6 @@
 <div class="dhdr">Spell Domains:</div>
 <div class="dcontent">{{.LibraryEntity.SpellDomains}}</div>
 {{- end}}
-
 
 {{- if .LibraryEntity.Feats}}
 <div class="dhdr">Feats:</div>

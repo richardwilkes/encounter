@@ -25,7 +25,6 @@ import (
 )
 
 var (
-	nextID       = 1
 	subTierRegex = regexp.MustCompile("^(.*) (Sub){0,1}[Tt]{1}ier [0-9]+-[0-9]*$")
 	entities     = make([]data.Entity, 0)
 	pcClasses    = []string{
@@ -73,6 +72,21 @@ var (
 func main() {
 	load("board/data/dataconverter/monsters.csv")
 	load("board/data/dataconverter/npcs.csv")
+	for i := range entities {
+		entities[i].ID = i + 1
+	}
+	sort.Slice(entities, func(i, j int) bool {
+		if entities[i].Name != entities[j].Name {
+			return txt.NaturalLess(entities[i].Name, entities[j].Name, true)
+		}
+		if entities[i].CR != entities[j].CR {
+			return txt.NaturalLess(entities[i].CR, entities[j].CR, true)
+		}
+		return entities[i].ID < entities[j].ID
+	})
+	for i := range entities {
+		entities[i].ID = i + 1
+	}
 	save()
 }
 
@@ -99,11 +113,7 @@ func load(path string) {
 			continue
 		}
 		var m data.Entity
-		if result := subTierRegex.FindAllStringSubmatch(record[0], -1); result != nil {
-			m.Name = result[0][1]
-		} else {
-			m.Name = record[0]
-		}
+		m.Name = extractName(record)
 		m.CR = record[1]
 		if record[2] != "-" {
 			m.XP = parseInt(record[2], 0, path, line, "XP")
@@ -114,7 +124,7 @@ func load(path string) {
 		m.Size = record[7]
 		m.Type = record[8]
 		m.SubType = record[9]
-		m.Init = strings.Replace(record[10], "- ", "-", -1)
+		m.Initiative = strings.Replace(record[10], "- ", "-", -1)
 		m.Senses = record[11]
 		m.Aura = record[12]
 		m.AC = record[13]
@@ -124,8 +134,8 @@ func load(path string) {
 		m.Saves = record[18]
 		m.DefensiveAbilities = record[23]
 		m.DR = record[24]
-		m.Immune = record[25]
-		m.Resist = record[26]
+		m.Immunities = record[25]
+		m.Resistances = record[26]
 		m.SR = record[27]
 		m.Weaknesses = record[28]
 		m.Speed = record[29]
@@ -146,11 +156,11 @@ func load(path string) {
 		m.Feats = record[45]
 		m.Skills = record[46]
 		m.Languages = record[48]
-		m.SQ = record[49]
-		appendDataWithPrefix(record[61], "Bloodline: ", &m.SQ)
-		appendDataWithPrefix(record[88], "Focused School: ", &m.SQ)
-		appendDataWithPrefix(record[62], "Prohibited Schools: ", &m.SQ)
-		appendDataWithPrefix(record[84], "Mystery: ", &m.SQ)
+		m.SpecialQualities = record[49]
+		appendDataWithPrefix(record[61], "Bloodline: ", &m.SpecialQualities)
+		appendDataWithPrefix(record[88], "Focused School: ", &m.SpecialQualities)
+		appendDataWithPrefix(record[62], "Prohibited Schools: ", &m.SpecialQualities)
+		appendDataWithPrefix(record[84], "Mystery: ", &m.SpecialQualities)
 		m.Environment = record[50]
 		m.Organization = record[51]
 		m.Treasure = record[52]
@@ -164,30 +174,9 @@ func load(path string) {
 		m.OtherGear = record[67]
 		appendData(record[68], &m.Weaknesses)
 		appendData(record[80], &m.SpellsPrepared)
-		if record[92] != "" {
-			m.Name = record[92]
-		}
-		if record[90] != "" {
-			// If the alternate is just a number, ignore it.
-			if _, err := strconv.Atoi(record[90]); err != nil {
-				// Those that have a parenthetical after their name already have the alternate name form embedded.
-				if !strings.HasSuffix(m.Name, ")") {
-					// Prune out some odd cases
-					if !strings.HasPrefix(record[90], "Chaos Lord Of ") {
-						m.Name += " (" + record[90] + ")"
-					}
-				}
-			}
-		}
-		m.Name = renameDragons(m.Name)
 		m.MR = parseInt(record[95], 0, path, line, "MR")
-		m.ID = nextID
-		nextID++
 		entities = append(entities, m)
 	}
-	sort.Slice(entities, func(i, j int) bool {
-		return txt.NaturalLess(entities[i].Name, entities[j].Name, true)
-	})
 }
 
 func appendData(in string, dest *string) {
@@ -209,6 +198,34 @@ func appendDataWithPrefix(in, prefix string, dest *string) {
 			*dest += "; " + msg
 		}
 	}
+}
+
+func extractName(record []string) string {
+	name := record[0]
+	if record[92] != "" {
+		name = record[92]
+	}
+	name = strings.TrimSpace(name)
+	if result := subTierRegex.FindAllStringSubmatch(name, -1); result != nil {
+		name = result[0][1]
+	}
+	name = renameMythic(renameDire(renameAdvanced(renameDragons(renameElementals(renameDemons(renameDaemons(renameDevils(name))))))))
+	if record[90] != "" {
+		// If the alternate is just a number, ignore it.
+		if _, err := strconv.Atoi(record[90]); err != nil {
+			// Those that have a parenthetical after their name already have the alternate name form embedded.
+			if !strings.HasSuffix(name, ")") {
+				// Prune out some odd cases
+				if !strings.HasPrefix(record[90], "Chaos Lord Of ") {
+					name += " (" + record[90] + ")"
+				}
+			}
+		}
+	}
+	if strings.HasSuffix(name, " Npc") {
+		name = name[:len(name)-4]
+	}
+	return name
 }
 
 func renameDragons(in string) string {
@@ -240,6 +257,88 @@ func renameDragons(in string) string {
 	default:
 		return "Dragon, " + strings.Join(parts[:len(parts)-1], " ")
 	}
+}
+
+func renameElementals(in string) string {
+	if !strings.HasSuffix(in, " Elemental") && !strings.HasSuffix(in, "-elemental") {
+		return in
+	}
+	parts := strings.Split(in, " ")
+	if len(parts) > 2 {
+		for i := 0; i < len(parts)-2; i++ {
+			if parts[i+1] == "Energy" && (parts[i] == "Positive" || parts[i] == "Negative") {
+				parts[i] += " Energy"
+				parts = append(parts[:i+1], parts[i+2:]...)
+				break
+			}
+		}
+	}
+	return strings.Join(reverse(parts), ", ")
+}
+
+func renameDemons(in string) string {
+	if strings.HasSuffix(in, "-demon") || strings.HasSuffix(in, "-Demon") {
+		in = in[:len(in)-6] + " Demon"
+	}
+	if !strings.HasSuffix(in, " Demon") && !strings.HasSuffix(in, "Demonling") {
+		return in
+	}
+	return strings.Join(reverse(strings.Split(in, " ")), ", ")
+}
+
+func renameDaemons(in string) string {
+	if in == "Meladaemon Shock Trooper" {
+		return "Daemon, Mela, Shock Trooper"
+	}
+	if !strings.HasSuffix(in, "daemon") {
+		return in
+	}
+	in = in[:len(in)-6]
+	if strings.HasPrefix(in, "Daemon, ") {
+		in = in[8:]
+	}
+	in += " Daemon"
+	return strings.Join(reverse(strings.Split(in, " ")), ", ")
+}
+
+func renameDevils(in string) string {
+	if !strings.HasSuffix(in, " Devil") {
+		return in
+	}
+	return strings.Join(reverse(strings.Split(in, " ")), ", ")
+}
+
+func renamePrefix(in, prefix string) string {
+	if !strings.HasPrefix(in, prefix+" ") {
+		return in
+	}
+	return in[len(prefix)+1:] + ", " + prefix
+}
+
+func renameAdvanced(in string) string {
+	return renamePrefix(in, "Advanced")
+}
+
+func renameMythic(in string) string {
+	return renamePrefix(in, "Mythic")
+}
+
+func renameDire(in string) string {
+	if !strings.HasPrefix(in, "Dire ") {
+		return in
+	}
+	if strings.HasSuffix(in, ", Advanced") {
+		return in[5:len(in)-10] + ", Dire, Advanced"
+	}
+	return in[5:] + ", Dire"
+}
+
+func reverse(parts []string) []string {
+	for i := len(parts)/2 - 1; i >= 0; i-- {
+		opp := len(parts) - 1 - i
+		parts[i], parts[opp] = parts[opp], parts[i]
+	}
+	return parts
 }
 
 func fixSpellsPrepared(in string) string {

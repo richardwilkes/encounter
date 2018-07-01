@@ -8,11 +8,11 @@ import (
 // Note holds a note about a combatant, which may be set to expire at a given
 // point in time.
 type Note struct {
-	Description string
-	Timed       bool
-	UntilEnd    bool
-	Who         int
-	Round       int
+	Description string `json:"description,omitempty"`
+	Timed       bool   `json:"timed,omitempty"`
+	UntilEnd    bool   `json:"until_end,omitempty"`
+	Who         int    `json:"who,omitempty"`
+	Round       int    `json:"round,omitempty"`
 }
 
 // Detail returns the detail to use in a tooltip.

@@ -3,23 +3,21 @@ package board
 import (
 	"fmt"
 	"strings"
-
-	"github.com/richardwilkes/encounter/board/data"
 )
 
 // Combatant holds information for a single entity in combat.
 type Combatant struct {
-	ID               int
-	Name             string
-	Initiative       int
-	InitiativeBase   int
-	RandomTieBreaker int
-	HPFull           int
-	HPTemporary      int
-	HPDamage         int
-	Entity           *data.Entity
-	Notes            []Note
-	Enemy            bool
+	ID               int    `json:"id"`
+	Name             string `json:"name,omitempty"`
+	Initiative       int    `json:"initiative,omitempty"`
+	InitiativeBase   int    `json:"initiative_base,omitempty"`
+	RandomTieBreaker int    `json:"random_tie_breaker,omitempty"`
+	HPFull           int    `json:"hp_full,omitempty"`
+	HPTemporary      int    `json:"hp_temp,omitempty"`
+	HPDamage         int    `json:"hp_damage,omitempty"`
+	EntityID         int    `json:"entity_id,omitempty"`
+	Notes            []Note `json:"notes,omitempty"`
+	Enemy            bool   `json:"enemy,omitempty"`
 }
 
 // PossessiveName returns the possessive form of the combatant's name.

@@ -8,59 +8,59 @@ import (
 
 // Entity holds the static information for a combatant.
 type Entity struct {
-	Name               string // 0
-	CR                 string // 1
-	XP                 int    // 2
-	Class              string // 4
-	Alignment          string // 6
-	Size               string // 7
-	Type               string // 8
-	SubType            string // 9
-	Init               string // 10
-	Senses             string // 11
-	Aura               string // 12
-	AC                 string // 13
-	ACMods             string // 14
-	HD                 string // 16
-	HPMods             string // 17
-	Saves              string // 18
-	DefensiveAbilities string // 23
-	DR                 string // 24
-	Immune             string // 25
-	Resist             string // 26
-	SR                 string // 27
-	Weaknesses         string // 28
-	Speed              string // 29
-	SpeedMod           string // 30
-	Melee              string // 31
-	Ranged             string // 32
-	Space              string // 33
-	Reach              string // 34
-	SpecialAttacks     string // 35
-	SpellLikeAbilities string // 36
-	SpellsKnown        string // 37
-	SpellsPrepared     string // 38
-	SpellDomains       string // 39
-	AbilityScores      string // 40
-	BaseAttack         int    // 42
-	CMB                string // 43
-	CMD                string // 44
-	Feats              string // 45
-	Skills             string // 46
-	Languages          string // 48
-	SQ                 string // 49
-	Environment        string // 50
-	Organization       string // 51
-	Treasure           string // 52
-	DescriptionVisual  string // 53
-	Source             string // 55
-	SpecialAbilities   string // 57
-	Description        string // 58
-	Gear               string // 66
-	OtherGear          string // 67
-	ID                 int    // 93 (replaced by generated ID)
-	MR                 int    // 95
-	HasPCClass         bool
+	ID                 int    `json:"id"`                             // 93 (replaced by generated ID)
+	Name               string `json:"name"`                           // 0
+	CR                 string `json:"cr,omitempty"`                   // 1
+	XP                 int    `json:"xp,omitempty"`                   // 2
+	Class              string `json:"class,omitempty"`                // 4
+	Alignment          string `json:"alignment,omitempty"`            // 6
+	Size               string `json:"size,omitempty"`                 // 7
+	Type               string `json:"type,omitempty"`                 // 8
+	SubType            string `json:"subtype,omitempty"`              // 9
+	Initiative         string `json:"initiative,omitempty"`           // 10
+	Senses             string `json:"senses,omitempty"`               // 11
+	Aura               string `json:"aura,omitempty"`                 // 12
+	AC                 string `json:"ac,omitempty"`                   // 13
+	ACMods             string `json:"ac_mods,omitempty"`              // 14
+	HD                 string `json:"hd,omitempty"`                   // 16
+	HPMods             string `json:"hp_mods,omitempty"`              // 17
+	Saves              string `json:"saves,omitempty"`                // 18
+	DefensiveAbilities string `json:"defensive_abilities,omitempty"`  // 23
+	DR                 string `json:"dr,omitempty"`                   // 24
+	Immunities         string `json:"immunities,omitempty"`           // 25
+	Resistances        string `json:"resistances,omitempty"`          // 26
+	SR                 string `json:"sr,omitempty"`                   // 27
+	Weaknesses         string `json:"weaknesses,omitempty"`           // 28
+	Speed              string `json:"speed,omitempty"`                // 29
+	SpeedMod           string `json:"speed_mod,omitempty"`            // 30
+	Melee              string `json:"melee,omitempty"`                // 31
+	Ranged             string `json:"ranged,omitempty"`               // 32
+	Space              string `json:"space,omitempty"`                // 33
+	Reach              string `json:"reach,omitempty"`                // 34
+	SpecialAttacks     string `json:"special_attacks,omitempty"`      // 35
+	SpellLikeAbilities string `json:"spell_like_abilities,omitempty"` // 36
+	SpellsKnown        string `json:"spells_known,omitempty"`         // 37
+	SpellsPrepared     string `json:"spells_prepared,omitempty"`      // 38
+	SpellDomains       string `json:"spell_domains,omitempty"`        // 39
+	AbilityScores      string `json:"ability_scores,omitempty"`       // 40
+	BaseAttack         int    `json:"base_attack,omitempty"`          // 42
+	CMB                string `json:"cmb,omitempty"`                  // 43
+	CMD                string `json:"cmd,omitempty"`                  // 44
+	Feats              string `json:"feats,omitempty"`                // 45
+	Skills             string `json:"skills,omitempty"`               // 46
+	Languages          string `json:"languages,omitempty"`            // 48
+	SpecialQualities   string `json:"special_qualities,omitempty"`    // 49
+	Environment        string `json:"environment,omitempty"`          // 50
+	Organization       string `json:"organization,omitempty"`         // 51
+	Treasure           string `json:"treasure,omitempty"`             // 52
+	DescriptionVisual  string `json:"description_visual,omitempty"`   // 53
+	Source             string `json:"source,omitempty"`               // 55
+	SpecialAbilities   string `json:"special_abilities,omitempty"`    // 57
+	Description        string `json:"description,omitempty"`          // 58
+	Gear               string `json:"gear,omitempty"`                 // 66
+	OtherGear          string `json:"other_gear,omitempty"`           // 67
+	MR                 int    `json:"mr,omitempty"`                   // 95
+	HasPCClass         bool   `json:"has_pc_class,omitempty"`
 
 	// Unused fields and their column positions
 	//
@@ -154,7 +154,7 @@ func (e *Entity) ExtractSpecialAbilities() []*LabeledField {
 func (e *Entity) ExtractInitiativeBase() int {
 	var buffer strings.Builder
 	leading := true
-	for _, ch := range e.Init {
+	for _, ch := range e.Initiative {
 		if leading {
 			if ch == ' ' {
 				continue

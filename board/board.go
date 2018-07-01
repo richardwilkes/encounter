@@ -13,12 +13,12 @@ import (
 
 // Board holds the initiative board data.
 type Board struct {
-	Round            int
-	Current          int
-	Combatants       []*Combatant
-	InitiativeDice   *dice.Dice
-	HPMethod         HPMethod
-	LibrarySelection int
+	Round            int          `json:"round"`
+	Current          int          `json:"current"`
+	Combatants       []*Combatant `json:"combatants,omitempty"`
+	InitiativeDice   *dice.Dice   `json:"initiative_dice,omitempty"`
+	HPMethod         HPMethod     `json:"hp_method,omitempty"`
+	LibrarySelection int          `json:"library_selection,omitempty"`
 	LibraryEntity    *data.Entity `json:"-"`
 	LastID           int64        `json:"-"`
 }
@@ -77,11 +77,15 @@ func (b *Board) NewCombatant(genID bool, entity *data.Entity) *Combatant {
 	if entity != nil {
 		nameHint = entity.Name
 	}
+	entityID := 0
+	if entity != nil {
+		entityID = entity.ID
+	}
 	c := &Combatant{
-		ID:     id,
-		Name:   b.SuggestName(nameHint),
-		Entity: entity,
-		Enemy:  entity != nil,
+		ID:       id,
+		Name:     b.SuggestName(nameHint),
+		EntityID: entityID,
+		Enemy:    entity != nil,
 	}
 	if entity != nil {
 		c.InitiativeBase = entity.ExtractInitiativeBase()
