@@ -422,22 +422,29 @@ function post(url, callback, data) {
 
 function handleGlobalKeyDown(event) {
     if (isForGlobalKeyHandler()) {
-        switch (event.code) {
-            case "KeyN":
-                event.stopPropagation();
-                nextTurn();
-                break;
-            case "ArrowDown":
-                event.stopPropagation();
-                event.preventDefault();
-                showNextEntity();
-                break;
-            case "ArrowUp":
-                event.stopPropagation();
-                event.preventDefault();
-                showPreviousEntity();
-                break;
+        if (event.code == "KeyN") {
+            event.stopPropagation();
+            nextTurn();
+        } else {
+            handleUpDownArrows(event);
         }
+    } else if (isModalClosed()) {
+        handleUpDownArrows(event);
+    }
+}
+
+function handleUpDownArrows(event) {
+    switch (event.code) {
+        case "ArrowDown":
+            event.stopPropagation();
+            event.preventDefault();
+            showNextEntity();
+            break;
+        case "ArrowUp":
+            event.stopPropagation();
+            event.preventDefault();
+            showPreviousEntity();
+            break;
     }
 }
 
