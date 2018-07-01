@@ -442,25 +442,23 @@ function handleGlobalKeyDown(event) {
 }
 
 function handleDefaultButton(event) {
-    if (isForGlobalKeyHandler()) {
-        if (isModalOpen()) {
-            switch (event.code) {
-                case "Enter":
-                case "NumpadEnter":
-                    var defButton = document.getElementById("simple-modal-dialog").default_button;
-                    if (defButton !== undefined) {
-                        event.stopPropagation();
-                        defButton.click();
-                    }
-                    break;
-                case "Escape":
-                    var cancelButton = document.getElementById("simple-modal-dialog").cancel_button;
-                    if (cancelButton !== undefined) {
-                        event.stopPropagation();
-                        cancelButton.click();
-                    }
-                    break;
-            }
+    if (isModalOpen()) {
+        switch (event.code) {
+            case "Enter":
+            case "NumpadEnter":
+                var defButton = document.getElementById("simple-modal-dialog").default_button;
+                if (defButton !== undefined) {
+                    event.stopPropagation();
+                    defButton.click();
+                }
+                break;
+            case "Escape":
+                var cancelButton = document.getElementById("simple-modal-dialog").cancel_button;
+                if (cancelButton !== undefined) {
+                    event.stopPropagation();
+                    cancelButton.click();
+                }
+                break;
         }
     }
 }
