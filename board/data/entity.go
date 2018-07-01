@@ -11,6 +11,7 @@ type Entity struct {
 	Name               string // 0
 	CR                 string // 1
 	XP                 int    // 2
+	Class              string // 4
 	Alignment          string // 6
 	Size               string // 7
 	Type               string // 8
@@ -57,14 +58,13 @@ type Entity struct {
 	Description        string // 58
 	Gear               string // 66
 	OtherGear          string // 67
-	MonsterID          int    // 93
+	ID                 int    // 93 (replaced by generated ID)
 	MR                 int    // 95
 	HasPCClass         bool
 
 	// Unused fields and their column positions
 	//
 	// Race                  string // 3
-	// Class                 string // 4
 	// MonsterSource         string // 5
 	// HP                    int    // 15
 	// Fort                  string // 19

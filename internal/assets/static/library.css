@@ -7,7 +7,7 @@
 	display: flex;
 	flex-direction: column;
 	align-content: flex-start;
-	width: 19.5em;
+	width: 24em;
 }
 
 #library-filter {
@@ -19,9 +19,14 @@
 	padding-bottom: .2ex;
 	white-space: nowrap;
 	display: grid;
-	grid-template-columns: 0fr 1fr;
+	grid-template-columns: 0fr 1fr 0fr;
 	grid-column-gap: .2em;
 	align-items: center;
+}
+
+#library-filter input {
+	margin-left: .5em;
+	margin-right: .5em;
 }
 
 #library {
@@ -42,6 +47,10 @@
 
 .library-selected {
 	background-color: var(--current);
+}
+
+#filter-count {
+	font-size: 80%;
 }
 
 .hide {

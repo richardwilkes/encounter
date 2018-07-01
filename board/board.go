@@ -31,17 +31,17 @@ func (b *Board) Load(path string) error {
 	if b.InitiativeDice == nil {
 		b.InitiativeDice = dice.New(nil, "1d20")
 	}
-	var monster *data.Entity
-	for _, m := range data.Monsters {
-		if m.MonsterID == b.LibrarySelection {
-			monster = &m
+	var entity *data.Entity
+	for _, m := range data.Entities {
+		if m.ID == b.LibrarySelection {
+			entity = &m
 			break
 		}
 	}
-	if monster == nil {
-		monster = &data.Monsters[0]
+	if entity == nil {
+		entity = &data.Entities[0]
 	}
-	b.SetLibrarySelection(monster)
+	b.SetLibrarySelection(entity)
 	b.LastID = 0
 	for _, c := range b.Combatants {
 		if b.LastID < int64(c.ID) {
@@ -53,7 +53,7 @@ func (b *Board) Load(path string) error {
 
 // SetLibrarySelection sets the current library selection.
 func (b *Board) SetLibrarySelection(e *data.Entity) {
-	b.LibrarySelection = e.MonsterID
+	b.LibrarySelection = e.ID
 	b.LibraryEntity = e
 }
 

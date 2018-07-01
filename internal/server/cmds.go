@@ -61,8 +61,8 @@ func (s *Server) handleCmds(w http.ResponseWriter, req *http.Request) {
 		s.globalOptions(w, req)
 	case "reorder":
 		s.reorder(w, req)
-	case "showMonster":
-		s.showMonster(w, req)
+	case "showEntity":
+		s.showEntity(w, req)
 	default:
 		http.Error(w, "unknown command: "+cmd, http.StatusBadRequest)
 	}
@@ -620,12 +620,12 @@ func (s *Server) reorder(w http.ResponseWriter, req *http.Request) {
 	s.refreshBoard(w)
 }
 
-func (s *Server) showMonster(w http.ResponseWriter, req *http.Request) {
+func (s *Server) showEntity(w http.ResponseWriter, req *http.Request) {
 	id := int(json.MustParseStream(req.Body).Int64Relaxed("id"))
 	xio.CloseIgnoringErrors(req.Body)
-	for _, monster := range data.Monsters {
-		if monster.MonsterID == id {
-			s.board.SetLibrarySelection(&monster)
+	for _, entity := range data.Entities {
+		if entity.ID == id {
+			s.board.SetLibrarySelection(&entity)
 			tmpl, err := s.loadTemplates()
 			if err != nil {
 				jot.Error(errs.Wrap(err))
@@ -644,6 +644,6 @@ func (s *Server) showMonster(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-	jot.Warnf("Monster ID %d not found", id)
+	jot.Warnf("Entity ID %d not found", id)
 	w.WriteHeader(http.StatusNotFound)
 }

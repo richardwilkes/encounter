@@ -15,7 +15,7 @@ type document struct {
 	Title     string
 	Copyright string
 	Board     *board.Board
-	Monsters  []data.Entity
+	Entities  []data.Entity
 }
 
 func (s *Server) handleIndex(w http.ResponseWriter, req *http.Request) {
@@ -30,7 +30,7 @@ func (s *Server) handleIndex(w http.ResponseWriter, req *http.Request) {
 		Title:     cmdline.AppName,
 		Copyright: cmdline.Copyright(),
 		Board:     &s.board,
-		Monsters:  data.Monsters,
+		Entities:  data.Entities,
 	}); err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)

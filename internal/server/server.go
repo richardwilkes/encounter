@@ -55,7 +55,7 @@ func New(address string) *Server {
 			HPMethod:       board.AverageHPMethod,
 		},
 	}
-	s.board.SetLibrarySelection(&data.Monsters[0])
+	s.board.SetLibrarySelection(&data.Entities[0])
 	s.Server.WebServer.Handler = s
 	s.Server.ShutdownCallback = s.handleShutdown
 	if fs.FileExists(boardFile) {

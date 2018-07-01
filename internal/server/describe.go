@@ -17,8 +17,8 @@ func (s *Server) handleDescribe(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if id, err := strconv.Atoi(web.PathHeadThenShift(req)); err == nil {
-		for _, m := range data.Monsters {
-			if m.MonsterID == id {
+		for _, m := range data.Entities {
+			if m.ID == id {
 				tmpl, err := s.loadTemplates()
 				if err != nil {
 					jot.Error(errs.Wrap(err))
@@ -38,5 +38,5 @@ func (s *Server) handleDescribe(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
-	http.Error(w, "invalid monster id", http.StatusNotFound)
+	http.Error(w, "invalid entity id", http.StatusNotFound)
 }

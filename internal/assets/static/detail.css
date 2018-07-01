@@ -1,8 +1,7 @@
 #detail {
 	margin: 1em;
 	margin-left: 0;
-	min-width: 100px;
-	max-width: 24em;
+	width: 24em;
 	box-shadow: 3px 3px 3px var(--shadow);
 	border: 1px solid var(--border);
 	background-color: var(--content-bg);

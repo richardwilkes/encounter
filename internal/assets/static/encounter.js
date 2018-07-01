@@ -62,7 +62,7 @@ function globalOptions() {
                             }
                             post("/cmds/globalOptions", function(xhttp) {
                                 if (xhttp.status == 200) {
-                                    showMonster(selectedMonsterElem(), true);
+                                    showEntity(selectedEntityElem(), true);
                                 }
                                 closeSimpleModal();
                             }, JSON.stringify(payload));
@@ -430,12 +430,12 @@ function handleGlobalKeyDown(event) {
             case "ArrowDown":
                 event.stopPropagation();
                 event.preventDefault();
-                showNextMonster();
+                showNextEntity();
                 break;
             case "ArrowUp":
                 event.stopPropagation();
                 event.preventDefault();
-                showPreviousMonster();
+                showPreviousEntity();
                 break;
         }
     }
@@ -633,7 +633,7 @@ function findCombatantNode(elem) {
     return null;
 }
 
-function showPreviousMonster() {
+function showPreviousEntity() {
     var elems = document.getElementById("library").children;
     var length = elems.length;
     var selectedElem;
@@ -642,7 +642,7 @@ function showPreviousMonster() {
             if (i != 0) {
                 for (var j = i - 1; j >= 0; j--) {
                     if (!elems[j].classList.contains("hide")) {
-                        showMonster(elems[j]);
+                        showEntity(elems[j]);
                         break;
                     }
                 }
@@ -652,7 +652,7 @@ function showPreviousMonster() {
     }
 }
 
-function showNextMonster() {
+function showNextEntity() {
     var elems = document.getElementById("library").children;
     var length = elems.length;
     var selectedElem;
@@ -661,7 +661,7 @@ function showNextMonster() {
             if (i != length - 1) {
                 for (var j = i + 1; j < length; j++) {
                     if (!elems[j].classList.contains("hide")) {
-                        showMonster(elems[j]);
+                        showEntity(elems[j]);
                         break;
                     }
                 }
@@ -671,7 +671,7 @@ function showNextMonster() {
     }
 }
 
-function selectedMonsterElem() {
+function selectedEntityElem() {
     var elems = document.getElementById("library").children;
     var length = elems.length;
     for (var i = 0; i < length; i++) {
@@ -682,7 +682,7 @@ function selectedMonsterElem() {
     return null;
 }
 
-function showMonster(target, force) {
+function showEntity(target, force) {
     if ((force === undefined || !force) && target.classList.contains("library-selected")) {
         return;
     }
@@ -695,7 +695,7 @@ function showMonster(target, force) {
             break;
         }
     }
-    post("/cmds/showMonster", function(xhttp) {
+    post("/cmds/showEntity", function(xhttp) {
         if (xhttp.status == 200) {
             selectedElem.classList.remove("library-selected");
             target.classList.add("library-selected");
@@ -709,7 +709,7 @@ function showMonster(target, force) {
     }));
 }
 
-function findMonsterByID(id) {
+function findEntityByID(id) {
     var elems = document.getElementById("library").children;
     var length = elems.length;
     for (var i = 0; i < length; i++) {
@@ -726,10 +726,12 @@ function libraryFilterChanged(value) {
     var containsIndex = 999999;
     var elems = document.getElementById("library").children;
     var length = elems.length;
+    var count = 0;
     if (value == "") {
         for (var i = 0; i < length; i++) {
             elems[i].classList.remove("hide");
         }
+        count = length;
     } else {
         value = value.toLowerCase();
         for (var i = 0; i < length; i++) {
@@ -741,6 +743,7 @@ function libraryFilterChanged(value) {
                     e.classList.add("hide");
                 }
             } else {
+                count++;
                 if (e.classList.contains("hide")) {
                     e.classList.remove("hide");
                 }
@@ -755,10 +758,11 @@ function libraryFilterChanged(value) {
             }
         }
     }
+    document.getElementById("filter-count").innerText = count;
     if (exact !== null) {
-        showMonster(exact);
+        showEntity(exact);
     } else if (contains !== null) {
-        showMonster(contains);
+        showEntity(contains);
     }
     scrollLibrarySelectionIntoViewIfNeeded();
 }

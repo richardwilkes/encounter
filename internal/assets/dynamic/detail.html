@@ -1,12 +1,14 @@
-<div class="dname"><i class="fas fa-plus-circle button" title="Add combatant" onclick="newCombatant({{.LibraryEntity.MonsterID}})"></i> {{.LibraryEntity.Name}}</div>
-<div class="dtype">{{.LibraryEntity.Alignment}} {{.LibraryEntity.Size}} ({{.LibraryEntity.Space}}) {{.LibraryEntity.Type}} {{.LibraryEntity.SubType}}</div>
+<div class="dname"><i class="fas fa-plus-circle button" title="Add combatant" onclick="newCombatant({{.LibraryEntity.ID}})"></i> {{.LibraryEntity.Name}}</div>
+<div class="dtype">{{.LibraryEntity.Alignment}} {{.LibraryEntity.Size}} ({{.LibraryEntity.Space}}) {{.LibraryEntity.Type}} {{.LibraryEntity.SubType}} {{.LibraryEntity.Class}}</div>
 <div class="dsource">{{.LibraryEntity.Source}}</div>
 <div class="dcrxp">
 	<div>CR {{.LibraryEntity.CR}}{{- if .LibraryEntity.MR}}; MR {{.LibraryEntity.MR}}{{- end}}</div>
 	<div>XP {{comma .LibraryEntity.XP}}</div>
 </div>
 
-<div class="dvisual">{{.LibraryEntity.DescriptionVisual}}{{if .LibraryEntity.Description}}<br><a href="/describe/{{.LibraryEntity.MonsterID}}" target="_blank">Full Description</a>{{end}}</div>
+{{- if or .LibraryEntity.DescriptionVisual .LibraryEntity.Description}}
+<div class="dvisual">{{.LibraryEntity.DescriptionVisual}}{{if .LibraryEntity.Description}}{{if .LibraryEntity.DescriptionVisual}}<br>{{end}}<a href="/describe/{{.LibraryEntity.ID}}" target="_blank">Full Description</a>{{end}}</div>
+{{- end}}
 
 <div class="dhdr">Defense</div>
 <div class="labeledfields">
@@ -147,6 +149,7 @@
 </div>
 {{- end}}
 
+{{- if or .LibraryEntity.Environment .LibraryEntity.Organization}}
 <div class="dhdr">Ecology</div>
 <div class="labeledfields">
 	<div class="dlabel">Environment:</div>
@@ -154,3 +157,4 @@
 	<div class="dlabel">Organization:</div>
 	<div class="dfield">{{.LibraryEntity.Organization}}</div>
 </div>
+{{- end}}
