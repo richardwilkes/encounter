@@ -1,12 +1,12 @@
 version: "1.0"
 dependencies:
 - import: github.com/dustin/go-humanize
-  commit: 02af3965c54e8cacf948b97fef38925c4120652c
+  commit: 9f541cc9db5d55bce703bd99987c9d5cb8eea45e
 - import: github.com/pkg/term
-  commit: cda20d4ac917ad418d86e151eff439648b06185b
+  commit: bffc007b7fd5a70e20e28f5b7649bb84671ef436
 - import: github.com/richardwilkes/rpgtools
-  commit: 5f2be6410424043dc3a93054435eb579d2068af7
+  commit: 26b2734a1ff5451e3e11b4a25f13c2c4ca606315
 - import: github.com/richardwilkes/toolbox
-  commit: 1e7546520f95f3d18a671f5b26497837f8e1b1bc
+  commit: 557fccfc201c28430e1b5e736ca593a73c84f084
 - import: gopkg.in/yaml.v2
   tag: v2.2.1

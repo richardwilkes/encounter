@@ -18,6 +18,7 @@ import (
 	"github.com/richardwilkes/toolbox/txt"
 	"github.com/richardwilkes/toolbox/xio"
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
+	"github.com/richardwilkes/toolbox/xmath/rand"
 )
 
 type noteInfo struct {
@@ -362,7 +363,7 @@ func (s *Server) rollInitiative(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	} else {
-		rnd := dice.NewCryptoRand()
+		rnd := rand.NewCryptoRand()
 		for _, c := range s.board.Combatants {
 			c.RandomTieBreaker = rnd.Intn(math.MaxInt32)
 		}
