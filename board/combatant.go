@@ -3,6 +3,8 @@ package board
 import (
 	"fmt"
 	"strings"
+
+	"github.com/richardwilkes/encounter/board/data"
 )
 
 // Combatant holds information for a single entity in combat.
@@ -26,6 +28,16 @@ func (c *Combatant) PossessiveName() string {
 		return c.Name + "'"
 	}
 	return c.Name + "'s"
+}
+
+// BasedOn returns the name of the entity the combatant was based on.
+func (c *Combatant) BasedOn() string {
+	for _, entity := range data.Entities {
+		if entity.ID == c.EntityID {
+			return entity.Name
+		}
+	}
+	return ""
 }
 
 // Clone creates a copy of the combatant, but with a new ID.

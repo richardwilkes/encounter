@@ -9,10 +9,10 @@
 	<input class="field" type="text" name="hp_tmp" maxlength="6" autocomplete="off" value="{{.HPTemporary}}" onkeydown="handleDefaultButton(event)">
 	<div class="label">Hit Points (Damage):</div>
 	<input class="field" type="text" name="hp_damage" maxlength="6" autocomplete="off" value="{{.HPDamage}}" onkeydown="handleDefaultButton(event)">
-	{{- if .Entity}}
+	{{- if .BasedOn}}
 	<hr>
 	<div class="label">Based On:</div>
-	<div class="field">{{.Entity.Name}}</div>
+	<div class="field">{{.BasedOn}}</div>
 	{{- end}}
 	<hr>
 	<div class="checkbox"><input class="checkbox" type="checkbox" name="enemy"{{if .Enemy}} checked{{end}}> Enemy</div>
