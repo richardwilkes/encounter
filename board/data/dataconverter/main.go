@@ -82,6 +82,9 @@ func main() {
 		if entities[i].CR != entities[j].CR {
 			return txt.NaturalLess(entities[i].CR, entities[j].CR, true)
 		}
+		if entities[i].Source != entities[j].Source {
+			return txt.NaturalLess(entities[i].Source, entities[j].Source, true)
+		}
 		return entities[i].ID < entities[j].ID
 	})
 	for i := range entities {
@@ -224,6 +227,13 @@ func extractName(record []string) string {
 	}
 	if strings.HasSuffix(name, " Npc") {
 		name = name[:len(name)-4]
+	}
+	name = strings.Title(name)
+	name = strings.Replace(name, "'S ", "'s ", -1)
+	name = strings.Replace(name, " Of ", " of ", -1)
+	name = strings.Replace(name, " The ", " the ", -1)
+	if strings.HasSuffix(name, "'S") {
+		name = name[:len(name)-1] + "s"
 	}
 	return name
 }
