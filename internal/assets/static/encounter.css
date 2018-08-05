@@ -239,6 +239,8 @@ i {
 	margin-left: 1em;
 	flex-basis: 0;
 	white-space: nowrap;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .hp-desc {
