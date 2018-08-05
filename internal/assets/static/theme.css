@@ -21,7 +21,5 @@
 	--drag-marker-fg: red;
 	--current: #ffffaa;
 	--model-overlay-bg: rgba(0, 0, 0, 0.2);
-	--base-font-size: 14px;
-	--line-height: 1.2em;
 	--drag-marker-height: 2px;
 }

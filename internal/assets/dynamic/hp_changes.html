@@ -1,0 +1,7 @@
+<div class="title">HP changes for {{.Name}}</div>
+<div id="fields" onkeydown="handleDefaultButton(event)">
+	{{- range .HPChanges}}
+	<div class="label">•</div>
+	<div class="field">{{.}}</div>
+	{{- end}}
+</div>

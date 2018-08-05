@@ -32,23 +32,24 @@
 }
 
 .dtype {
+	font-size: .8rem;
 	text-align: center;
 	padding-left: .5em;
 	padding-right: .5em;
 	color: var(--board-hdr-fg);
 	background-color: var(--board-hdr-bg);
-	font-size: 80%;
 }
 
 .dsource {
+	font-size: .7rem;
 	text-align: center;
 	padding-left: .5em;
 	padding-right: .5em;
 	color: var(--board-hdr-fg);
 	background-color: var(--board-hdr-bg);
-	font-size: 70%;
 }
 .dcrxp {
+	font-size: .9rem;
 	padding-left: .5em;
 	padding-right: .5em;
 	padding-bottom: .1em;
@@ -57,13 +58,12 @@
 	display: grid;
 	grid-template: "cr xp" / auto auto;
 	justify-content: space-between;
-	font-size: 90%;
 }
 
 .dvisual {
+	font-size: .8rem;
 	padding-left: .5em;
 	padding-right: .5em;
-	font-size: 80%;
 }
 
 .dhdr {

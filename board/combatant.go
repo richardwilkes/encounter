@@ -7,19 +7,22 @@ import (
 	"github.com/richardwilkes/encounter/board/data"
 )
 
+const hpChangesToKeep = 20
+
 // Combatant holds information for a single entity in combat.
 type Combatant struct {
-	ID               int    `json:"id"`
-	Name             string `json:"name,omitempty"`
-	Initiative       int    `json:"initiative,omitempty"`
-	InitiativeBase   int    `json:"initiative_base,omitempty"`
-	RandomTieBreaker int    `json:"random_tie_breaker,omitempty"`
-	HPFull           int    `json:"hp_full,omitempty"`
-	HPTemporary      int    `json:"hp_temp,omitempty"`
-	HPDamage         int    `json:"hp_damage,omitempty"`
-	EntityID         int    `json:"entity_id,omitempty"`
-	Notes            []Note `json:"notes,omitempty"`
-	Enemy            bool   `json:"enemy,omitempty"`
+	ID               int      `json:"id"`
+	Name             string   `json:"name,omitempty"`
+	Initiative       int      `json:"initiative,omitempty"`
+	InitiativeBase   int      `json:"initiative_base,omitempty"`
+	RandomTieBreaker int      `json:"random_tie_breaker,omitempty"`
+	HPFull           int      `json:"hp_full,omitempty"`
+	HPTemporary      int      `json:"hp_temp,omitempty"`
+	HPDamage         int      `json:"hp_damage,omitempty"`
+	HPChanges        []string `json:"hp_changes,omitempty"`
+	EntityID         int      `json:"entity_id,omitempty"`
+	Notes            []Note   `json:"notes,omitempty"`
+	Enemy            bool     `json:"enemy,omitempty"`
 }
 
 // PossessiveName returns the possessive form of the combatant's name.
@@ -101,23 +104,40 @@ func (c *Combatant) CurrentHP() int {
 	return c.HPFull + c.HPTemporary - c.HPDamage
 }
 
-// Heal a combatant.
-func (c *Combatant) Heal(amount int) {
+// Heal a combatant. 'round' indicates what round the healing occurred.
+func (c *Combatant) Heal(round, amount int) {
 	if amount < 0 {
 		return
 	}
+	total := amount
+	current := c.FormattedHP()
+	defer func() {
+		now := c.FormattedHP()
+		if current != now {
+			c.RecordHPChange(round, total)
+		}
+	}()
 	if amount >= c.HPDamage {
+		total = c.HPDamage
 		c.HPDamage = 0
 		return
 	}
 	c.HPDamage -= amount
 }
 
-// Harm a combatant.
-func (c *Combatant) Harm(amount int) {
+// Harm a combatant. 'round' indicates what round the harm occurred.
+func (c *Combatant) Harm(round, amount int) {
 	if amount < 0 {
 		return
 	}
+	total := amount
+	current := c.FormattedHP()
+	defer func() {
+		now := c.FormattedHP()
+		if current != now {
+			c.RecordHPChange(round, -total)
+		}
+	}()
 	if c.HPTemporary >= amount {
 		c.HPTemporary -= amount
 		return
@@ -127,6 +147,35 @@ func (c *Combatant) Harm(amount int) {
 		c.HPTemporary = 0
 	}
 	c.HPDamage += amount
+}
+
+// RecordHPChange records a hit point change. 'round' indicates what round the
+// change occurred.
+func (c *Combatant) RecordHPChange(round, delta int) {
+	count := len(c.HPChanges) + 1
+	if count > hpChangesToKeep {
+		count = hpChangesToKeep
+	}
+	if len(c.HPChanges) != count {
+		revised := make([]string, count)
+		copy(revised, c.HPChanges)
+		c.HPChanges = revised
+	}
+	if count > 1 {
+		copy(c.HPChanges[1:], c.HPChanges)
+	}
+	var change strings.Builder
+	if round > 0 {
+		fmt.Fprintf(&change, "Round %d: ", round)
+	}
+	if delta != 0 {
+		fmt.Fprintf(&change, "%+d (now ", delta)
+	}
+	change.WriteString(c.FormattedHP())
+	if delta != 0 {
+		change.WriteString(")")
+	}
+	c.HPChanges[0] = change.String()
 }
 
 // FormattedHP returns the HP formatted for display.

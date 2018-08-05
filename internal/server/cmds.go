@@ -54,6 +54,8 @@ func (s *Server) handleCmds(w http.ResponseWriter, req *http.Request) {
 		s.editNote(w, req)
 	case "adjustHP":
 		s.adjustHP(w, req)
+	case "hp_changes":
+		s.hpChanges(w, req)
 	case "editCombatant":
 		s.editCombatant(w, req)
 	case "rollInitiative":
@@ -208,9 +210,9 @@ func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {
 		} else {
 			if adjust := int(j.Int64Relaxed("adjust")); adjust != 0 {
 				if adjust < 0 {
-					c.Harm(-adjust)
+					c.Harm(s.board.Round, -adjust)
 				} else {
-					c.Heal(adjust)
+					c.Heal(s.board.Round, adjust)
 				}
 			}
 			if err := tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
@@ -218,6 +220,31 @@ func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
+		}
+		if _, err := buffer.WriteTo(w); err != nil {
+			jot.Warn(errs.Wrap(err))
+		}
+	}
+}
+
+func (s *Server) hpChanges(w http.ResponseWriter, req *http.Request) {
+	j := json.MustParseStream(req.Body)
+	id := int(j.Int64Relaxed("id"))
+	xio.CloseIgnoringErrors(req.Body)
+	if c := s.board.Lookup(id); c == nil {
+		http.Error(w, "no such combatant", http.StatusBadRequest)
+	} else {
+		tmpl, err := s.loadTemplates()
+		if err != nil {
+			jot.Error(errs.Wrap(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		var buffer bytes.Buffer
+		if err := tmpl.ExecuteTemplate(&buffer, "/hp_changes.html", c); err != nil {
+			jot.Error(errs.Wrap(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		if _, err := buffer.WriteTo(w); err != nil {
 			jot.Warn(errs.Wrap(err))
@@ -250,7 +277,7 @@ func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {
 	} else {
 		c := s.board.NewCombatant(true, basedOn)
 		s.board.Combatants = append(s.board.Combatants, c)
-		updateCombatant(c, j)
+		s.updateCombatant(c, j)
 		if err := tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
@@ -262,7 +289,7 @@ func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func updateCombatant(c *board.Combatant, j *json.Data) {
+func (s *Server) updateCombatant(c *board.Combatant, j *json.Data) {
 	if j.Exists("name") {
 		c.Name = j.Str("name")
 	}
@@ -272,6 +299,7 @@ func updateCombatant(c *board.Combatant, j *json.Data) {
 	if j.Exists("init_base") {
 		c.InitiativeBase = int(j.Int64Relaxed("init_base"))
 	}
+	current := c.FormattedHP()
 	if j.Exists("hp_full") {
 		if v := j.Int64Relaxed("hp_full"); v > 0 {
 			c.HPFull = int(v)
@@ -286,6 +314,10 @@ func updateCombatant(c *board.Combatant, j *json.Data) {
 		if v := j.Int64Relaxed("hp_damage"); v >= 0 {
 			c.HPDamage = int(v)
 		}
+	}
+	now := c.FormattedHP()
+	if current != now {
+		c.RecordHPChange(s.board.Round, 0)
 	}
 }
 
@@ -311,7 +343,7 @@ func (s *Server) editCombatant(w http.ResponseWriter, req *http.Request) {
 				return
 			}
 		} else {
-			updateCombatant(c, j)
+			s.updateCombatant(c, j)
 			if err := tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)

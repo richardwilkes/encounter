@@ -222,6 +222,28 @@ function directAdjustHP(id, amount) {
 	}));
 }
 
+function resetHP(id) {
+	post("/cmds/editCombatant", function (xhttp) {
+		if (xhttp.status == 200) {
+			document.getElementById("board-area").innerHTML = xhttp.responseText;
+		}
+	}, JSON.stringify({
+		"id": id,
+		"panel": false,
+		"hp_damage": 0
+	}));
+}
+
+function showRecentHPChanges(id) {
+	post("/cmds/hp_changes", function (xhttp) {
+		if (xhttp.status == 200) {
+			simpleModal({ content: xhttp.responseText });
+		}
+	}, JSON.stringify({
+		"id": id
+	}));
+}
+
 function duplicateCombatant(id) {
 	sendSimpleCommand("duplicateCombatant", id);
 }
@@ -360,29 +382,31 @@ function simpleModal(options) {
 	let buttons = dialog.querySelector(".modal-buttons");
 	buttons.innerHTML = "";
 	let needAutofocus = true;
-	let len = options.buttons.length;
-	for (let i = 0; i < len; i++) {
-		let button = document.createElement("button");
-		button.onclick = options.buttons[i].onclick;
-		if (options.buttons[i].autofocus) {
-			needAutofocus = false;
-			dialog.default_button = button
-			if (options.wantAutoFocus) {
-				button.autofocus = true;
+	if (options.buttons !== undefined) {
+		let len = options.buttons.length;
+		for (let i = 0; i < len; i++) {
+			let button = document.createElement("button");
+			button.onclick = options.buttons[i].onclick;
+			if (options.buttons[i].autofocus) {
+				needAutofocus = false;
+				dialog.default_button = button
+				if (options.wantAutoFocus) {
+					button.autofocus = true;
+				}
 			}
+			button.appendChild(document.createTextNode(options.buttons[i].title));
+			buttons.appendChild(button);
 		}
-		button.appendChild(document.createTextNode(options.buttons[i].title));
-		buttons.appendChild(button);
 	}
 	let cancel = document.createElement("button");
 	cancel.onclick = closeSimpleModal;
 	if (needAutofocus) {
 		dialog.default_button = cancel;
-		if (options.wantAutoFocus) {
+		if (options.wantAutoFocus || options.buttons == undefined || options.buttons.length == 0) {
 			cancel.autofocus = true;
 		}
 	}
-	cancel.appendChild(document.createTextNode("Cancel"));
+	cancel.appendChild(document.createTextNode(options.buttons == undefined || options.buttons.length == 0 ? "OK" : "Cancel"));
 	dialog.cancel_button = cancel;
 	buttons.appendChild(cancel);
 	document.getElementById("modal-overlay").classList.remove("closed");
