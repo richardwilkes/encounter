@@ -28,7 +28,11 @@
 	<div class="hp-desc{{$board.CurrentTag .}}{{.StatusTag}}" cid="{{.ID}}">{{.Status}}</div>
 	<div class="hp{{$board.CurrentTag .}}" cid="{{.ID}}">
 		<div class="hp-cur">{{.FormattedHP}}</div>
-		<div class="controls"><i class="fas fa-heart button" title="Adjust hit points" onclick="adjustHP({{.ID}})"></i></div>
+		<div class="controls">
+			<i class="fas fa-heart button" title="Adjust hit points" onclick="adjustHP({{.ID}})"></i>
+			<i class="fas fa-plus-square" title="Add one hit point" onclick="directAdjustHP({{.ID}},1)"></i>
+			<i class="fas fa-minus-square" title="Subtract one hit point" onclick="directAdjustHP({{.ID}},-1)"></i>
+		</div>
 	</div>
 	<div class="hp-max{{$board.CurrentTag .}}" cid="{{.ID}}">{{.HPFull}}</div>
 	<div class="notes{{$board.CurrentTag .}}" cid="{{.ID}}">

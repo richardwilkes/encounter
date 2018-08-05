@@ -238,6 +238,7 @@ i {
 .controls {
 	margin-left: 1em;
 	flex-basis: 0;
+	white-space: nowrap;
 }
 
 .hp-desc {

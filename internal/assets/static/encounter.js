@@ -8,10 +8,10 @@ function rollInitiative() {
 					title: "Start Combat",
 					autofocus: true,
 					onclick: function () {
-						var inputs = document.getElementById("fields").getElementsByTagName("input");
-						var length = inputs.length;
-						var inits = []
-						for (var i = 0; i < length; i++) {
+						let inputs = document.getElementById("fields").getElementsByTagName("input");
+						let length = inputs.length;
+						let inits = []
+						for (let i = 0; i < length; i++) {
 							inits.push({
 								"id": inputs[i].name,
 								"init": inputs[i].value
@@ -46,17 +46,17 @@ function globalOptions() {
 					title: "Apply",
 					autofocus: true,
 					onclick: function () {
-						var payload = {
+						let payload = {
 							"panel": false
 						};
-						var inputs = document.getElementById("fields").getElementsByTagName("input");
-						var length = inputs.length;
-						for (var i = 0; i < length; i++) {
+						let inputs = document.getElementById("fields").getElementsByTagName("input");
+						let length = inputs.length;
+						for (let i = 0; i < length; i++) {
 							payload[inputs[i].name] = inputs[i].value;
 						}
 						inputs = document.getElementById("fields").getElementsByTagName("select");
 						length = inputs.length;
-						for (var i = 0; i < length; i++) {
+						for (let i = 0; i < length; i++) {
 							payload[inputs[i].name] = inputs[i].value;
 						}
 						post("/cmds/globalOptions", function (xhttp) {
@@ -75,7 +75,7 @@ function globalOptions() {
 }
 
 function newCombatant(id) {
-	var payload = {
+	let payload = {
 		"panel": true
 	};
 	if (id !== undefined) {
@@ -92,10 +92,10 @@ function newCombatant(id) {
 						title: "Add",
 						autofocus: true,
 						onclick: function () {
-							var inputs = document.getElementById("fields").getElementsByTagName("input");
-							var length = inputs.length;
+							let inputs = document.getElementById("fields").getElementsByTagName("input");
+							let length = inputs.length;
 							payload.panel = false;
-							for (var i = 0; i < length; i++) {
+							for (let i = 0; i < length; i++) {
 								if (inputs[i].type == "checkbox") {
 									payload[inputs[i].name] = inputs[i].checked;
 								} else {
@@ -128,13 +128,13 @@ function editCombatant(id) {
 					title: "Change",
 					autofocus: true,
 					onclick: function () {
-						var inputs = document.getElementById("fields").getElementsByTagName("input");
-						var length = inputs.length;
-						var payload = {
+						let inputs = document.getElementById("fields").getElementsByTagName("input");
+						let length = inputs.length;
+						let payload = {
 							"id": id,
 							"panel": false
 						}
-						for (var i = 0; i < length; i++) {
+						for (let i = 0; i < length; i++) {
 							if (inputs[i].type == "checkbox") {
 								payload[inputs[i].name] = inputs[i].checked;
 							} else {
@@ -185,13 +185,13 @@ function adjustHP(id) {
 					title: "Apply",
 					autofocus: true,
 					onclick: function () {
-						var inputs = document.getElementById("fields").getElementsByTagName("input");
-						var length = inputs.length;
-						var payload = {
+						let inputs = document.getElementById("fields").getElementsByTagName("input");
+						let length = inputs.length;
+						let payload = {
 							"id": id,
 							"panel": false
 						}
-						for (var i = 0; i < length; i++) {
+						for (let i = 0; i < length; i++) {
 							payload[inputs[i].name] = inputs[i].value;
 						}
 						post("/cmds/adjustHP", function (xhttp) {
@@ -207,6 +207,18 @@ function adjustHP(id) {
 	}, JSON.stringify({
 		"id": id,
 		"panel": true
+	}));
+}
+
+function directAdjustHP(id, amount) {
+	post("/cmds/adjustHP", function (xhttp) {
+		if (xhttp.status == 200) {
+			document.getElementById("board-area").innerHTML = xhttp.responseText;
+		}
+	}, JSON.stringify({
+		"id": id,
+		"panel": false,
+		"adjust": amount
 	}));
 }
 
@@ -264,13 +276,13 @@ function addNote(id) {
 }
 
 function getNotePayload(id) {
-	var inputs = document.getElementById("fields").getElementsByTagName("input");
-	var length = inputs.length;
-	var payload = {
+	let inputs = document.getElementById("fields").getElementsByTagName("input");
+	let length = inputs.length;
+	let payload = {
 		"id": id,
 		"panel": false
 	}
-	for (var i = 0; i < length; i++) {
+	for (let i = 0; i < length; i++) {
 		if (inputs[i].type == "checkbox") {
 			payload[inputs[i].name] = inputs[i].checked;
 		} else {
@@ -279,7 +291,7 @@ function getNotePayload(id) {
 	}
 	inputs = document.getElementById("fields").getElementsByTagName("select");
 	length = inputs.length;
-	for (var i = 0; i < length; i++) {
+	for (let i = 0; i < length; i++) {
 		payload[inputs[i].name] = inputs[i].value;
 	}
 	return payload;
@@ -343,14 +355,14 @@ function sendSimpleCommand(cmd, id) {
 }
 
 function simpleModal(options) {
-	var dialog = document.getElementById("simple-modal-dialog");
+	let dialog = document.getElementById("simple-modal-dialog");
 	dialog.querySelector(".modal-content").innerHTML = options.content;
-	var buttons = dialog.querySelector(".modal-buttons");
+	let buttons = dialog.querySelector(".modal-buttons");
 	buttons.innerHTML = "";
-	var needAutofocus = true;
-	var len = options.buttons.length;
-	for (var i = 0; i < len; i++) {
-		var button = document.createElement("button");
+	let needAutofocus = true;
+	let len = options.buttons.length;
+	for (let i = 0; i < len; i++) {
+		let button = document.createElement("button");
 		button.onclick = options.buttons[i].onclick;
 		if (options.buttons[i].autofocus) {
 			needAutofocus = false;
@@ -362,7 +374,7 @@ function simpleModal(options) {
 		button.appendChild(document.createTextNode(options.buttons[i].title));
 		buttons.appendChild(button);
 	}
-	var cancel = document.createElement("button");
+	let cancel = document.createElement("button");
 	cancel.onclick = closeSimpleModal;
 	if (needAutofocus) {
 		dialog.default_button = cancel;
@@ -378,6 +390,16 @@ function simpleModal(options) {
 
 function closeSimpleModal() {
 	document.getElementById("modal-overlay").classList.add("closed");
+	// Ensure the focus is not within the closed dialog.
+	let active = document.activeElement;
+	let cur = active;
+	while (cur !== undefined && cur != null) {
+		if (cur.classList.contains("closed")) {
+			active.blur();
+			break;
+		}
+		cur = cur.parentElement;
+	}
 }
 
 function isModalClosed() {
@@ -397,7 +419,7 @@ function isForGlobalKeyHandler() {
 }
 
 function post(url, callback, data) {
-	var xhttp = new XMLHttpRequest();
+	let xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function () {
 		if (this.readyState == 4) {
 			callback(xhttp);
@@ -441,14 +463,14 @@ function handleDefaultButton(event) {
 		switch (event.code) {
 			case "Enter":
 			case "NumpadEnter":
-				var defButton = document.getElementById("simple-modal-dialog").default_button;
+				let defButton = document.getElementById("simple-modal-dialog").default_button;
 				if (defButton !== undefined) {
 					event.stopPropagation();
 					defButton.click();
 				}
 				break;
 			case "Escape":
-				var cancelButton = document.getElementById("simple-modal-dialog").cancel_button;
+				let cancelButton = document.getElementById("simple-modal-dialog").cancel_button;
 				if (cancelButton !== undefined) {
 					event.stopPropagation();
 					cancelButton.click();
@@ -459,8 +481,8 @@ function handleDefaultButton(event) {
 }
 
 function adjustRound(xhttp) {
-	var text;
-	var round = xhttp.getResponseHeader("round");
+	let text;
+	let round = xhttp.getResponseHeader("round");
 	if (round < 1) {
 		text = "Awaiting Initiative";
 	} else {
@@ -473,11 +495,11 @@ function adjustRound(xhttp) {
 	}
 }
 
-var combatantDNDType = "application/combatant";
-var dragStartCombatant;
-var dragStartIndex;
-var dragCurrentOrder = [];
-var dragCache;
+let combatantDNDType = "application/combatant";
+let dragStartCombatant;
+let dragStartIndex;
+let dragCurrentOrder = [];
+let dragCache;
 
 function dragStartHandler(event) {
 	dragCurrentOrder = [];
@@ -485,13 +507,13 @@ function dragStartHandler(event) {
 	if (dragStartCombatant != "") {
 		event.dataTransfer.setData(combatantDNDType, dragStartCombatant);
 		event.dataTransfer.effectAllowed = "move";
-		var board = document.getElementById("board")
-		var divs = board.getElementsByTagName("div");
-		var length = divs.length;
-		var last = "x";
+		let board = document.getElementById("board")
+		let divs = board.getElementsByTagName("div");
+		let length = divs.length;
+		let last = "x";
 		dragCache = new Map();
-		for (var i = 0; i < length; i++) {
-			var cid = divs[i].getAttribute("cid");
+		for (let i = 0; i < length; i++) {
+			let cid = divs[i].getAttribute("cid");
 			if (cid != null) {
 				if (cid != last) {
 					last = cid;
@@ -521,7 +543,7 @@ function dragOverHandler(event) {
 	removePreviousDragMarkers();
 	event.dataTransfer.dropEffect = "none";
 	if (acceptableDrag(event)) {
-		var i = dragToIndex(event);
+		let i = dragToIndex(event);
 		if (i != -1) {
 			if (i == dragCurrentOrder.length) {
 				mark(dragCurrentOrder[i - 1], "drag-marker-bottom");
@@ -541,10 +563,10 @@ function dropHandler(event) {
 	removePreviousDragMarkers();
 	event.preventDefault();
 	if (acceptableDrag(event)) {
-		var i = dragToIndex(event);
+		let i = dragToIndex(event);
 		if (i != -1) {
-			var pastEnd = i == dragCurrentOrder.length;
-			var cid = dragCurrentOrder.splice(dragStartIndex, 1)[0];
+			let pastEnd = i == dragCurrentOrder.length;
+			let cid = dragCurrentOrder.splice(dragStartIndex, 1)[0];
 			if (pastEnd) {
 				dragCurrentOrder.push(cid);
 			} else {
@@ -570,12 +592,12 @@ function dragEndHandler(event) {
 }
 
 function dragToIndex(event) {
-	var node = findCombatantNode(event.toElement);
+	let node = findCombatantNode(event.toElement);
 	if (node == null) {
 		return -1;
 	}
 	let cid = node.getAttribute("cid");
-	var i = dragCurrentOrder.indexOf(cid);
+	let i = dragCurrentOrder.indexOf(cid);
 	let cache = dragCache.get(node.className + cid);
 	if (event.clientY - (cache.offsetTop + cache.offsetHeight / 2) > 0) {
 		i++;
@@ -587,10 +609,10 @@ function dragToIndex(event) {
 }
 
 function mark(cid, className) {
-	var board = document.getElementById("board")
-	var divs = board.getElementsByTagName("div");
-	var length = divs.length;
-	for (var i = 0; i < length; i++) {
+	let board = document.getElementById("board")
+	let divs = board.getElementsByTagName("div");
+	let length = divs.length;
+	for (let i = 0; i < length; i++) {
 		if (divs[i].getAttribute("cid") == cid) {
 			divs[i].classList.add(className);
 		}
@@ -598,25 +620,25 @@ function mark(cid, className) {
 }
 
 function removePreviousDragMarkers() {
-	var board = document.getElementById("board")
+	let board = document.getElementById("board")
 	removeClassFromChildren(board, "drag-marker-top");
 	removeClassFromChildren(board, "drag-marker-bottom");
 }
 
 function removeClassFromChildren(parent, className) {
-	var elems = parent.children;
-	var length = elems.length;
-	for (var i = 0; i < length; i++) {
+	let elems = parent.children;
+	let length = elems.length;
+	for (let i = 0; i < length; i++) {
 		elems[i].classList.remove(className);
 	}
 }
 
 function acceptableDrag(event) {
-	var items = event.dataTransfer.items;
-	for (var i = 0; i < items.length; i++) {
-		var item = items[i];
+	let items = event.dataTransfer.items;
+	for (let i = 0; i < items.length; i++) {
+		let item = items[i];
 		if (item.type == combatantDNDType) {
-			var targetID = findCombatantID(event.toElement);
+			let targetID = findCombatantID(event.toElement);
 			return (targetID != "" && targetID != dragStartCombatant);
 		}
 	}
@@ -624,7 +646,7 @@ function acceptableDrag(event) {
 }
 
 function findCombatantID(elem) {
-	var node = findCombatantNode(elem);
+	let node = findCombatantNode(elem);
 	return node == null ? "" : node.getAttribute("cid");
 }
 
@@ -639,13 +661,13 @@ function findCombatantNode(elem) {
 }
 
 function showPreviousEntity() {
-	var elems = document.getElementById("library").children;
-	var length = elems.length;
-	var selectedElem;
-	for (var i = 0; i < length; i++) {
+	let elems = document.getElementById("library").children;
+	let length = elems.length;
+	let selectedElem;
+	for (let i = 0; i < length; i++) {
 		if (elems[i].classList.contains("library-selected")) {
 			if (i != 0) {
-				for (var j = i - 1; j >= 0; j--) {
+				for (let j = i - 1; j >= 0; j--) {
 					if (!elems[j].classList.contains("hide")) {
 						showEntity(elems[j]);
 						break;
@@ -658,13 +680,13 @@ function showPreviousEntity() {
 }
 
 function showNextEntity() {
-	var elems = document.getElementById("library").children;
-	var length = elems.length;
-	var selectedElem;
-	for (var i = 0; i < length; i++) {
+	let elems = document.getElementById("library").children;
+	let length = elems.length;
+	let selectedElem;
+	for (let i = 0; i < length; i++) {
 		if (elems[i].classList.contains("library-selected")) {
 			if (i != length - 1) {
-				for (var j = i + 1; j < length; j++) {
+				for (let j = i + 1; j < length; j++) {
 					if (!elems[j].classList.contains("hide")) {
 						showEntity(elems[j]);
 						break;
@@ -677,9 +699,9 @@ function showNextEntity() {
 }
 
 function selectedEntityElem() {
-	var elems = document.getElementById("library").children;
-	var length = elems.length;
-	for (var i = 0; i < length; i++) {
+	let elems = document.getElementById("library").children;
+	let length = elems.length;
+	for (let i = 0; i < length; i++) {
 		if (elems[i].classList.contains("library-selected")) {
 			return elems[i];
 		}
@@ -691,10 +713,10 @@ function showEntity(target, force) {
 	if ((force === undefined || !force) && target.classList.contains("library-selected")) {
 		return;
 	}
-	var elems = document.getElementById("library").children;
-	var length = elems.length;
-	var selectedElem;
-	for (var i = 0; i < length; i++) {
+	let elems = document.getElementById("library").children;
+	let length = elems.length;
+	let selectedElem;
+	for (let i = 0; i < length; i++) {
 		if (elems[i].classList.contains("library-selected")) {
 			selectedElem = elems[i];
 			break;
@@ -705,7 +727,7 @@ function showEntity(target, force) {
 			selectedElem.classList.remove("library-selected");
 			target.classList.add("library-selected");
 			target.scrollIntoViewIfNeeded(false);
-			var detail = document.getElementById("detail");
+			let detail = document.getElementById("detail");
 			detail.innerHTML = xhttp.responseText;
 			detail.children[0].scrollIntoView();
 		}
@@ -715,9 +737,9 @@ function showEntity(target, force) {
 }
 
 function findEntityByID(id) {
-	var elems = document.getElementById("library").children;
-	var length = elems.length;
-	for (var i = 0; i < length; i++) {
+	let elems = document.getElementById("library").children;
+	let length = elems.length;
+	for (let i = 0; i < length; i++) {
 		if (elems[i].getAttribute("mid") == id) {
 			return elems[i];
 		}
@@ -726,23 +748,23 @@ function findEntityByID(id) {
 }
 
 function libraryFilterChanged(value) {
-	var exact = null;
-	var contains = null;
-	var containsIndex = 999999;
-	var elems = document.getElementById("library").children;
-	var length = elems.length;
-	var count = 0;
+	let exact = null;
+	let contains = null;
+	let containsIndex = 999999;
+	let elems = document.getElementById("library").children;
+	let length = elems.length;
+	let count = 0;
 	if (value == "") {
-		for (var i = 0; i < length; i++) {
+		for (let i = 0; i < length; i++) {
 			elems[i].classList.remove("hide");
 		}
 		count = length;
 	} else {
 		value = value.toLowerCase();
-		for (var i = 0; i < length; i++) {
-			var e = elems[i];
-			var name = e.getAttribute("name");
-			var index = name.indexOf(value);
+		for (let i = 0; i < length; i++) {
+			let e = elems[i];
+			let name = e.getAttribute("name");
+			let index = name.indexOf(value);
 			if (index == -1) {
 				if (!e.classList.contains("hide")) {
 					e.classList.add("hide");
@@ -781,9 +803,9 @@ function clearLibraryFilterOnEnter(event) {
 }
 
 function scrollLibrarySelectionIntoViewIfNeeded() {
-	var elems = document.getElementById("library").children;
-	var length = elems.length;
-	for (var i = 0; i < length; i++) {
+	let elems = document.getElementById("library").children;
+	let length = elems.length;
+	for (let i = 0; i < length; i++) {
 		if (elems[i].classList.contains("library-selected")) {
 			elems[i].scrollIntoViewIfNeeded(false);
 			break;
