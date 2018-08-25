@@ -303,12 +303,7 @@ func renameDaemons(in string) string {
 	if !strings.HasSuffix(in, "daemon") {
 		return in
 	}
-	in = in[:len(in)-6]
-	if strings.HasPrefix(in, "Daemon, ") {
-		in = in[8:]
-	}
-	in += " Daemon"
-	return strings.Join(reverse(strings.Split(in, " ")), ", ")
+	return strings.Join(reverse(strings.Split(strings.TrimPrefix(strings.TrimSuffix(in, "daemon"), "Daemon, ")+" Daemon", " ")), ", ")
 }
 
 func renameDevils(in string) string {
@@ -479,16 +474,4 @@ func parseInt(in string, def int, path string, line int, what string) int {
 		return def
 	}
 	return v
-}
-
-func parseFlag(in, path string, line int, what string) bool {
-	switch in {
-	case "1":
-		return true
-	case "0":
-		return false
-	default:
-		jot.Warnf("%s, line %d (%s): invalid flag (%s)", path, line, what, in)
-		return false
-	}
 }
