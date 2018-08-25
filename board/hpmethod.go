@@ -21,6 +21,7 @@ const (
 )
 
 var (
+	// AllHPMethods holds all possible HPMethods.
 	AllHPMethods   []HPMethod
 	hpMethodsTable = []struct {
 		key    string
