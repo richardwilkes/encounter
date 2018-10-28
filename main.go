@@ -21,6 +21,7 @@ func main() {
 	cmdline.AppName = "Encounter"
 	cmdline.AppCmdName = "encounter"
 	cmdline.AppVersion = "0.1"
+	cmdline.AppIdentifier = "com.trollworks.encounter"
 	cmdline.CopyrightYears = "2018"
 	cmdline.CopyrightHolder = "Richard A. Wilkes"
 	cmdline.License = "Mozilla Public License Version 2.0"
