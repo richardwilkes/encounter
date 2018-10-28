@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/encounter/internal/assets"
