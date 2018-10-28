@@ -4,6 +4,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -15,24 +17,22 @@ import (
 	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/xio/fs"
 	"github.com/richardwilkes/toolbox/xio/fs/embedded/htmltmpl"
+	"github.com/richardwilkes/toolbox/xio/fs/paths"
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
-)
-
-const (
-	connectionTimeout = 5 * time.Second
-	boardFile         = "board.json"
 )
 
 // Server holds the data necessary for the server.
 type Server struct {
 	web.Server
-	staticFS http.Handler
-	funcMap  template.FuncMap
-	board    board.Board
+	staticFS  http.Handler
+	funcMap   template.FuncMap
+	boardFile string
+	board     board.Board
 }
 
 // New creates a new server.
 func New(address string) *Server {
+	const connectionTimeout = 5 * time.Second
 	s := &Server{
 		Server: web.Server{
 			Logger: &jot.Logger{},
@@ -49,6 +49,7 @@ func New(address string) *Server {
 			"comma":     func(v int) string { return humanize.Comma(int64(v)) },
 			"lowercase": func(str string) string { return strings.ToLower(str) },
 		},
+		boardFile: filepath.Join(paths.AppDataDir(), "board.json"),
 		board: board.Board{
 			InitiativeDice: dice.New(nil, "1d20"),
 			HPMethod:       board.AverageHPMethod,
@@ -57,9 +58,9 @@ func New(address string) *Server {
 	s.board.SetLibrarySelection(&data.Entities[0])
 	s.Server.WebServer.Handler = s
 	s.Server.ShutdownCallback = s.handleShutdown
-	if fs.FileExists(boardFile) {
+	if fs.FileExists(s.boardFile) {
 		t := jot.Time("Loading previous board")
-		if err := s.board.Load(boardFile); err != nil {
+		if err := s.board.Load(s.boardFile); err != nil {
 			jot.Error(err)
 		}
 		t.End()
@@ -89,8 +90,12 @@ func (s *Server) loadTemplates() (*template.Template, error) {
 
 func (s *Server) handleShutdown() {
 	t := jot.Time("Saving board")
-	if err := s.board.Save(boardFile); err != nil {
+	defer t.End()
+	if err := os.MkdirAll(filepath.Dir(s.boardFile), 0755); err != nil {
+		jot.Error(err)
+		return
+	}
+	if err := s.board.Save(s.boardFile); err != nil {
 		jot.Error(err)
 	}
-	t.End()
 }
