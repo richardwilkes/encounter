@@ -43,6 +43,7 @@ func New(address string) *Server {
 				IdleTimeout:  connectionTimeout,
 				ErrorLog:     log.New(&jot.LoggerWriter{}, "", 0),
 			},
+			StartedChan: make(chan interface{}, 1),
 		},
 		staticFS: http.FileServer(assets.StaticFS),
 		funcMap: template.FuncMap{

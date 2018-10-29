@@ -5,17 +5,15 @@ package main
 //go:generate mkembeddedfs --no-modtime --output internal/assets/static_fs_gen.go --pkg assets --name staticFS --strip internal/assets/static internal/assets/static
 
 import (
-	"fmt"
 	"runtime"
 
 	"github.com/richardwilkes/encounter/internal/server"
+	"github.com/richardwilkes/encounter/internal/ui"
 	"github.com/richardwilkes/toolbox/atexit"
 	"github.com/richardwilkes/toolbox/cmdline"
 	"github.com/richardwilkes/toolbox/errs"
 	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/log/jotrotate"
-	"github.com/richardwilkes/toolbox/xmath/geom"
-	"github.com/richardwilkes/webapp"
 )
 
 func main() {
@@ -35,36 +33,17 @@ func main() {
 	cl.NewBoolOption(&serverOnly).SetSingle('s').SetName("server-only").SetUsage(`Do not put up a user interface, just run the server.`)
 	jotrotate.ParseAndSetup(cl)
 
+	runtime.LockOSThread() // Ensure the main thread is used when starting the UI
 	s := server.New(address)
-	if serverOnly {
+	go func() {
 		if err := s.Run(); err != nil {
 			jot.Error(errs.NewfWithCause(err, "%s shutdown unexpectedly", s.Protocol()))
 		}
-	} else {
-		runtime.LockOSThread()
-		startedChan := make(chan bool, 1)
-		go func() {
-			if err := s.RunWithNotifyAtStart(startedChan); err != nil {
-				jot.Error(errs.NewfWithCause(err, "%s shutdown unexpectedly", s.Protocol()))
-			}
-		}()
-		<-startedChan
-		webapp.WillFinishStartupCallback = func() {
-			wnd := webapp.NewWindow(webapp.StdWindowMask, geom.Rect{
-				Point: geom.Point{X: 20, Y: 20},
-				Size:  geom.Size{Width: 1024, Height: 768},
-			}, fmt.Sprintf("http://127.0.0.1:%d", s.Port()))
-			wnd.SetTitle(fmt.Sprintf("%s v%s", cmdline.AppName, cmdline.AppVersion))
-			bar := webapp.MenuBarForWindow(wnd)
-			_, aboutItem, prefsItem := bar.InstallAppMenu()
-			aboutItem.Handler = func() { fmt.Println("About menu item selected") }
-			prefsItem.Handler = func() { fmt.Println("Preferences menu item selected") }
-			bar.InstallEditMenu()
-			bar.InstallWindowMenu()
-			bar.InstallHelpMenu()
-			wnd.ToFront()
-		}
-		webapp.Start()
+		atexit.Exit(0)
+	}()
+	if serverOnly {
+		select {} // Wait forever
 	}
-	atexit.Exit(0)
+	<-s.StartedChan
+	ui.Start(s)
 }
