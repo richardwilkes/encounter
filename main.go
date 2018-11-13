@@ -14,6 +14,8 @@ import (
 	"github.com/richardwilkes/toolbox/errs"
 	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/log/jotrotate"
+	"github.com/richardwilkes/webapp"
+	"github.com/richardwilkes/webapp/driver"
 )
 
 func main() {
@@ -24,6 +26,8 @@ func main() {
 	cmdline.CopyrightYears = "2018"
 	cmdline.CopyrightHolder = "Richard A. Wilkes"
 	cmdline.License = "Mozilla Public License Version 2.0"
+
+	jot.FatalIfErr(webapp.Initialize(driver.ForPlatform()))
 
 	address := "127.0.0.1:0"
 	serverOnly := false

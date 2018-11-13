@@ -3,12 +3,12 @@ dependencies:
 - import: github.com/dustin/go-humanize
   tag: v1.0.0
 - import: github.com/pkg/term
-  commit: bffc007b7fd5a70e20e28f5b7649bb84671ef436
+  commit: 93e6c91493094ff99a036fea0040802a1e0a4f69
 - import: github.com/richardwilkes/rpgtools
   commit: 2cce2c88822ba5619d5eb28fa4b5e4f858d057b3
 - import: github.com/richardwilkes/toolbox
   commit: 26ec29feef51f2616e0a458a6f901041e4502de5
 - import: github.com/richardwilkes/webapp
-  commit: 2d8935d4b429c812170b8934f645fd7f90c65b91
+  commit: c27555c3a13ca47f9e5917b1a9db64fd63b9724d
 - import: gopkg.in/yaml.v2
   tag: v2.2.1
