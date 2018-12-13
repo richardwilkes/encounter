@@ -2,7 +2,6 @@
 set -eo pipefail
 
 APP_NAME=encounter
-APP_BUNDLE_DISPLAY_NAME=Encounter
 APP_BUNDLE_NAME=Encounter
 APP_VERSION=0.1.0
 APP_VERSION_SHORT=0.1
@@ -13,7 +12,7 @@ COPYRIGHT_OWNER="Richard A. Wilkes"
 # Setup OS_TYPE
 case $(uname -s) in
     Darwin*)  OS_TYPE=darwin ;;
-    Linux*)   OS_TYPE=linux ;;
+    #Linux*)   OS_TYPE=linux ;;
     MINGW64*) OS_TYPE=windows ;;
     *)        echo "Unsupported OS"; false ;;
 esac
@@ -35,109 +34,26 @@ if [ -z $BUILD_NUMBER ]; then
     BUILD_NUMBER=Unknown
 fi
 
-# Setup the webapp cef tree so builds can work
-WEBAPP_DIR="$GOPATH/src/github.com/richardwilkes/webapp"
-if [ ! -e "$WEBAPP_DIR" ]; then
-    echo "The github.com/richardwilkes/webapp repo must be checked out"
-    false
-fi
-HERE="$(pwd)"
-cd "$WEBAPP_DIR"
-./setup.sh
-cd "$HERE"
+# Setup CEF
+go install -v github.com/richardwilkes/cef
+cef install
 
 # Prepare platform-specific distribution bundle
-/bin/rm -rf dist/$OS_TYPE
-mkdir -p dist/$OS_TYPE
+cef dist \
+    --bundle "$APP_BUNDLE_NAME" \
+    --executable "$APP_NAME" \
+    --release "$APP_VERSION" \
+    --short-release "$APP_VERSION_SHORT" \
+    --year "$COPYRIGHT_YEARS" \
+    --owner "$COPYRIGHT_OWNER" \
+    --id $BUNDLE_ID
 case $OS_TYPE in
     darwin)
-        APP_BUNDLE="dist/$OS_TYPE/$APP_BUNDLE_DISPLAY_NAME.app"
-        HELPER_APP_BUNDLE="$APP_BUNDLE/Contents/Frameworks/$APP_NAME Helper.app"
-        TARGET_EXE="$APP_BUNDLE/Contents/MacOS/$APP_NAME"
-        mkdir -p "$HELPER_APP_BUNDLE/Contents/MacOS"
-        mkdir -p "$HELPER_APP_BUNDLE/Contents/Frameworks"
-        cc -I "$WEBAPP_DIR/cef" "$WEBAPP_DIR/helper/cef_helper.c" \
-            -F "$WEBAPP_DIR/cef/Release" -framework "Chromium Embedded Framework" \
-            -o "$HELPER_APP_BUNDLE/Contents/MacOS/$APP_NAME Helper"
-        mkdir -p "$APP_BUNDLE/Contents/MacOS"
-        mkdir -p "$APP_BUNDLE/Contents/Resources"
-        cp -R "$WEBAPP_DIR/cef/Release/Chromium Embedded Framework.framework" \
-            "$APP_BUNDLE/Contents/Frameworks/"
-        ln -s "../../../Chromium Embedded Framework.framework" \
-            "$HELPER_APP_BUNDLE/Contents/Frameworks/Chromium Embedded Framework.framework"
-        cp AppIcon.icns "$APP_BUNDLE/Contents/Resources/AppIcon.icns"
-        cat > "$APP_BUNDLE/Contents/Info.plist" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleDisplayName</key>
-	<string>$APP_BUNDLE_DISPLAY_NAME</string>
-	<key>CFBundleName</key>
-	<string>$APP_BUNDLE_NAME</string>
-	<key>CFBundleExecutable</key>
-	<string>$APP_NAME</string>
-	<key>CFBundleIconFile</key>
-	<string>AppIcon.icns</string>
-	<key>CFBundleIdentifier</key>
-	<string>$BUNDLE_ID</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleVersion</key>
-	<string>$APP_VERSION</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$APP_VERSION_SHORT</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>© $COPYRIGHT_YEARS by $COPYRIGHT_OWNER. All rights reserved.</string>
-	<key>NSHighResolutionCapable</key>
-	<true/>
-	<key>NSSupportsAutomaticGraphicsSwitching</key>
-	<true/>
-</dict>
-</plist>
-EOF
-        cat > "$HELPER_APP_BUNDLE/Contents/Info.plist" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleDisplayName</key>
-	<string>$APP_BUNDLE_DISPLAY_NAME Helper</string>
-	<key>CFBundleName</key>
-	<string>$APP_BUNDLE_NAME Helper</string>
-	<key>CFBundleExecutable</key>
-	<string>$APP_NAME Helper</string>
-	<key>CFBundleIdentifier</key>
-	<string>$BUNDLE_ID.helper</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleVersion</key>
-	<string>$APP_VERSION</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$APP_VERSION_SHORT</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>© $COPYRIGHT_YEARS by $COPYRIGHT_OWNER. All rights reserved.</string>
-	<key>NSHighResolutionCapable</key>
-	<true/>
-	<key>NSSupportsAutomaticGraphicsSwitching</key>
-	<true/>
-</dict>
-</plist>
-EOF
-        touch "$APP_BUNDLE" # Causes Finder to refresh its state
-        ;;
-    linux)
-        echo "Not implemented yet"
-        false
+        touch "dist/macos/$APP_BUNDLE_NAME.app" # Causes Finder to refresh its state
+        TARGET_EXE="dist/macos/$APP_BUNDLE_NAME.app/Contents/MacOS/$APP_NAME"
         ;;
     windows)
-        TARGET_EXE="dist/$OS_TYPE/$APP_NAME"
-        cp -R $WEBAPP_DIR/cef/Release/* "dist/$OS_TYPE/"
-        cp -R $WEBAPP_DIR/cef/Resources/* "dist/$OS_TYPE/"
+        TARGET_EXE="dist/windows/$APP_NAME.exe"
         ;;
     *)
         echo "Unsupported OS"

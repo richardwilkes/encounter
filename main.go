@@ -27,7 +27,8 @@ func main() {
 	cmdline.CopyrightHolder = "Richard A. Wilkes"
 	cmdline.License = "Mozilla Public License Version 2.0"
 
-	jot.FatalIfErr(webapp.Initialize(driver.ForPlatform()))
+	args, err := webapp.Initialize(driver.ForPlatform())
+	jot.FatalIfErr(err)
 
 	address := "127.0.0.1:0"
 	serverOnly := false
@@ -49,5 +50,5 @@ func main() {
 		select {} // Wait forever
 	}
 	<-s.StartedChan
-	ui.Start(s)
+	ui.Start(args, s)
 }
