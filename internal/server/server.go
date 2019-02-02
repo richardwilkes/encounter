@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dustin/go-humanize"
+	humanize "github.com/dustin/go-humanize"
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/encounter/internal/assets"
@@ -48,7 +48,7 @@ func New(address string) *Server {
 		staticFS: http.FileServer(assets.StaticFS),
 		funcMap: template.FuncMap{
 			"comma":     func(v int) string { return humanize.Comma(int64(v)) },
-			"lowercase": func(str string) string { return strings.ToLower(str) },
+			"lowercase": strings.ToLower,
 		},
 		boardFile: filepath.Join(paths.AppDataDir(), "board.json"),
 		board: board.Board{
@@ -56,7 +56,7 @@ func New(address string) *Server {
 			HPMethod:       board.AverageHPMethod,
 		},
 	}
-	s.board.SetLibrarySelection(&data.Entities[0])
+	s.board.SetLibrarySelection(data.Entities[0])
 	s.Server.WebServer.Handler = s
 	s.Server.ShutdownCallback = s.handleShutdown
 	if fs.FileExists(s.boardFile) {

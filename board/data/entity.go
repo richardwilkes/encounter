@@ -134,7 +134,7 @@ func (e *Entity) ExtractSpecialAbilities() []*LabeledField {
 			result = append(result, field)
 		} else {
 			part = strings.TrimSpace(part)
-			if len(part) == 0 {
+			if part == "" {
 				continue
 			}
 			if field == nil {

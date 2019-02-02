@@ -15,7 +15,7 @@ type document struct {
 	Title     string
 	Copyright string
 	Board     *board.Board
-	Entities  []data.Entity
+	Entities  []*data.Entity
 }
 
 func (s *Server) handleIndex(w http.ResponseWriter, req *http.Request) {

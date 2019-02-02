@@ -6,7 +6,8 @@
 	</div>
 	<div id="library">{{$sel := .Board.LibrarySelection}}
 		{{- range .Entities}}
-		<div class="library-item{{if eq .ID $sel}} library-selected{{end}}" mid="{{.ID}}" name="{{lowercase .Name}}" onclick="showEntity(this)">{{.Name}} (CR {{.CR}})</div>
+		<div class="library-item{{if eq .ID $sel}} library-selected{{end}}" mid="{{.ID}}" name="{{lowercase .Name}}" cr="{{.CR}}"
+		 onclick="showEntity(this)">{{.Name}} (CR {{.CR}})</div>
 		{{- end}}
 	</div>
 </div>

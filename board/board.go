@@ -32,14 +32,14 @@ func (b *Board) Load(path string) error {
 		b.InitiativeDice = dice.New(nil, "1d20")
 	}
 	var entity *data.Entity
-	for _, m := range data.Entities {
-		if m.ID == b.LibrarySelection {
-			entity = &m
+	for _, e := range data.Entities {
+		if e.ID == b.LibrarySelection {
+			entity = e
 			break
 		}
 	}
 	if entity == nil {
-		entity = &data.Entities[0]
+		entity = data.Entities[0]
 	}
 	b.SetLibrarySelection(entity)
 	b.LastID = 0
@@ -137,7 +137,7 @@ func (b *Board) SuggestName(nameHint string) string {
 	}
 	nameHint = strings.TrimRight(nameHint, "0123456789 ")
 	if !strings.HasSuffix(nameHint, "#") {
-		nameHint = nameHint + " "
+		nameHint += " "
 	}
 	counter := 2
 	for {

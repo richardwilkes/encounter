@@ -533,7 +533,7 @@ func (s *Server) deleteCombatant(w http.ResponseWriter, req *http.Request) {
 	xio.CloseIgnoringErrors(req.Body)
 	found := false
 	for i, c := range s.board.Combatants {
-		if c.ID == id {
+		if c.ID == id { //nolint:gocritic
 			copy(s.board.Combatants[i:], s.board.Combatants[i+1:])
 			s.board.Combatants[len(s.board.Combatants)-1] = nil
 			s.board.Combatants = s.board.Combatants[:len(s.board.Combatants)-1]
@@ -659,8 +659,8 @@ func (s *Server) showEntity(w http.ResponseWriter, req *http.Request) {
 	id := int(json.MustParseStream(req.Body).Int64Relaxed("id"))
 	xio.CloseIgnoringErrors(req.Body)
 	for _, entity := range data.Entities {
-		if entity.ID == id {
-			s.board.SetLibrarySelection(&entity)
+		if entity.ID == id { //nolint:gocritic
+			s.board.SetLibrarySelection(entity)
 			tmpl, err := s.loadTemplates()
 			if err != nil {
 				jot.Error(errs.Wrap(err))

@@ -26,7 +26,7 @@ import (
 
 var (
 	subTierRegex = regexp.MustCompile("^(.*) (Sub){0,1}[Tt]{1}ier [0-9]+-[0-9]*$")
-	entities     = make([]data.Entity, 0)
+	entities     = make([]*data.Entity, 0)
 	pcClasses    = []string{
 		"alchemist",
 		"arcanist",
@@ -178,7 +178,7 @@ func load(path string) {
 		appendData(record[68], &m.Weaknesses)
 		appendData(record[80], &m.SpellsPrepared)
 		m.MR = parseInt(record[95], 0, path, line, "MR")
-		entities = append(entities, m)
+		entities = append(entities, &m)
 	}
 }
 
@@ -354,17 +354,17 @@ func fixSpellsPrepared(in string) string {
 		if buffer.Len() > 0 {
 			buffer.WriteByte(' ')
 		}
-		txt := scanner.Text()
-		if len(txt) > 1 && strings.HasSuffix(txt, "D") {
-			if unicode.IsLower(rune(txt[len(txt)-2])) {
-				txt = txt[:len(txt)-1] + " (D)"
+		s := scanner.Text()
+		if len(s) > 1 && strings.HasSuffix(s, "D") {
+			if unicode.IsLower(rune(s[len(s)-2])) {
+				s = s[:len(s)-1] + " (D)"
 			}
-		} else if len(txt) > 2 && strings.HasSuffix(txt, "D,") {
-			if unicode.IsLower(rune(txt[len(txt)-3])) {
-				txt = txt[:len(txt)-2] + " (D),"
+		} else if len(s) > 2 && strings.HasSuffix(s, "D,") {
+			if unicode.IsLower(rune(s[len(s)-3])) {
+				s = s[:len(s)-2] + " (D),"
 			}
 		}
-		buffer.WriteString(txt)
+		buffer.WriteString(s)
 	}
 	return buffer.String()
 }
@@ -403,34 +403,34 @@ func save() {
 	buffer.WriteString("// Entities holds the entities obtained from:\n")
 	buffer.WriteString("// http://www.pathfindercommunity.net/home/databases/full-bestiary (July 27, 2015 update)\n")
 	buffer.WriteString("// http://www.pathfindercommunity.net/home/databases/npcs (May 26, 2018 update)\n")
-	buffer.WriteString("var Entities = []Entity{\n")
+	buffer.WriteString("var Entities = []*Entity{\n")
 	typ := reflect.TypeOf(data.Entity{})
 	fieldCount := typ.NumField()
 	for _, e := range entities {
 		buffer.WriteString("{\n")
-		v := reflect.ValueOf(e)
+		v := reflect.ValueOf(*e)
 		for i := 0; i < fieldCount; i++ {
-			fs := typ.Field(i)
+			sf := typ.Field(i)
 			f := v.Field(i)
 			switch f.Kind() {
 			case reflect.Bool:
 				if f.Bool() {
-					buffer.WriteString(fs.Name)
+					buffer.WriteString(sf.Name)
 					buffer.WriteString(": true,\n")
 				}
 			case reflect.Int:
 				val := f.Int()
 				if val != 0 {
-					fmt.Fprintf(&buffer, "%s: %d,\n", fs.Name, val)
+					fmt.Fprintf(&buffer, "%s: %d,\n", sf.Name, val)
 				}
 			case reflect.String:
 				val := strings.TrimSpace(f.String())
-				if val != "" && strings.ToLower(val) != "null" {
+				if val != "" && !strings.EqualFold(val, "null") {
 					// Perform some cleanup to the data
 					for _, one := range spelling {
 						val = strings.Replace(val, one[0], one[1], -1)
 					}
-					fmt.Fprintf(&buffer, "%s: %q,\n", fs.Name, val)
+					fmt.Fprintf(&buffer, "%s: %q,\n", sf.Name, val)
 				}
 			default:
 				fmt.Println("Unhandled type within Entity structure: ", f.Kind())
@@ -444,12 +444,11 @@ func save() {
 	buffer.WriteString("var ByID = make(map[int]*Entity)\n\n")
 	buffer.WriteString("func init() {\n")
 	buffer.WriteString("	for _, e := range Entities {\n")
-	buffer.WriteString("		var entity = e\n")
-	buffer.WriteString("		ByID[e.ID] = &entity\n")
+	buffer.WriteString("		ByID[e.ID] = e\n")
 	buffer.WriteString("	}\n")
 	buffer.WriteString("}\n")
 
-	data, err := format.Source(buffer.Bytes())
+	d, err := format.Source(buffer.Bytes())
 	if err != nil {
 		fmt.Println(err)
 		atexit.Exit(1)
@@ -458,7 +457,7 @@ func save() {
 		fmt.Println(err)
 		atexit.Exit(1)
 	}
-	if err = ioutil.WriteFile("board/data/entities_gen.go", data, 0644); err != nil {
+	if err = ioutil.WriteFile("board/data/entities_gen.go", d, 0644); err != nil {
 		fmt.Println(err)
 		atexit.Exit(1)
 	}

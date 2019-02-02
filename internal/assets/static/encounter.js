@@ -237,7 +237,9 @@ function resetHP(id) {
 function showRecentHPChanges(id) {
 	post("/cmds/hp_changes", function (xhttp) {
 		if (xhttp.status == 200) {
-			simpleModal({ content: xhttp.responseText });
+			simpleModal({
+				content: xhttp.responseText
+			});
 		}
 	}, JSON.stringify({
 		"id": id
@@ -771,6 +773,8 @@ function findEntityByID(id) {
 	return null;
 }
 
+const crRegex = /^\s*[cC][rR]\s*([\d/-]+)\s*$/;
+
 function libraryFilterChanged(value) {
 	let exact = null;
 	let contains = null;
@@ -784,26 +788,44 @@ function libraryFilterChanged(value) {
 		}
 		count = length;
 	} else {
-		value = value.toLowerCase();
-		for (let i = 0; i < length; i++) {
-			let e = elems[i];
-			let name = e.getAttribute("name");
-			let index = name.indexOf(value);
-			if (index == -1) {
-				if (!e.classList.contains("hide")) {
-					e.classList.add("hide");
+		let m = crRegex.exec(value);
+		if (m != null) {
+			console.log("Result: " + m[1]);
+			for (let i = 0; i < length; i++) {
+				let e = elems[i];
+				if (e.getAttribute("cr") != m[1]) {
+					if (!e.classList.contains("hide")) {
+						e.classList.add("hide");
+					}
+				} else {
+					count++;
+					if (e.classList.contains("hide")) {
+						e.classList.remove("hide");
+					}
 				}
-			} else {
-				count++;
-				if (e.classList.contains("hide")) {
-					e.classList.remove("hide");
-				}
-				if (exact === null) {
-					if (name == value) {
-						exact = e;
-					} else if (index < containsIndex) {
-						contains = e;
-						containsIndex = index;
+			}
+		} else {
+			value = value.toLowerCase();
+			for (let i = 0; i < length; i++) {
+				let e = elems[i];
+				let name = e.getAttribute("name");
+				let index = name.indexOf(value);
+				if (index == -1) {
+					if (!e.classList.contains("hide")) {
+						e.classList.add("hide");
+					}
+				} else {
+					count++;
+					if (e.classList.contains("hide")) {
+						e.classList.remove("hide");
+					}
+					if (exact === null) {
+						if (name == value) {
+							exact = e;
+						} else if (index < containsIndex) {
+							contains = e;
+							containsIndex = index;
+						}
 					}
 				}
 			}

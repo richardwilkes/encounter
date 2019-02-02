@@ -12,6 +12,7 @@ import (
 	"github.com/richardwilkes/webapp/stdmenu"
 )
 
+// Start the UI.
 func Start(args *cef.MainArgs, s *server.Server) {
 	webapp.WillFinishStartupCallback = func() {
 		wnd, err := webapp.NewWindow(webapp.StdWindowMask, webapp.MainDisplay().UsableBounds, fmt.Sprintf("%s v%s", cmdline.AppName, cmdline.AppVersion), fmt.Sprintf("http://127.0.0.1:%d", s.Port()))

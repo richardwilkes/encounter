@@ -1,0 +1,71 @@
+run:
+  deadline: 5m
+  tests: true
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+linters-settings:
+  depguard:
+    list-type: blacklist
+    include-go-root: true
+    packages:
+      - github.com/satori/go.uuid
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - performance
+      - style
+      - opinionated
+      - experimental
+    disabled-checks:
+      - sloppyReassign
+      - wrapperFunc
+  gofmt:
+    simplify: true
+  golint:
+    min-confidence: 0.8
+  govet:
+    check-shadowing: true
+  maligned:
+    suggest-new: true
+  misspell:
+    locale: US
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+linters:
+  disable-all: true
+  enable:
+    - depguard
+    - errcheck
+    - goconst
+    - gocritic
+    - gofmt
+    - goimports
+    - golint
+    - govet
+    - ineffassign
+    - interfacer
+    - maligned
+    - misspell
+    - prealloc
+    - scopelint
+    - staticcheck
+    - structcheck
+    - unconvert
+    - varcheck
+issues:
+  max-per-linter: 20
+  max-same-issues: 3
+  new: false
+  exclude-use-default: false
+  exclude:
+    - should call os.Exit to set exit code
