@@ -22,6 +22,7 @@ func Start(args *cef.MainArgs, s *server.Server) {
 		}
 		wnd.ToFront()
 	}
+	webapp.QuittingCallback = s.HandleShutdown
 	// Start only returns on error
 	jot.FatalIfErr(webapp.Start(args, nil, nil))
 	atexit.Exit(0)

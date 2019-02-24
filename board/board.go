@@ -8,6 +8,7 @@ import (
 	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/collection"
+	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/xio/fs"
 )
 
@@ -48,6 +49,7 @@ func (b *Board) Load(path string) error {
 			b.LastID = int64(c.ID)
 		}
 	}
+	jot.Info("Loaded board from " + path)
 	return nil
 }
 
@@ -59,7 +61,11 @@ func (b *Board) SetLibrarySelection(e *data.Entity) {
 
 // Save state to the specified path.
 func (b *Board) Save(path string) error {
-	return fs.SaveJSON(path, b, true)
+	if err := fs.SaveJSON(path, b, true); err != nil {
+		return err
+	}
+	jot.Info("Saved board to " + path)
+	return nil
 }
 
 // NextID returns the next ID to use for a combatant.

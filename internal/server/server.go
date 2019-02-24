@@ -58,7 +58,7 @@ func New(address string) *Server {
 	}
 	s.board.SetLibrarySelection(data.Entities[0])
 	s.Server.WebServer.Handler = s
-	s.Server.ShutdownCallback = s.handleShutdown
+	s.Server.ShutdownCallback = s.HandleShutdown
 	if fs.FileExists(s.boardFile) {
 		t := jot.Time("Loading previous board")
 		if err := s.board.Load(s.boardFile); err != nil {
@@ -89,7 +89,8 @@ func (s *Server) loadTemplates() (*template.Template, error) {
 	return htmltmpl.Load(template.New("root").Funcs(s.funcMap), assets.DynamicFS, "/", nil)
 }
 
-func (s *Server) handleShutdown() {
+// HandleShutdown is called during shutdown to save state.
+func (s *Server) HandleShutdown() {
 	t := jot.Time("Saving board")
 	defer t.End()
 	if err := os.MkdirAll(filepath.Dir(s.boardFile), 0755); err != nil {
