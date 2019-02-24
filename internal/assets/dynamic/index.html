@@ -4,7 +4,8 @@
 	<meta charset="utf-8" />
 	<title>{{.Title}}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+	 crossorigin="anonymous">
 	<link rel="stylesheet" href="/theme.css">
 	<link rel="stylesheet" href="/encounter.css">
 	<link rel="stylesheet" href="/library.css">
@@ -21,18 +22,19 @@
 			<i class="fas fa-undo button" title="Roll initiative" onclick="rollInitiative()"></i>
 		</div>
 		<div id="hdr-right">
+			<i class="fas fa-list-alt button" title="Toggle Library" onclick="toggleLibrary()"></i>
 			<i class="fas fa-plus-circle button" title="New combatant" onclick="newCombatant()"></i>
 			<i class="fas fa-broom button" title="Delete all enemy combatants" onclick="deleteAllEnemies()"></i>
 			<i class="fas fa-cog button" title="Options" onclick="globalOptions()"></i>
 		</div>
 	</div>
 	<div id="content">
-{{template "/library.html" .}}
+		{{template "/library.html" .}}
 		<div id="board-area">
-{{template "/board.html" .Board}}
+			{{template "/board.html" .Board}}
 		</div>
 		<div id="detail">
-{{template "/detail.html" .Board}}
+			{{template "/detail.html" .Board}}
 		</div>
 	</div>
 	<div id="ftr">

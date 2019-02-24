@@ -334,6 +334,7 @@ i {
 #fields {
 	display: grid;
 	grid-template: "label field";
+	grid-row-gap: 0.25em;
 	align-items: center;
 }
 
@@ -353,7 +354,7 @@ i {
 
 #fields hr {
 	grid-column-start: span 2;
-	width: 100%;
+	width: 80%;
 }
 
 #fields .timed {

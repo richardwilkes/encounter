@@ -74,6 +74,10 @@ function globalOptions() {
 	}));
 }
 
+function toggleLibrary() {
+	document.getElementById("library-area").classList.toggle("collapse");
+}
+
 function newCombatant(id) {
 	let payload = {
 		"panel": true
