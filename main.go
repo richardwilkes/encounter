@@ -23,7 +23,7 @@ func main() {
 	cmdline.AppCmdName = "encounter"
 	cmdline.AppVersion = "0.1"
 	cmdline.AppIdentifier = "com.trollworks.encounter"
-	cmdline.CopyrightYears = "2018"
+	cmdline.CopyrightYears = "2018-2019"
 	cmdline.CopyrightHolder = "Richard A. Wilkes"
 	cmdline.License = "Mozilla Public License Version 2.0"
 
@@ -46,9 +46,11 @@ func main() {
 		}
 		atexit.Exit(0)
 	}()
+	<-s.StartedChan
 	if serverOnly {
 		select {} // Wait forever
+	} else {
+		ui.Start(args, s)
 	}
-	<-s.StartedChan
-	ui.Start(args, s)
+	atexit.Exit(0)
 }
