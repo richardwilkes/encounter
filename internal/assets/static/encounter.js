@@ -410,12 +410,17 @@ function simpleModal(options) {
 		dialog.default_button = cancel;
 		if (options.wantAutoFocus || options.buttons == undefined || options.buttons.length == 0) {
 			cancel.autofocus = true;
+			needAutofocus = false;
 		}
 	}
 	cancel.appendChild(document.createTextNode(options.buttons == undefined || options.buttons.length == 0 ? "OK" : "Cancel"));
 	dialog.cancel_button = cancel;
 	buttons.appendChild(cancel);
 	document.getElementById("modal-overlay").classList.remove("closed");
+	let field = dialog.querySelector("input");
+	if (field != null) {
+		field.focus();
+	}
 }
 
 function closeSimpleModal() {
