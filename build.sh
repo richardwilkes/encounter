@@ -35,16 +35,12 @@ if [ -z $BUILD_NUMBER ]; then
 fi
 
 # Setup tools we need
-export GO111MODULE=on
-TOOLS_DIR=$PWD/tools
-mkdir -p $TOOLS_DIR
-if [ ! -e $TOOLS_DIR/mkembeddedfs ]; then
-	go build -o $TOOLS_DIR/mkembeddedfs github.com/richardwilkes/toolbox/xio/fs/mkembeddedfs
-fi
-if [ ! -e $TOOLS_DIR/cef ]; then
-	go build -o $TOOLS_DIR/cef github.com/richardwilkes/cef
-fi
-export PATH=$TOOLS_DIR:$PATH
+TOOLS_DIR="$PWD/tools"
+/bin/rm -rf "$TOOLS_DIR"
+mkdir -p "$TOOLS_DIR"
+go build -o "$TOOLS_DIR/mkembeddedfs" github.com/richardwilkes/toolbox/xio/fs/mkembeddedfs
+go build -o "$TOOLS_DIR/cef" github.com/richardwilkes/cef
+export PATH="$TOOLS_DIR:$PATH"
 cef install
 
 # Prepare platform-specific distribution bundle
