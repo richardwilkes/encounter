@@ -14,6 +14,21 @@ body {
 	overflow: none;
 }
 
+input {
+	font-size: 1rem;
+}
+
+input[type="text"] {
+	border: 1px solid var(--ctrl-border);
+	margin: 1px;
+}
+
+input[type="text"]:focus {
+	outline: none;
+	border: 2px solid var(--focus-border);
+	margin: 0;
+}
+
 #content {
 	display: flex;
 	flex-grow: 1;
@@ -343,7 +358,7 @@ i {
 	padding-right: .5em;
 }
 
-#fields input {
+#fields select {
 	font-size: 1rem;
 }
 

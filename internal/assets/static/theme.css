@@ -20,6 +20,9 @@
 	--danger: red;
 	--drag-marker-fg: red;
 	--current: #ffffaa;
+	--ctrl-border: lightgray;
+	--button-gradient-start: aliceblue;
+	--focus-border: steelblue;
 	--model-overlay-bg: rgba(0, 0, 0, 0.2);
 	--drag-marker-height: 2px;
 }

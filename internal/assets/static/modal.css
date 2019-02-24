@@ -41,7 +41,25 @@
 }
 
 .modal-buttons button {
+	font-size: 1rem;
+	border-radius: .4em;
+	border-width: 1px;
+	border-color: var(--ctrl-border);
+	background-image: linear-gradient(var(--button-gradient-start), var(--ctrl-border));
+	margin: 1px;
 	margin-left: 1em;
+}
+
+.modal-buttons button:active {
+	background-image: linear-gradient(var(--ctrl-border), var(--button-gradient-start));
+}
+
+.modal-buttons button:focus {
+	outline: none;
+	border-width: 2px;
+	border-color: var(--focus-border);
+	margin: 0;
+	margin-left: calc(1em - 1px);
 }
 
 #modal-overlay.closed {
