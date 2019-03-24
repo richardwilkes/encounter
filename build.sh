@@ -9,6 +9,24 @@ BUNDLE_ID=com.trollworks.encounter
 COPYRIGHT_YEARS=2018-2019
 COPYRIGHT_OWNER="Richard A. Wilkes"
 
+# Process args
+for arg in "$@"
+do
+	case "$arg" in
+		--dev|-d)  DEV_MODE=1 ;;
+		--help|-h)
+			echo "$0 [options]"
+			echo "  -d, --dev   Development mode (live FS)"
+			echo "  -h, --help  This help text"
+			exit 0
+			;;
+		*) echo "Invalid argument: $arg"; BAIL=1 ;;
+	esac
+done
+if [ ! -z $BAIL ]; then
+	exit 1
+fi
+
 # Setup OS_TYPE
 case $(uname -s) in
 	Darwin*)  OS_TYPE=darwin ;;
@@ -38,7 +56,6 @@ fi
 TOOLS_DIR="$PWD/tools"
 /bin/rm -rf "$TOOLS_DIR"
 mkdir -p "$TOOLS_DIR"
-go build -o "$TOOLS_DIR/mkembeddedfs" github.com/richardwilkes/toolbox/xio/fs/mkembeddedfs
 go build -o "$TOOLS_DIR/cef" github.com/richardwilkes/cef
 export PATH="$TOOLS_DIR:$PATH"
 cef install
@@ -70,6 +87,12 @@ esac
 find . -iname "*_gen.go" -exec rm \{\} \;
 find . -iname ".DS_Store" -exec rm \{\} \;
 go generate -tags gen ./...
-go build -o "$TARGET_EXE" -v \
-    -ldflags=all="-X github.com/richardwilkes/toolbox/cmdline.AppVersion=$APP_VERSION_SHORT -X github.com/richardwilkes/toolbox/cmdline.GitVersion=$GIT_VERSION -X github.com/richardwilkes/toolbox/cmdline.BuildNumber=$BUILD_NUMBER" \
-    ./main.go
+go build -o "$TARGET_EXE" -v -ldflags=all="-X github.com/richardwilkes/toolbox/cmdline.AppVersion=$APP_VERSION_SHORT -X github.com/richardwilkes/toolbox/cmdline.GitVersion=$GIT_VERSION -X github.com/richardwilkes/toolbox/cmdline.BuildNumber=$BUILD_NUMBER" ./main.go
+
+if [ -z $DEV_MODE ]; then
+	cd internal/assets
+	/bin/rm -f assets.zip
+	zip -q -D -r -9 assets.zip dynamic static
+	cd ../..
+	cat internal/assets/assets.zip >> "$TARGET_EXE"
+fi

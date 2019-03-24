@@ -1,8 +1,6 @@
 package main
 
 //go:generate go run board/data/dataconverter/main.go
-//go:generate mkembeddedfs --no-modtime --output internal/assets/dynamic_fs_gen.go --pkg assets --name dynamicFS --strip internal/assets/dynamic internal/assets/dynamic
-//go:generate mkembeddedfs --no-modtime --output internal/assets/static_fs_gen.go --pkg assets --name staticFS --strip internal/assets/static internal/assets/static
 
 import (
 	"runtime"
