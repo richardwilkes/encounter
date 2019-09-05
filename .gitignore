@@ -1,7 +1,0 @@
-.dirtlock
-/dist
-/blob_storage
-/GPUCache
-/VideoDecodeStats
-/tools
-*.zip
