@@ -1,6 +1,14 @@
+/* Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved. */
+/* */
+/* This Source Code Form is subject to the terms of the Mozilla Public */
+/* License, version 2.0. If a copy of the MPL was not distributed with */
+/* this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* */
+/* This Source Code Form is "Incompatible With Secondary Licenses", as */
+/* defined by the Mozilla Public License, version 2.0. */
+
 #library-area {
-	margin: 1em;
-	margin-right: 0;
+	margin: 1em 0 1em 1em;
 	box-shadow: 3px 3px 3px var(--shadow);
 	border: 1px solid var(--border);
 	background-color: var(--content-bg);
@@ -13,13 +21,10 @@
 #library-filter {
 	color: var(--board-hdr-fg);
 	background-color: var(--board-hdr-bg);
-	padding-left: .5em;
-	padding-right: .5em;
-	padding-top: .2ex;
-	padding-bottom: .3ex;
+	padding: .2ex .5em .3ex;
 	white-space: nowrap;
 	display: grid;
-	grid-template-columns: 0fr 1fr 0fr;
+	grid-template-columns: 0 1fr 0;
 	grid-column-gap: .2em;
 	align-items: center;
 }

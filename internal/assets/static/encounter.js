@@ -1,3 +1,12 @@
+// Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, version 2.0. If a copy of the MPL was not distributed with
+// this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+//
+// This Source Code Form is "Incompatible With Secondary Licenses", as
+// defined by the Mozilla Public License, version 2.0.
+
 function rollInitiative() {
 	post("/cmds/rollInitiative", function (xhttp) {
 		if (xhttp.status == 200) {
@@ -10,7 +19,7 @@ function rollInitiative() {
 					onclick: function () {
 						let inputs = document.getElementById("fields").getElementsByTagName("input");
 						let length = inputs.length;
-						let inits = []
+						let inits = [];
 						for (let i = 0; i < length; i++) {
 							inits.push({
 								"id": inputs[i].name,
@@ -137,7 +146,7 @@ function editCombatant(id) {
 						let payload = {
 							"id": id,
 							"panel": false
-						}
+						};
 						for (let i = 0; i < length; i++) {
 							if (inputs[i].type == "checkbox") {
 								payload[inputs[i].name] = inputs[i].checked;
@@ -194,7 +203,7 @@ function adjustHP(id) {
 						let payload = {
 							"id": id,
 							"panel": false
-						}
+						};
 						for (let i = 0; i < length; i++) {
 							payload[inputs[i].name] = inputs[i].value;
 						}
@@ -309,7 +318,7 @@ function getNotePayload(id) {
 	let payload = {
 		"id": id,
 		"panel": false
-	}
+	};
 	for (let i = 0; i < length; i++) {
 		if (inputs[i].type == "checkbox") {
 			payload[inputs[i].name] = inputs[i].checked;
@@ -395,7 +404,7 @@ function simpleModal(options) {
 			button.onclick = options.buttons[i].onclick;
 			if (options.buttons[i].autofocus) {
 				needAutofocus = false;
-				dialog.default_button = button
+				dialog.default_button = button;
 				if (options.wantAutoFocus) {
 					button.autofocus = true;
 				}
@@ -542,7 +551,7 @@ function dragStartHandler(event) {
 	if (dragStartCombatant != "") {
 		event.dataTransfer.setData(combatantDNDType, dragStartCombatant);
 		event.dataTransfer.effectAllowed = "move";
-		let board = document.getElementById("board")
+		let board = document.getElementById("board");
 		let divs = board.getElementsByTagName("div");
 		let length = divs.length;
 		let last = "x";
@@ -569,7 +578,6 @@ function dragStartHandler(event) {
 function dragEnterHandler(event) {
 	if (acceptableDrag(event)) {
 		event.preventDefault();
-		return;
 	}
 }
 
@@ -644,7 +652,7 @@ function dragToIndex(event) {
 }
 
 function mark(cid, className) {
-	let board = document.getElementById("board")
+	let board = document.getElementById("board");
 	let divs = board.getElementsByTagName("div");
 	let length = divs.length;
 	for (let i = 0; i < length; i++) {
@@ -655,7 +663,7 @@ function mark(cid, className) {
 }
 
 function removePreviousDragMarkers() {
-	let board = document.getElementById("board")
+	let board = document.getElementById("board");
 	removeClassFromChildren(board, "drag-marker-top");
 	removeClassFromChildren(board, "drag-marker-bottom");
 }

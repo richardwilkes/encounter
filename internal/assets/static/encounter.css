@@ -1,3 +1,12 @@
+/* Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved. */
+/* */
+/* This Source Code Form is subject to the terms of the Mozilla Public */
+/* License, version 2.0. If a copy of the MPL was not distributed with */
+/* this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* */
+/* This Source Code Form is "Incompatible With Secondary Licenses", as */
+/* defined by the Mozilla Public License, version 2.0. */
+
 body {
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	text-rendering: optimizeLegibility;
@@ -11,7 +20,7 @@ body {
 	align-content: space-between;
 	min-height: 100vh;
 	max-height: 100vh;
-	overflow: none;
+	overflow: hidden;
 }
 
 input {
@@ -291,10 +300,7 @@ i {
 .tag {
 	position: relative;
 	display: inline-block;
-	padding-top: .3ex;
-	padding-bottom: .5ex;
-	padding-left: .7em;
-	padding-right: .7em;
+	padding: .3ex .7em .5ex;
 	margin-top: .1ex;
 	margin-bottom: .1ex;
 	margin-left: .35em;

@@ -1,3 +1,12 @@
+/* Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved. */
+/* */
+/* This Source Code Form is subject to the terms of the Mozilla Public */
+/* License, version 2.0. If a copy of the MPL was not distributed with */
+/* this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* */
+/* This Source Code Form is "Incompatible With Secondary Licenses", as */
+/* defined by the Mozilla Public License, version 2.0. */
+
 #modal-overlay {
 	z-index: 1000;
 	position: absolute;
@@ -19,8 +28,7 @@
 	box-shadow: 3px 3px 3px var(--shadow);
 	border: 1px solid var(--border);
 	border-radius: .5em;
-	padding: 1em;
-	padding-bottom: .5em;
+	padding: 1em 1em .5em;
 	min-height: 50px;
 	max-height: 100vh;
 	overflow: hidden;
@@ -46,8 +54,7 @@
 	border-width: 1px;
 	border-color: var(--ctrl-border);
 	background-image: linear-gradient(var(--button-gradient-start), var(--ctrl-border));
-	margin: 1px;
-	margin-left: 1em;
+	margin: 1px 1px 1px 1em;
 }
 
 .modal-buttons button:active {
@@ -58,8 +65,7 @@
 	outline: none;
 	border-width: 2px;
 	border-color: var(--focus-border);
-	margin: 0;
-	margin-left: calc(1em - 1px);
+	margin: 0 0 0 calc(1em - 1px);
 }
 
 #modal-overlay.closed {

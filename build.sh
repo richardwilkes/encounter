@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-TARGET_EXE="$GOPATH/bin/$(basename $(pwd))"
+TARGET_EXE="$GOPATH/bin/$(basename "$(pwd)")"
 VERSION=0.1
 
 # Setup GIT_VERSION
-if which git 2>&1 > /dev/null; then
+if command -v git 2>&1 > /dev/null; then
   if [ -z "$(git status --porcelain)" ]; then
     STATE=clean
   else

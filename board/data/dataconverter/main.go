@@ -1,3 +1,12 @@
+// Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, version 2.0. If a copy of the MPL was not distributed with
+// this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+//
+// This Source Code Form is "Incompatible With Secondary Licenses", as
+// defined by the Mozilla Public License, version 2.0.
+
 package main
 
 import (
@@ -70,8 +79,8 @@ var (
 )
 
 func main() {
-	load("board/data/dataconverter/monsters.csv")
-	load("board/data/dataconverter/npcs.csv")
+	load("board/data/dataconverter/files/monsters.csv")
+	load("board/data/dataconverter/files/npcs.csv")
 	for i := range entities {
 		entities[i].ID = i + 1
 	}
@@ -103,7 +112,8 @@ func load(path string) {
 	r := csv.NewReader(bufio.NewReader(f))
 	line := 0
 	for {
-		record, err := r.Read()
+		var record []string
+		record, err = r.Read()
 		line++
 		if err != nil {
 			if err == io.EOF {
@@ -393,17 +403,28 @@ func hasPCClass(classes string) bool {
 
 func save() {
 	var spelling [][]string
-	if err := fs.LoadJSON("board/data/dataconverter/spelling.json", &spelling); err != nil {
+	if err := fs.LoadJSON("board/data/dataconverter/files/spelling.json", &spelling); err != nil {
 		fmt.Println(err)
 		atexit.Exit(1)
 	}
 
 	var buffer bytes.Buffer
-	buffer.WriteString("package data\n\n")
-	buffer.WriteString("// Entities holds the entities obtained from:\n")
-	buffer.WriteString("// http://www.pathfindercommunity.net/home/databases/full-bestiary (July 27, 2015 update)\n")
-	buffer.WriteString("// http://www.pathfindercommunity.net/home/databases/npcs (May 26, 2018 update)\n")
-	buffer.WriteString("var Entities = []*Entity{\n")
+	buffer.WriteString(`// Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, version 2.0. If a copy of the MPL was not distributed with
+// this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+//
+// This Source Code Form is "Incompatible With Secondary Licenses", as
+// defined by the Mozilla Public License, version 2.0.
+
+package data
+
+// Entities holds the entities obtained from:
+// http://www.pathfindercommunity.net/home/databases/full-bestiary (July 27, 2015 update)
+// http://www.pathfindercommunity.net/home/databases/npcs (May 26, 2018 update)
+var Entities = []*Entity{
+`)
 	typ := reflect.TypeOf(data.Entity{})
 	fieldCount := typ.NumField()
 	for _, e := range entities {
