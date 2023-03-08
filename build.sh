@@ -26,12 +26,3 @@ go generate ./...
 LINK_FLAGS="-X github.com/richardwilkes/toolbox/cmdline.AppVersion=$VERSION"
 LINK_FLAGS="$LINK_FLAGS -X github.com/richardwilkes/toolbox/cmdline.GitVersion=$GIT_VERSION"
 go install -v -ldflags=all="$LINK_FLAGS"
-
-# Add the internal filesystem to the executable
-cd internal/assets
-/bin/rm -f assets.zip
-zip -q -D -r -9 assets.zip dynamic static
-cd ../..
-cat internal/assets/assets.zip >> "$TARGET_EXE"
-/bin/rm -f internal/assets/assets.zip
-zip -q -A "$TARGET_EXE"

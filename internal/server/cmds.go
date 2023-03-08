@@ -1,4 +1,4 @@
-// Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved.
+// Copyright ©2018-2023 by Richard A. Wilkes. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, version 2.0. If a copy of the MPL was not distributed with
@@ -20,7 +20,6 @@ import (
 	"github.com/richardwilkes/encounter/board"
 	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/rpgtools/dice"
-	"github.com/richardwilkes/toolbox/collection"
 	"github.com/richardwilkes/toolbox/errs"
 	"github.com/richardwilkes/toolbox/formats/json"
 	"github.com/richardwilkes/toolbox/log/jot"
@@ -96,7 +95,7 @@ func (s *Server) addNote(w http.ResponseWriter, req *http.Request) {
 		}
 		var buffer bytes.Buffer
 		if panel {
-			if err = tmpl.ExecuteTemplate(&buffer, "/edit_note.html", &noteInfo{
+			if err = tmpl.ExecuteTemplate(&buffer, "edit_note.html", &noteInfo{
 				Combatant: c,
 				Note: board.Note{
 					Who:   c.ID,
@@ -111,7 +110,7 @@ func (s *Server) addNote(w http.ResponseWriter, req *http.Request) {
 		} else {
 			c.Notes = append(c.Notes, board.Note{})
 			s.updateNote(c, len(c.Notes)-1, j)
-			if err = tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+			if err = tmpl.ExecuteTemplate(&buffer, "board.html", &s.board); err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
@@ -171,7 +170,7 @@ func (s *Server) editNote(w http.ResponseWriter, req *http.Request) {
 			}
 			var buffer bytes.Buffer
 			if panel {
-				if err = tmpl.ExecuteTemplate(&buffer, "/edit_note.html", &noteInfo{
+				if err = tmpl.ExecuteTemplate(&buffer, "edit_note.html", &noteInfo{
 					Combatant: c,
 					Note:      c.Notes[index],
 					WhoList:   s.board.Combatants,
@@ -182,7 +181,7 @@ func (s *Server) editNote(w http.ResponseWriter, req *http.Request) {
 				}
 			} else {
 				s.updateNote(c, index, j)
-				if err = tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+				if err = tmpl.ExecuteTemplate(&buffer, "board.html", &s.board); err != nil {
 					jot.Error(errs.Wrap(err))
 					w.WriteHeader(http.StatusInternalServerError)
 					return
@@ -211,7 +210,7 @@ func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {
 		}
 		var buffer bytes.Buffer
 		if panel {
-			if err = tmpl.ExecuteTemplate(&buffer, "/adjust_hp.html", c); err != nil {
+			if err = tmpl.ExecuteTemplate(&buffer, "adjust_hp.html", c); err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
@@ -224,7 +223,7 @@ func (s *Server) adjustHP(w http.ResponseWriter, req *http.Request) {
 					c.Heal(s.board.Round, adjust)
 				}
 			}
-			if err = tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+			if err = tmpl.ExecuteTemplate(&buffer, "board.html", &s.board); err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
@@ -250,7 +249,7 @@ func (s *Server) hpChanges(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		var buffer bytes.Buffer
-		if err = tmpl.ExecuteTemplate(&buffer, "/hp_changes.html", c); err != nil {
+		if err = tmpl.ExecuteTemplate(&buffer, "hp_changes.html", c); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -278,7 +277,7 @@ func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {
 	var buffer bytes.Buffer
 	if panel {
 		c := s.board.NewCombatant(false, basedOn)
-		if err = tmpl.ExecuteTemplate(&buffer, "/edit_combatant.html", c); err != nil {
+		if err = tmpl.ExecuteTemplate(&buffer, "edit_combatant.html", c); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -287,7 +286,7 @@ func (s *Server) newCombatant(w http.ResponseWriter, req *http.Request) {
 		c := s.board.NewCombatant(true, basedOn)
 		s.board.Combatants = append(s.board.Combatants, c)
 		s.updateCombatant(c, j)
-		if err = tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+		if err = tmpl.ExecuteTemplate(&buffer, "board.html", &s.board); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -346,14 +345,14 @@ func (s *Server) editCombatant(w http.ResponseWriter, req *http.Request) {
 		}
 		var buffer bytes.Buffer
 		if panel {
-			if err = tmpl.ExecuteTemplate(&buffer, "/edit_combatant.html", c); err != nil {
+			if err = tmpl.ExecuteTemplate(&buffer, "edit_combatant.html", c); err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 		} else {
 			s.updateCombatant(c, j)
-			if err = tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+			if err = tmpl.ExecuteTemplate(&buffer, "board.html", &s.board); err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
@@ -388,7 +387,7 @@ func (s *Server) rollInitiative(w http.ResponseWriter, req *http.Request) {
 			rolls[i] = roll{
 				ID:         s.board.Combatants[i].ID,
 				Name:       s.board.Combatants[i].Name,
-				Initiative: s.board.Combatants[i].InitiativeBase + s.board.InitiativeDice.Roll(),
+				Initiative: s.board.Combatants[i].InitiativeBase + s.board.InitiativeDice.Roll(false),
 				Enemy:      s.board.Combatants[i].Enemy,
 			}
 		}
@@ -398,7 +397,7 @@ func (s *Server) rollInitiative(w http.ResponseWriter, req *http.Request) {
 			}
 			return txt.NaturalLess(rolls[i].Name, rolls[j].Name, true)
 		})
-		if err = tmpl.ExecuteTemplate(&buffer, "/roll_initiative.html", rolls); err != nil {
+		if err = tmpl.ExecuteTemplate(&buffer, "roll_initiative.html", rolls); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -445,7 +444,7 @@ func (s *Server) rollInitiative(w http.ResponseWriter, req *http.Request) {
 		s.board.Round = 1
 		w.Header().Set("round", strconv.Itoa(s.board.Round))
 		w.Header().Set("new_round", "true")
-		if err = tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+		if err = tmpl.ExecuteTemplate(&buffer, "board.html", &s.board); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -468,7 +467,7 @@ func (s *Server) globalOptions(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 		var buffer bytes.Buffer
-		if err = tmpl.ExecuteTemplate(&buffer, "/options.html", &s.board); err != nil {
+		if err = tmpl.ExecuteTemplate(&buffer, "options.html", &s.board); err != nil {
 			jot.Error(errs.Wrap(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -478,7 +477,7 @@ func (s *Server) globalOptions(w http.ResponseWriter, req *http.Request) {
 		}
 	} else {
 		if j.Exists("init_dice") {
-			s.board.InitiativeDice = dice.New(nil, j.Str("init_dice"))
+			s.board.InitiativeDice = dice.New(j.Str("init_dice"))
 		}
 		if j.Exists("hp_method") {
 			if err := s.board.HPMethod.UnmarshalText([]byte(j.Str("hp_method"))); err != nil {
@@ -505,7 +504,7 @@ func (s *Server) deleteAllEnemies(w http.ResponseWriter, req *http.Request) {
 	}
 	var buffer bytes.Buffer
 	w.Header().Set("round", strconv.Itoa(s.board.Round))
-	if err = tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+	if err = tmpl.ExecuteTemplate(&buffer, "board.html", &s.board); err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -624,7 +623,7 @@ func (s *Server) refreshBoard(w http.ResponseWriter) {
 		return
 	}
 	var buffer bytes.Buffer
-	if err = tmpl.ExecuteTemplate(&buffer, "/board.html", &s.board); err != nil {
+	if err = tmpl.ExecuteTemplate(&buffer, "board.html", &s.board); err != nil {
 		jot.Error(errs.Wrap(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -648,9 +647,12 @@ func (s *Server) reorder(w http.ResponseWriter, req *http.Request) {
 	for i := 0; i < length; i++ {
 		ids[i] = int(order.Index(i).Int64Relaxed(""))
 	}
-	set := collection.NewIntSet(ids...)
+	set := make(map[int]bool)
+	for _, id := range ids {
+		set[id] = true
+	}
 	for _, c := range s.board.Combatants {
-		if !set.Contains(c.ID) {
+		if !set[c.ID] {
 			jot.Error(errs.Newf("Missing ID %d", c.ID))
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -677,7 +679,7 @@ func (s *Server) showEntity(w http.ResponseWriter, req *http.Request) {
 				return
 			}
 			var buffer bytes.Buffer
-			if err = tmpl.ExecuteTemplate(&buffer, "/detail.html", &s.board); err != nil {
+			if err = tmpl.ExecuteTemplate(&buffer, "detail.html", &s.board); err != nil {
 				jot.Error(errs.Wrap(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return

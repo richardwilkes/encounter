@@ -1,4 +1,4 @@
-// Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved.
+// Copyright ©2018-2023 by Richard A. Wilkes. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, version 2.0. If a copy of the MPL was not distributed with
@@ -16,7 +16,6 @@ import (
 
 	"github.com/richardwilkes/encounter/board/data"
 	"github.com/richardwilkes/rpgtools/dice"
-	"github.com/richardwilkes/toolbox/collection"
 	"github.com/richardwilkes/toolbox/log/jot"
 	"github.com/richardwilkes/toolbox/xio/fs"
 )
@@ -39,7 +38,7 @@ func (b *Board) Load(path string) error {
 		return err
 	}
 	if b.InitiativeDice == nil {
-		b.InitiativeDice = dice.New(nil, "1d20")
+		b.InitiativeDice = dice.New("1d20")
 	}
 	var entity *data.Entity
 	for _, e := range data.Entities {
@@ -143,11 +142,11 @@ func (b *Board) Lookup(id int) *Combatant {
 
 // SuggestName suggests a name for a combatant.
 func (b *Board) SuggestName(nameHint string) string {
-	names := collection.NewStringSet()
+	names := make(map[string]bool)
 	for _, c := range b.Combatants {
-		names.Add(strings.ToLower(c.Name))
+		names[strings.ToLower(c.Name)] = true
 	}
-	if !names.Contains(strings.ToLower(nameHint)) {
+	if !names[strings.ToLower(nameHint)] {
 		return nameHint
 	}
 	nameHint = strings.TrimRight(nameHint, "0123456789 ")
@@ -157,7 +156,7 @@ func (b *Board) SuggestName(nameHint string) string {
 	counter := 2
 	for {
 		name := fmt.Sprintf("%s%d", nameHint, counter)
-		if !names.Contains(strings.ToLower(name)) {
+		if !names[strings.ToLower(name)] {
 			return name
 		}
 		counter++

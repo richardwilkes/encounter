@@ -1,4 +1,4 @@
-// Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved.
+// Copyright ©2018-2023 by Richard A. Wilkes. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, version 2.0. If a copy of the MPL was not distributed with
@@ -35,7 +35,7 @@ func (s *Server) handleIndex(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var buffer bytes.Buffer
-	if err = tmpl.ExecuteTemplate(&buffer, "/index.html", &document{
+	if err = tmpl.ExecuteTemplate(&buffer, "index.html", &document{
 		Title:     cmdline.AppName,
 		Copyright: cmdline.Copyright(),
 		Board:     &s.board,

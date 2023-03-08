@@ -1,4 +1,4 @@
-// Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved.
+// Copyright ©2018-2023 by Richard A. Wilkes. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, version 2.0. If a copy of the MPL was not distributed with
@@ -131,7 +131,7 @@ func rolledHP(e *data.Entity) int {
 	total := 0
 	hd := extractDice(e.HD)
 	for _, d := range hd {
-		total += d.Roll()
+		total += d.Roll(false)
 	}
 	return total
 }
@@ -145,7 +145,7 @@ func minimumHP(e *data.Entity) int {
 			total += d.Sides
 		}
 		if d.Count > 0 {
-			total += d.Minimum()
+			total += d.Minimum(false)
 		} else {
 			total += d.Modifier
 		}
@@ -162,7 +162,7 @@ func averageHP(e *data.Entity) int {
 			total += d.Sides
 		}
 		if d.Count > 0 {
-			total += d.Average()
+			total += d.Average(false)
 		} else {
 			total += d.Modifier
 		}
@@ -174,7 +174,7 @@ func maximumHP(e *data.Entity) int {
 	total := 0
 	hd := extractDice(e.HD)
 	for _, d := range hd {
-		total += d.Maximum()
+		total += d.Maximum(false)
 	}
 	return total
 }
@@ -189,7 +189,7 @@ func threeQuartersHP(e *data.Entity) int {
 		}
 		d.Sides = 3 * d.Sides / 4
 		if d.Count > 0 {
-			total += d.Maximum()
+			total += d.Maximum(false)
 		} else {
 			total += d.Modifier
 		}
@@ -199,13 +199,13 @@ func threeQuartersHP(e *data.Entity) int {
 
 func extractDice(in string) []*dice.Dice {
 	in = strings.Replace(in, " plus ", "+", -1)
-	d := dice.New(nil, in)
+	d := dice.New(in)
 	if d.String() == in || "1"+d.String() == in {
 		return []*dice.Dice{d}
 	}
 	result := make([]*dice.Dice, 0)
 	for _, p := range strings.Split(in, "+") {
-		d = dice.New(nil, p)
+		d = dice.New(p)
 		if d.String() != p && "1"+d.String() != p {
 			var buffer strings.Builder
 			for _, c := range p {

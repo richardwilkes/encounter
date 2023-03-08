@@ -1,4 +1,4 @@
-// Copyright ©2018-2020 by Richard A. Wilkes. All rights reserved.
+// Copyright ©2018-2023 by Richard A. Wilkes. All rights reserved.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, version 2.0. If a copy of the MPL was not distributed with
@@ -24,8 +24,7 @@ import (
 	"github.com/richardwilkes/encounter/internal/assets"
 	"github.com/richardwilkes/rpgtools/dice"
 	"github.com/richardwilkes/toolbox/log/jot"
-	"github.com/richardwilkes/toolbox/xio/fs"
-	"github.com/richardwilkes/toolbox/xio/fs/embedded/htmltmpl"
+	xfs "github.com/richardwilkes/toolbox/xio/fs"
 	"github.com/richardwilkes/toolbox/xio/fs/paths"
 	"github.com/richardwilkes/toolbox/xio/network/xhttp/web"
 )
@@ -54,21 +53,21 @@ func New(address string) *Server {
 			},
 			StartedChan: make(chan interface{}, 1),
 		},
-		staticFS: http.FileServer(assets.StaticFS),
+		staticFS: http.FileServer(http.FS(assets.StaticFS)),
 		funcMap: template.FuncMap{
 			"comma":     func(v int) string { return humanize.Comma(int64(v)) },
 			"lowercase": strings.ToLower,
 		},
 		boardFile: filepath.Join(paths.AppDataDir(), "board.json"),
 		board: board.Board{
-			InitiativeDice: dice.New(nil, "1d20"),
+			InitiativeDice: dice.New("1d20"),
 			HPMethod:       board.AverageHPMethod,
 		},
 	}
 	s.board.SetLibrarySelection(data.Entities[0])
 	s.Server.WebServer.Handler = s
 	s.Server.ShutdownCallback = s.HandleShutdown
-	if fs.FileExists(s.boardFile) {
+	if xfs.FileExists(s.boardFile) {
 		t := jot.Time("Loading previous board")
 		if err := s.board.Load(s.boardFile); err != nil {
 			jot.Error(err)
@@ -95,7 +94,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *Server) loadTemplates() (*template.Template, error) {
-	return htmltmpl.Load(template.New("root").Funcs(s.funcMap), assets.DynamicFS, "/", nil)
+	return template.New("").Funcs(s.funcMap).ParseFS(assets.DynamicFS, "*.html")
 }
 
 // HandleShutdown is called during shutdown to save state.
